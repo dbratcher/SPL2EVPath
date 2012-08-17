@@ -1,0 +1,66 @@
+namespace vwap;                                                                   //1
+composite VwapMain {                                                       //2
+param                                                                             //3
+  expression<set<string8>> $monitoredTickers : { "IBM", "GOOG", "MSFT" };         //4
+                                                                                  //5
+typedef                      //GSE change from type to to typedef
+  TradeInfoT  = decimal64 price, decimal64 volume;                                //7
+  QuoteInfoT  = decimal64 bidprice, decimal64 askprice, decimal64 asksize;        //8
+  TradeQuoteT = TradeInfoT, QuoteInfoT,                                           //9
+               tuple<string8 ticker, string8 dayAndTime, string8 ttype>;          //10
+  TradeFilterT= TradeInfoT, tuple<timestamp ts, string8 ticker>;                  //11
+  QuoteFilterT= QuoteInfoT, tuple<timestamp ts, string8 ticker>;                  //12
+  VwapT       = string8 ticker, decimal64 minprice, decimal64 maxprice,           //13
+               decimal64 avgprice, decimal64 vwap;                                //14
+                                                                                  //15
+graph                                                                             //16
+  stream<TradeQuoteT> TradeQuote = FileSource() {                                 //17
+    param file        : "TradesAndQuotes.csv.gz";                                 //18
+         format       : csv;                                                      //19
+         compression  : zlib;                                                     //20
+  }                                                                               //21
+                                                                                  //22
+  stream<TradeFilterT> TradeFilter = Functor(TradeQuote) {                        //23
+    param  filter      : ttype=="Trade" && (ticker in $monitoredTickers);         //24
+    output TradeFilter : ts = toTimestamp(Sys.YYYYMMDDhhmmss,dayAndTime);         //25
+  }                                                                               //26
+                                                                                  //27
+  stream<QuoteFilterT> QuoteFilter = Functor(TradeQuote) {                        //28
+    param filter : ttype=="Quote" && (ticker in $monitoredTickers);               //29
+    output QuoteFilter : ts = toTimestamp(Sys.YYYYMMDDhhmmss, dayAndTime);        //30
+  }                                                                               //31
+                                                                                  //32
+  stream<VwapT, tuple<decimal64 sumvolume>> PreVwap = Aggregate(TradeFilter) {    //33
+    window TradeFilter : sliding, count(4), count(1), partitioned;                //34
+    param  partitionBy : ticker;                                                  //35
+    output PreVwap     : ticker   = Any(ticker), vwap = Sum(price*volume),        //36
+                        minprice = Min(price),  maxprice = Max(price),            //37
+                        avgprice = Average(price),  sumvolume = Sum(volume);      //38
+  }                                                                               //39
+                                                                                  //40
+  stream<VwapT> Vwap = Functor(PreVwap) {                                         //41
+    output Vwap : vwap = vwap / sumvolume;                                        //42
+  }                                                                               //43
+                                                                                  //44
+  stream<timestamp ts, decimal64 index>                                           //45
+    BargainIndex = Join(Vwap as V; QuoteFilter as Q)                              //46
+  {                                                                               //47
+    window V             : sliding, count(1), partitioned;                        //48
+           Q             : sliding, count(0); //empty window (one-sided join)     //49
+    param  equalityLHS   : V.ticker; // can also be written as nested loop join:  //50 
+          equalityRHS    : Q.ticker; // "condition : V.ticker == Q.ticker"        //51
+          partitionByLHS : V.ticker; // windowing confs apply to each paritition  //52
+    output BargainIndex  :                                                        //53
+      index = vwap > askprice*100d ? asksize*exp(vwap-askprice*100d) : 0d;        //54
+  }                                                                               //55
+                                                                                  //56
+  () as SinkOp = FileSink(BargainIndex)                                           //57
+  {                                                                               //58
+    param                                                                         //59
+      file : "out";                                                               //60
+      format : txt;                                                               //61
+  }                                                                               //62
+                                                                                  //63
+config                                                                            //64
+  logLevel: trace;                                                                //65
+}                                                                                 //66

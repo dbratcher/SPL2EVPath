@@ -1,0 +1,26 @@
+namespace sample;
+
+composite Trivial{
+
+graph
+        stream<int32 a, int32 b, int32 c, int32 d, int32 e> RawData = FileSource()
+        {
+                param file: "SourceData.csv";
+                format: csv;
+        }
+
+        stream<int32 hops, int32 sum> Sum = Functor(RawData) {
+                output Sum:
+                        hops=0,
+                        sum=a+b+c+d+e;
+        }
+
+        stream<int32 hops, int32 sum> Hop = Functor(Sum) {
+                output Hop:
+                        hops=hops+1;
+        }
+
+        () as SinkOp = FileSink(Hop){
+                param file: "SumSink.csv";
+        }
+}

@@ -1,0 +1,1 @@
+/usr/bin/gcc  -O2 -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names   CMakeFiles/parse.dir/spl.tab.c.o CMakeFiles/parse.dir/spl_node.c.o CMakeFiles/parse.dir/parse.c.o  -o parse  
