@@ -573,7 +573,7 @@ opInvokeHead:
 	opOutputs ASSIGN identifier_ref opInputs {
             $$= spl_new_assignment_expression();
             sm_ref tmp2= spl_new_field();
-            tmp2->node.field.name = $3.string;
+            tmp2->node.field.name = "opInvokeHead";
             tmp2->node.field.type_spec = $1;
             $$->node.assignment_expression.left = tmp2;
             sm_ref tmp= spl_new_field();
@@ -660,12 +660,15 @@ portInputs:
 
 opInvokeBody:
 	LCURLY invoke_logic_opt invoke_window_opt invoke_actual_opt invoke_output_opt invoke_config_opt RCURLY {
+            printf("neet to read in stuff here\n");
             $$=NULL;
         }
 	;
 
 invoke_logic_opt:
-	/* empty */
+	/* empty */{
+            printf("invoke_logic_opt?\n");
+        }
 	| LOGIC opInvokeLogic_list {
             printf("invoke_logic_opt?\n");
         }
@@ -686,6 +689,8 @@ invoke_actual_opt:
         }
 	| PARAM opInvokeActual_list {
             $$=$2;
+            spl_print($2->node);
+            printf("not reading param lines\n");
         }
 	;
 
@@ -695,6 +700,8 @@ invoke_output_opt:
         }
 	| OUTPUT opInvokeOutput_list {
             $$=$2;
+            spl_print($2->node);
+            printf("not reading ouptut lines\n");
         }
 	;
 
@@ -1855,40 +1862,46 @@ void program2(sm_ref one, sm_list two) {
     fprintf(fp,"\n");
     sm_list tmp = two;
     while (tmp != NULL) {
-        if(tmp->node->node.assignment_expression.left){
-            printf("\n\nNode's left\n--------------\n\n");
-            spl_print(tmp->node->node.assignment_expression.left);
-            fflush(stdout);
+        //pull relevant parts out of abstract syntax tree
+        sm_ref left_stream_decl=tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec->node;
+        const char * stream_name=left_stream_decl->node.field.name;
+        sm_list output_ids= left_stream_decl->node.field.type_spec;
+        printf("stream name:%s\n",stream_name);
+        printf("stream outputs:");
+        sm_list ids=output_ids;
+        while(ids != NULL){
+            printf(" %s", ids->node->node.identifier.id);
+            ids=ids->next;
         }
-        if(tmp->node->node.assignment_expression.left->node.assignment_expression.left){
-            //pull relevant parts out of abstract syntax tree
-            sm_ref stream_decl=tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec->node;
-            printf("\n\nNode's left left\n--------------\n\n");
-            spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.left);
-            printf("\n\nNode's left right\n--------------\n\n");
-            spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.right);
-            const char * name=stream_decl->node.field.name;
-            sm_list ids= stream_decl->node.field.type_spec;
-            spl_print(stream_decl);
-            
-            //print filter
-            print_filter(fp, name, ids);
-            
-            //print struct
-            print_struct(fp, name, ids);
-            
-            //print FMfield
-            print_FMfield(fp, name, ids);
-            
-            //print FMstruct
-            print_FMstruct(fp, name);
-            
-            //print handler
-            print_handler(fp, name, ids);
-            
-            //print generate functions
-            print_generate(fp, name, ids);
+        printf("\n");
+        const char *right_side_name = tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.name;
+        printf("right side name:%s\n",right_side_name);
+        if(tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec){
+            const char *input=tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec->node->node.field.type_spec->node->node.identifier.id;
+            printf("stream input:%s\n",input);
         }
+        printf("right side:");
+        spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.right);
+        printf("left side:");
+        spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.left);
+        printf("\n\n");
+        //print filter
+        print_filter(fp, stream_name, output_ids);
+        
+        //print struct
+        print_struct(fp, stream_name, output_ids);
+        
+        //print FMfield
+        print_FMfield(fp, stream_name, output_ids);
+        
+        //print FMstruct
+        print_FMstruct(fp, stream_name);
+        
+        //print handler
+        print_handler(fp, stream_name, output_ids);
+        
+        //print generate functions
+        print_generate(fp, stream_name, output_ids);
         tmp = tmp->next;
     }
     

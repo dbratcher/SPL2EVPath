@@ -763,27 +763,27 @@ static const yytype_uint16 yyrline[] =
      501,   504,   507,   510,   513,   516,   519,   522,   528,   536,
      539,   547,   552,   559,   565,   573,   587,   590,   597,   602,
      607,   613,   616,   622,   630,   633,   639,   647,   653,   656,
-     662,   667,   669,   675,   678,   684,   687,   693,   696,   701,
-     703,   709,   712,   718,   721,   727,   732,   745,   750,   763,
-     766,   772,   775,   781,   784,   790,   793,   799,   805,   813,
-     820,   838,   844,   849,   851,   854,   860,   863,   869,   877,
-     880,   883,   886,   889,   892,   895,   898,   901,   907,   912,
-     914,   920,   925,   927,   930,   936,   942,   945,   951,   957,
-     963,   969,   975,   978,   984,   987,   990,   993,   996,   999,
-    1004,  1010,  1016,  1019,  1022,  1025,  1028,  1034,  1039,  1042,
-    1048,  1055,  1058,  1061,  1064,  1067,  1070,  1073,  1076,  1079,
-    1082,  1085,  1088,  1091,  1094,  1097,  1100,  1103,  1106,  1112,
-    1115,  1118,  1121,  1124,  1127,  1130,  1133,  1136,  1139,  1142,
-    1145,  1148,  1151,  1154,  1157,  1163,  1166,  1169,  1172,  1175,
-    1178,  1181,  1184,  1187,  1190,  1193,  1199,  1202,  1205,  1208,
-    1211,  1217,  1220,  1225,  1227,  1233,  1236,  1242,  1248,  1251,
-    1254,  1257,  1260,  1266,  1272,  1278,  1284,  1287,  1293,  1299,
-    1305,  1308,  1311,  1317,  1323,  1332,  1335,  1341,  1344,  1349,
-    1351,  1356,  1358,  1364,  1367,  1370,  1373,  1379,  1385,  1388,
-    1394,  1400,  1403,  1406,  1409,  1412,  1417,  1420,  1423,  1426,
-    1429,  1432,  1435,  1438,  1441,  1444,  1447,  1450,  1453,  1456,
-    1459,  1462,  1465,  1468,  1473,  1475,  1481,  1485,  1488,  1491,
-    1497,  1504,  1507,  1513,  1518,  1531,  1534,  1537,  1540,  1546
+     662,   669,   672,   678,   681,   687,   690,   698,   701,   708,
+     710,   716,   719,   725,   728,   734,   739,   752,   757,   770,
+     773,   779,   782,   788,   791,   797,   800,   806,   812,   820,
+     827,   845,   851,   856,   858,   861,   867,   870,   876,   884,
+     887,   890,   893,   896,   899,   902,   905,   908,   914,   919,
+     921,   927,   932,   934,   937,   943,   949,   952,   958,   964,
+     970,   976,   982,   985,   991,   994,   997,  1000,  1003,  1006,
+    1011,  1017,  1023,  1026,  1029,  1032,  1035,  1041,  1046,  1049,
+    1055,  1062,  1065,  1068,  1071,  1074,  1077,  1080,  1083,  1086,
+    1089,  1092,  1095,  1098,  1101,  1104,  1107,  1110,  1113,  1119,
+    1122,  1125,  1128,  1131,  1134,  1137,  1140,  1143,  1146,  1149,
+    1152,  1155,  1158,  1161,  1164,  1170,  1173,  1176,  1179,  1182,
+    1185,  1188,  1191,  1194,  1197,  1200,  1206,  1209,  1212,  1215,
+    1218,  1224,  1227,  1232,  1234,  1240,  1243,  1249,  1255,  1258,
+    1261,  1264,  1267,  1273,  1279,  1285,  1291,  1294,  1300,  1306,
+    1312,  1315,  1318,  1324,  1330,  1339,  1342,  1348,  1351,  1356,
+    1358,  1363,  1365,  1371,  1374,  1377,  1380,  1386,  1392,  1395,
+    1401,  1407,  1410,  1413,  1416,  1419,  1424,  1427,  1430,  1433,
+    1436,  1439,  1442,  1445,  1448,  1451,  1454,  1457,  1460,  1463,
+    1466,  1469,  1472,  1475,  1480,  1482,  1488,  1492,  1495,  1498,
+    1504,  1511,  1514,  1520,  1525,  1538,  1541,  1544,  1547,  1553
 };
 #endif
 
@@ -2958,7 +2958,7 @@ yyreduce:
     {
             (yyval.reference)= spl_new_assignment_expression();
             sm_ref tmp2= spl_new_field();
-            tmp2->node.field.name = (yyvsp[(3) - (4)].info).string;
+            tmp2->node.field.name = "opInvokeHead";
             tmp2->node.field.type_spec = (yyvsp[(1) - (4)].list);
             (yyval.reference)->node.assignment_expression.left = tmp2;
             sm_ref tmp= spl_new_field();
@@ -3111,11 +3111,12 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 #line 662 "spl.y"
     {
+            printf("neet to read in stuff here\n");
             (yyval.reference)=NULL;
         }
     break;
 
-  case 82:
+  case 81:
 
 /* Line 1806 of yacc.c  */
 #line 669 "spl.y"
@@ -3124,16 +3125,16 @@ yyreduce:
         }
     break;
 
-  case 83:
+  case 82:
 
 /* Line 1806 of yacc.c  */
-#line 675 "spl.y"
+#line 672 "spl.y"
     {
-            printf("invoke_window_opt?\n");
+            printf("invoke_logic_opt?\n");
         }
     break;
 
-  case 84:
+  case 83:
 
 /* Line 1806 of yacc.c  */
 #line 678 "spl.y"
@@ -3142,10 +3143,19 @@ yyreduce:
         }
     break;
 
+  case 84:
+
+/* Line 1806 of yacc.c  */
+#line 681 "spl.y"
+    {
+            printf("invoke_window_opt?\n");
+        }
+    break;
+
   case 85:
 
 /* Line 1806 of yacc.c  */
-#line 684 "spl.y"
+#line 687 "spl.y"
     {
             printf("invoke_actual_opt?\n");
         }
@@ -3154,16 +3164,18 @@ yyreduce:
   case 86:
 
 /* Line 1806 of yacc.c  */
-#line 687 "spl.y"
+#line 690 "spl.y"
     {
             (yyval.list)=(yyvsp[(2) - (2)].list);
+            spl_print((yyvsp[(2) - (2)].list)->node);
+            printf("not reading param lines\n");
         }
     break;
 
   case 87:
 
 /* Line 1806 of yacc.c  */
-#line 693 "spl.y"
+#line 698 "spl.y"
     {
             printf("invoke_output_opt?\n");
         }
@@ -3172,16 +3184,18 @@ yyreduce:
   case 88:
 
 /* Line 1806 of yacc.c  */
-#line 696 "spl.y"
+#line 701 "spl.y"
     {
             (yyval.list)=(yyvsp[(2) - (2)].list);
+            spl_print((yyvsp[(2) - (2)].list)->node);
+            printf("not reading ouptut lines\n");
         }
     break;
 
   case 90:
 
 /* Line 1806 of yacc.c  */
-#line 703 "spl.y"
+#line 710 "spl.y"
     {
             printf("invoke_config_opt?\n");
         }
@@ -3190,7 +3204,7 @@ yyreduce:
   case 91:
 
 /* Line 1806 of yacc.c  */
-#line 709 "spl.y"
+#line 716 "spl.y"
     {
             printf("opInvokeLogic_list?\n");
         }
@@ -3199,7 +3213,7 @@ yyreduce:
   case 92:
 
 /* Line 1806 of yacc.c  */
-#line 712 "spl.y"
+#line 719 "spl.y"
     {
             printf("opInvokeLogic_list?\n");
         }
@@ -3208,7 +3222,7 @@ yyreduce:
   case 93:
 
 /* Line 1806 of yacc.c  */
-#line 718 "spl.y"
+#line 725 "spl.y"
     {
             printf("opInvokeWindow_list?\n");
         }
@@ -3217,7 +3231,7 @@ yyreduce:
   case 94:
 
 /* Line 1806 of yacc.c  */
-#line 721 "spl.y"
+#line 728 "spl.y"
     {
             printf("opInvokeWindow_list?\n");
         }
@@ -3226,7 +3240,7 @@ yyreduce:
   case 95:
 
 /* Line 1806 of yacc.c  */
-#line 727 "spl.y"
+#line 734 "spl.y"
     {
             (yyval.list) = malloc(sizeof(struct list_struct));
             (yyval.list)->node = (yyvsp[(1) - (1)].reference);
@@ -3237,7 +3251,7 @@ yyreduce:
   case 96:
 
 /* Line 1806 of yacc.c  */
-#line 732 "spl.y"
+#line 739 "spl.y"
     {
 	    sm_list tmp = (yyvsp[(1) - (2)].list);
 	    while (tmp->next != NULL) {
@@ -3253,7 +3267,7 @@ yyreduce:
   case 97:
 
 /* Line 1806 of yacc.c  */
-#line 745 "spl.y"
+#line 752 "spl.y"
     {
             (yyval.list) = malloc(sizeof(struct list_struct));
             (yyval.list)->node = (yyvsp[(1) - (1)].reference);
@@ -3264,7 +3278,7 @@ yyreduce:
   case 98:
 
 /* Line 1806 of yacc.c  */
-#line 750 "spl.y"
+#line 757 "spl.y"
     {
 	    sm_list tmp = (yyvsp[(1) - (2)].list);
 	    while (tmp->next != NULL) {
@@ -3280,7 +3294,7 @@ yyreduce:
   case 99:
 
 /* Line 1806 of yacc.c  */
-#line 763 "spl.y"
+#line 770 "spl.y"
     {
             printf("opInvokeLogic?\n");
         }
@@ -3289,7 +3303,7 @@ yyreduce:
   case 100:
 
 /* Line 1806 of yacc.c  */
-#line 766 "spl.y"
+#line 773 "spl.y"
     {
             printf("opInvokeLogic?\n");
         }
@@ -3298,7 +3312,7 @@ yyreduce:
   case 101:
 
 /* Line 1806 of yacc.c  */
-#line 772 "spl.y"
+#line 779 "spl.y"
     {
             printf("opInvokeCode?\n");
         }
@@ -3307,7 +3321,7 @@ yyreduce:
   case 102:
 
 /* Line 1806 of yacc.c  */
-#line 775 "spl.y"
+#line 782 "spl.y"
     {
             printf("opInvokeCode?\n");
         }
@@ -3316,7 +3330,7 @@ yyreduce:
   case 103:
 
 /* Line 1806 of yacc.c  */
-#line 781 "spl.y"
+#line 788 "spl.y"
     {
             printf("opInvokeState?\n");
         }
@@ -3325,7 +3339,7 @@ yyreduce:
   case 104:
 
 /* Line 1806 of yacc.c  */
-#line 784 "spl.y"
+#line 791 "spl.y"
     {
             printf("opInvokeState?\n");
         }
@@ -3334,7 +3348,7 @@ yyreduce:
   case 105:
 
 /* Line 1806 of yacc.c  */
-#line 790 "spl.y"
+#line 797 "spl.y"
     {
             printf("varDef_list?\n");
         }
@@ -3343,7 +3357,7 @@ yyreduce:
   case 106:
 
 /* Line 1806 of yacc.c  */
-#line 793 "spl.y"
+#line 800 "spl.y"
     {
             printf("varDef_list?\n");
         }
@@ -3352,7 +3366,7 @@ yyreduce:
   case 107:
 
 /* Line 1806 of yacc.c  */
-#line 799 "spl.y"
+#line 806 "spl.y"
     {
             printf("opInvokeWindow?\n");
         }
@@ -3361,7 +3375,7 @@ yyreduce:
   case 108:
 
 /* Line 1806 of yacc.c  */
-#line 805 "spl.y"
+#line 812 "spl.y"
     {
             (yyval.reference)=spl_new_field();
             (yyval.reference)->node.field.name=(yyvsp[(1) - (4)].info).string;
@@ -3372,7 +3386,7 @@ yyreduce:
   case 109:
 
 /* Line 1806 of yacc.c  */
-#line 813 "spl.y"
+#line 820 "spl.y"
     {
             (yyval.list) = malloc(sizeof(struct list_struct));
             sm_ref tmp = spl_new_assignment_expression();
@@ -3385,7 +3399,7 @@ yyreduce:
   case 110:
 
 /* Line 1806 of yacc.c  */
-#line 820 "spl.y"
+#line 827 "spl.y"
     {
 	    sm_list tmp = (yyvsp[(1) - (5)].list);
 	    while (tmp->next != NULL) {
@@ -3406,7 +3420,7 @@ yyreduce:
   case 111:
 
 /* Line 1806 of yacc.c  */
-#line 838 "spl.y"
+#line 845 "spl.y"
     {
             printf("functionDef?\n");
         }
@@ -3415,7 +3429,7 @@ yyreduce:
   case 112:
 
 /* Line 1806 of yacc.c  */
-#line 844 "spl.y"
+#line 851 "spl.y"
     {
             printf("functionHead?");
         }
@@ -3424,7 +3438,7 @@ yyreduce:
   case 114:
 
 /* Line 1806 of yacc.c  */
-#line 851 "spl.y"
+#line 858 "spl.y"
     {
             printf("functionModifier_list?\n");
         }
@@ -3433,7 +3447,7 @@ yyreduce:
   case 115:
 
 /* Line 1806 of yacc.c  */
-#line 854 "spl.y"
+#line 861 "spl.y"
     {
             printf("functionModifier_list?\n");
         }
@@ -3442,7 +3456,7 @@ yyreduce:
   case 116:
 
 /* Line 1806 of yacc.c  */
-#line 860 "spl.y"
+#line 867 "spl.y"
     {
             printf("functionFormal_list?\n");
         }
@@ -3451,7 +3465,7 @@ yyreduce:
   case 117:
 
 /* Line 1806 of yacc.c  */
-#line 863 "spl.y"
+#line 870 "spl.y"
     {
             printf("functionFormal_list?\n");
         }
@@ -3460,7 +3474,7 @@ yyreduce:
   case 118:
 
 /* Line 1806 of yacc.c  */
-#line 869 "spl.y"
+#line 876 "spl.y"
     {
             printf("functionFormal?");
         }
@@ -3469,7 +3483,7 @@ yyreduce:
   case 119:
 
 /* Line 1806 of yacc.c  */
-#line 877 "spl.y"
+#line 884 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3478,7 +3492,7 @@ yyreduce:
   case 120:
 
 /* Line 1806 of yacc.c  */
-#line 880 "spl.y"
+#line 887 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3487,7 +3501,7 @@ yyreduce:
   case 121:
 
 /* Line 1806 of yacc.c  */
-#line 883 "spl.y"
+#line 890 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3496,7 +3510,7 @@ yyreduce:
   case 122:
 
 /* Line 1806 of yacc.c  */
-#line 886 "spl.y"
+#line 893 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3505,7 +3519,7 @@ yyreduce:
   case 123:
 
 /* Line 1806 of yacc.c  */
-#line 889 "spl.y"
+#line 896 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3514,7 +3528,7 @@ yyreduce:
   case 124:
 
 /* Line 1806 of yacc.c  */
-#line 892 "spl.y"
+#line 899 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3523,7 +3537,7 @@ yyreduce:
   case 125:
 
 /* Line 1806 of yacc.c  */
-#line 895 "spl.y"
+#line 902 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3532,7 +3546,7 @@ yyreduce:
   case 126:
 
 /* Line 1806 of yacc.c  */
-#line 898 "spl.y"
+#line 905 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3541,7 +3555,7 @@ yyreduce:
   case 127:
 
 /* Line 1806 of yacc.c  */
-#line 901 "spl.y"
+#line 908 "spl.y"
     {
             printf("stmt?\n");
         }
@@ -3550,7 +3564,7 @@ yyreduce:
   case 128:
 
 /* Line 1806 of yacc.c  */
-#line 907 "spl.y"
+#line 914 "spl.y"
     {
             printf("varDef?");
         }
@@ -3559,7 +3573,7 @@ yyreduce:
   case 130:
 
 /* Line 1806 of yacc.c  */
-#line 914 "spl.y"
+#line 921 "spl.y"
     {
             printf("mutable_opt?\n");
         }
@@ -3568,7 +3582,7 @@ yyreduce:
   case 131:
 
 /* Line 1806 of yacc.c  */
-#line 920 "spl.y"
+#line 927 "spl.y"
     {
             printf("blockStmt?\n");
         }
@@ -3577,7 +3591,7 @@ yyreduce:
   case 133:
 
 /* Line 1806 of yacc.c  */
-#line 927 "spl.y"
+#line 934 "spl.y"
     {
             printf("stmt_typedef_list?\n");
         }
@@ -3586,7 +3600,7 @@ yyreduce:
   case 134:
 
 /* Line 1806 of yacc.c  */
-#line 930 "spl.y"
+#line 937 "spl.y"
     {
             printf("stmt_typedef_list?\n");
         }
@@ -3595,7 +3609,7 @@ yyreduce:
   case 135:
 
 /* Line 1806 of yacc.c  */
-#line 936 "spl.y"
+#line 943 "spl.y"
     {
             printf("exprStmt?\n");
         }
@@ -3604,7 +3618,7 @@ yyreduce:
   case 136:
 
 /* Line 1806 of yacc.c  */
-#line 942 "spl.y"
+#line 949 "spl.y"
     {
             printf("ifStmt?\n");
         }
@@ -3613,7 +3627,7 @@ yyreduce:
   case 137:
 
 /* Line 1806 of yacc.c  */
-#line 945 "spl.y"
+#line 952 "spl.y"
     {
             printf("ifStmt?\n");
         }
@@ -3622,7 +3636,7 @@ yyreduce:
   case 138:
 
 /* Line 1806 of yacc.c  */
-#line 951 "spl.y"
+#line 958 "spl.y"
     {
             printf("forStmt?");
         }
@@ -3631,7 +3645,7 @@ yyreduce:
   case 139:
 
 /* Line 1806 of yacc.c  */
-#line 957 "spl.y"
+#line 964 "spl.y"
     {
             printf("whileStmt?\n");
         }
@@ -3640,7 +3654,7 @@ yyreduce:
   case 140:
 
 /* Line 1806 of yacc.c  */
-#line 963 "spl.y"
+#line 970 "spl.y"
     {
             printf("breakStmt?\n");
         }
@@ -3649,7 +3663,7 @@ yyreduce:
   case 141:
 
 /* Line 1806 of yacc.c  */
-#line 969 "spl.y"
+#line 976 "spl.y"
     {
             printf("continueStmt?\n");
         }
@@ -3658,7 +3672,7 @@ yyreduce:
   case 142:
 
 /* Line 1806 of yacc.c  */
-#line 975 "spl.y"
+#line 982 "spl.y"
     {
             printf("returnStmt?\n");
         }
@@ -3667,7 +3681,7 @@ yyreduce:
   case 143:
 
 /* Line 1806 of yacc.c  */
-#line 978 "spl.y"
+#line 985 "spl.y"
     {
             printf("returnStmt?\n");
         }
@@ -3676,7 +3690,7 @@ yyreduce:
   case 144:
 
 /* Line 1806 of yacc.c  */
-#line 984 "spl.y"
+#line 991 "spl.y"
     {
             printf("expr?\n");
         }
@@ -3685,7 +3699,7 @@ yyreduce:
   case 145:
 
 /* Line 1806 of yacc.c  */
-#line 987 "spl.y"
+#line 994 "spl.y"
     {
             (yyval.reference)= (yyvsp[(1) - (1)].reference);
         }
@@ -3694,7 +3708,7 @@ yyreduce:
   case 146:
 
 /* Line 1806 of yacc.c  */
-#line 990 "spl.y"
+#line 997 "spl.y"
     {
             printf("expr?\n");
         }
@@ -3703,7 +3717,7 @@ yyreduce:
   case 147:
 
 /* Line 1806 of yacc.c  */
-#line 993 "spl.y"
+#line 1000 "spl.y"
     {
             printf("expr?\n");
         }
@@ -3712,7 +3726,7 @@ yyreduce:
   case 148:
 
 /* Line 1806 of yacc.c  */
-#line 996 "spl.y"
+#line 1003 "spl.y"
     {
             printf("expr?\n");
         }
@@ -3721,7 +3735,7 @@ yyreduce:
   case 149:
 
 /* Line 1806 of yacc.c  */
-#line 999 "spl.y"
+#line 1006 "spl.y"
     {
 	    (yyval.reference) = spl_new_identifier();
 	    (yyval.reference)->node.identifier.lx_srcpos = (yyvsp[(1) - (1)].info).lx_srcpos;
@@ -3732,7 +3746,7 @@ yyreduce:
   case 150:
 
 /* Line 1806 of yacc.c  */
-#line 1004 "spl.y"
+#line 1011 "spl.y"
     {
             (yyval.reference)=(yyvsp[(1) - (1)].reference);
         }
@@ -3741,7 +3755,7 @@ yyreduce:
   case 151:
 
 /* Line 1806 of yacc.c  */
-#line 1010 "spl.y"
+#line 1017 "spl.y"
     {
             printf("prefixExpr?\n");
         }
@@ -3750,7 +3764,7 @@ yyreduce:
   case 152:
 
 /* Line 1806 of yacc.c  */
-#line 1016 "spl.y"
+#line 1023 "spl.y"
     {
             printf("prefixOp?\n");
         }
@@ -3759,7 +3773,7 @@ yyreduce:
   case 153:
 
 /* Line 1806 of yacc.c  */
-#line 1019 "spl.y"
+#line 1026 "spl.y"
     {
             printf("prefixOp?\n");
         }
@@ -3768,7 +3782,7 @@ yyreduce:
   case 154:
 
 /* Line 1806 of yacc.c  */
-#line 1022 "spl.y"
+#line 1029 "spl.y"
     {
             printf("prefixOp?\n");
         }
@@ -3777,7 +3791,7 @@ yyreduce:
   case 155:
 
 /* Line 1806 of yacc.c  */
-#line 1025 "spl.y"
+#line 1032 "spl.y"
     {
             printf("prefixOp?\n");
         }
@@ -3786,7 +3800,7 @@ yyreduce:
   case 156:
 
 /* Line 1806 of yacc.c  */
-#line 1028 "spl.y"
+#line 1035 "spl.y"
     {
             printf("prefixOp?\n");
         }
@@ -3795,7 +3809,7 @@ yyreduce:
   case 157:
 
 /* Line 1806 of yacc.c  */
-#line 1034 "spl.y"
+#line 1041 "spl.y"
     {
 	    (yyval.reference) = (yyvsp[(2) - (3)].reference);
 	    (yyval.reference)->node.operator.right = (yyvsp[(3) - (3)].reference);
@@ -3806,7 +3820,7 @@ yyreduce:
   case 158:
 
 /* Line 1806 of yacc.c  */
-#line 1039 "spl.y"
+#line 1046 "spl.y"
     {
             printf("infixExpr?\n");
         }
@@ -3815,7 +3829,7 @@ yyreduce:
   case 159:
 
 /* Line 1806 of yacc.c  */
-#line 1042 "spl.y"
+#line 1049 "spl.y"
     {
             printf("infixExpr?\n");
         }
@@ -3824,7 +3838,7 @@ yyreduce:
   case 160:
 
 /* Line 1806 of yacc.c  */
-#line 1048 "spl.y"
+#line 1055 "spl.y"
     {
 	    (yyval.reference) = spl_new_operator();
 	    (yyval.reference)->node.operator.operation_type = PLUS;
@@ -3837,7 +3851,7 @@ yyreduce:
   case 161:
 
 /* Line 1806 of yacc.c  */
-#line 1055 "spl.y"
+#line 1062 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3846,7 +3860,7 @@ yyreduce:
   case 162:
 
 /* Line 1806 of yacc.c  */
-#line 1058 "spl.y"
+#line 1065 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3855,7 +3869,7 @@ yyreduce:
   case 163:
 
 /* Line 1806 of yacc.c  */
-#line 1061 "spl.y"
+#line 1068 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3864,7 +3878,7 @@ yyreduce:
   case 164:
 
 /* Line 1806 of yacc.c  */
-#line 1064 "spl.y"
+#line 1071 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3873,7 +3887,7 @@ yyreduce:
   case 165:
 
 /* Line 1806 of yacc.c  */
-#line 1067 "spl.y"
+#line 1074 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3882,7 +3896,7 @@ yyreduce:
   case 166:
 
 /* Line 1806 of yacc.c  */
-#line 1070 "spl.y"
+#line 1077 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3891,7 +3905,7 @@ yyreduce:
   case 167:
 
 /* Line 1806 of yacc.c  */
-#line 1073 "spl.y"
+#line 1080 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3900,7 +3914,7 @@ yyreduce:
   case 168:
 
 /* Line 1806 of yacc.c  */
-#line 1076 "spl.y"
+#line 1083 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3909,7 +3923,7 @@ yyreduce:
   case 169:
 
 /* Line 1806 of yacc.c  */
-#line 1079 "spl.y"
+#line 1086 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3918,7 +3932,7 @@ yyreduce:
   case 170:
 
 /* Line 1806 of yacc.c  */
-#line 1082 "spl.y"
+#line 1089 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3927,7 +3941,7 @@ yyreduce:
   case 171:
 
 /* Line 1806 of yacc.c  */
-#line 1085 "spl.y"
+#line 1092 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3936,7 +3950,7 @@ yyreduce:
   case 172:
 
 /* Line 1806 of yacc.c  */
-#line 1088 "spl.y"
+#line 1095 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3945,7 +3959,7 @@ yyreduce:
   case 173:
 
 /* Line 1806 of yacc.c  */
-#line 1091 "spl.y"
+#line 1098 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3954,7 +3968,7 @@ yyreduce:
   case 174:
 
 /* Line 1806 of yacc.c  */
-#line 1094 "spl.y"
+#line 1101 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3963,7 +3977,7 @@ yyreduce:
   case 175:
 
 /* Line 1806 of yacc.c  */
-#line 1097 "spl.y"
+#line 1104 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3972,7 +3986,7 @@ yyreduce:
   case 176:
 
 /* Line 1806 of yacc.c  */
-#line 1100 "spl.y"
+#line 1107 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3981,7 +3995,7 @@ yyreduce:
   case 177:
 
 /* Line 1806 of yacc.c  */
-#line 1103 "spl.y"
+#line 1110 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3990,7 +4004,7 @@ yyreduce:
   case 178:
 
 /* Line 1806 of yacc.c  */
-#line 1106 "spl.y"
+#line 1113 "spl.y"
     {
             printf("infixOp?\n");
         }
@@ -3999,7 +4013,7 @@ yyreduce:
   case 179:
 
 /* Line 1806 of yacc.c  */
-#line 1112 "spl.y"
+#line 1119 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4008,7 +4022,7 @@ yyreduce:
   case 180:
 
 /* Line 1806 of yacc.c  */
-#line 1115 "spl.y"
+#line 1122 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4017,7 +4031,7 @@ yyreduce:
   case 181:
 
 /* Line 1806 of yacc.c  */
-#line 1118 "spl.y"
+#line 1125 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4026,7 +4040,7 @@ yyreduce:
   case 182:
 
 /* Line 1806 of yacc.c  */
-#line 1121 "spl.y"
+#line 1128 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4035,7 +4049,7 @@ yyreduce:
   case 183:
 
 /* Line 1806 of yacc.c  */
-#line 1124 "spl.y"
+#line 1131 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4044,7 +4058,7 @@ yyreduce:
   case 184:
 
 /* Line 1806 of yacc.c  */
-#line 1127 "spl.y"
+#line 1134 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4053,7 +4067,7 @@ yyreduce:
   case 185:
 
 /* Line 1806 of yacc.c  */
-#line 1130 "spl.y"
+#line 1137 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4062,7 +4076,7 @@ yyreduce:
   case 186:
 
 /* Line 1806 of yacc.c  */
-#line 1133 "spl.y"
+#line 1140 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4071,7 +4085,7 @@ yyreduce:
   case 187:
 
 /* Line 1806 of yacc.c  */
-#line 1136 "spl.y"
+#line 1143 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4080,7 +4094,7 @@ yyreduce:
   case 188:
 
 /* Line 1806 of yacc.c  */
-#line 1139 "spl.y"
+#line 1146 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4089,7 +4103,7 @@ yyreduce:
   case 189:
 
 /* Line 1806 of yacc.c  */
-#line 1142 "spl.y"
+#line 1149 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4098,7 +4112,7 @@ yyreduce:
   case 190:
 
 /* Line 1806 of yacc.c  */
-#line 1145 "spl.y"
+#line 1152 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4107,7 +4121,7 @@ yyreduce:
   case 191:
 
 /* Line 1806 of yacc.c  */
-#line 1148 "spl.y"
+#line 1155 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4116,7 +4130,7 @@ yyreduce:
   case 192:
 
 /* Line 1806 of yacc.c  */
-#line 1151 "spl.y"
+#line 1158 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4125,7 +4139,7 @@ yyreduce:
   case 193:
 
 /* Line 1806 of yacc.c  */
-#line 1154 "spl.y"
+#line 1161 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4134,7 +4148,7 @@ yyreduce:
   case 194:
 
 /* Line 1806 of yacc.c  */
-#line 1157 "spl.y"
+#line 1164 "spl.y"
     {
             printf("mappedOp?\n");
         }
@@ -4143,7 +4157,7 @@ yyreduce:
   case 195:
 
 /* Line 1806 of yacc.c  */
-#line 1163 "spl.y"
+#line 1170 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4152,7 +4166,7 @@ yyreduce:
   case 196:
 
 /* Line 1806 of yacc.c  */
-#line 1166 "spl.y"
+#line 1173 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4161,7 +4175,7 @@ yyreduce:
   case 197:
 
 /* Line 1806 of yacc.c  */
-#line 1169 "spl.y"
+#line 1176 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4170,7 +4184,7 @@ yyreduce:
   case 198:
 
 /* Line 1806 of yacc.c  */
-#line 1172 "spl.y"
+#line 1179 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4179,7 +4193,7 @@ yyreduce:
   case 199:
 
 /* Line 1806 of yacc.c  */
-#line 1175 "spl.y"
+#line 1182 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4188,7 +4202,7 @@ yyreduce:
   case 200:
 
 /* Line 1806 of yacc.c  */
-#line 1178 "spl.y"
+#line 1185 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4197,7 +4211,7 @@ yyreduce:
   case 201:
 
 /* Line 1806 of yacc.c  */
-#line 1181 "spl.y"
+#line 1188 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4206,7 +4220,7 @@ yyreduce:
   case 202:
 
 /* Line 1806 of yacc.c  */
-#line 1184 "spl.y"
+#line 1191 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4215,7 +4229,7 @@ yyreduce:
   case 203:
 
 /* Line 1806 of yacc.c  */
-#line 1187 "spl.y"
+#line 1194 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4224,7 +4238,7 @@ yyreduce:
   case 204:
 
 /* Line 1806 of yacc.c  */
-#line 1190 "spl.y"
+#line 1197 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4233,7 +4247,7 @@ yyreduce:
   case 205:
 
 /* Line 1806 of yacc.c  */
-#line 1193 "spl.y"
+#line 1200 "spl.y"
     {
             printf("assignOp?\n");
         }
@@ -4242,7 +4256,7 @@ yyreduce:
   case 206:
 
 /* Line 1806 of yacc.c  */
-#line 1199 "spl.y"
+#line 1206 "spl.y"
     {
             printf("postfixExpr?\n");
         }
@@ -4251,7 +4265,7 @@ yyreduce:
   case 207:
 
 /* Line 1806 of yacc.c  */
-#line 1202 "spl.y"
+#line 1209 "spl.y"
     {
             printf("postfixExpr?");
         }
@@ -4260,7 +4274,7 @@ yyreduce:
   case 208:
 
 /* Line 1806 of yacc.c  */
-#line 1205 "spl.y"
+#line 1212 "spl.y"
     {
             printf("postfixExpr?\n");
         }
@@ -4269,7 +4283,7 @@ yyreduce:
   case 209:
 
 /* Line 1806 of yacc.c  */
-#line 1208 "spl.y"
+#line 1215 "spl.y"
     {
             printf("postfixExpr?\n");
         }
@@ -4278,7 +4292,7 @@ yyreduce:
   case 210:
 
 /* Line 1806 of yacc.c  */
-#line 1211 "spl.y"
+#line 1218 "spl.y"
     {
             printf("postfixExpr?\n");
         }
@@ -4287,7 +4301,7 @@ yyreduce:
   case 211:
 
 /* Line 1806 of yacc.c  */
-#line 1217 "spl.y"
+#line 1224 "spl.y"
     {
             printf("subscript?\n");
         }
@@ -4296,7 +4310,7 @@ yyreduce:
   case 212:
 
 /* Line 1806 of yacc.c  */
-#line 1220 "spl.y"
+#line 1227 "spl.y"
     {
             printf("subscript?\n");
         }
@@ -4305,7 +4319,7 @@ yyreduce:
   case 214:
 
 /* Line 1806 of yacc.c  */
-#line 1227 "spl.y"
+#line 1234 "spl.y"
     {
             printf("expr_opt?\n");
         }
@@ -4314,7 +4328,7 @@ yyreduce:
   case 215:
 
 /* Line 1806 of yacc.c  */
-#line 1233 "spl.y"
+#line 1240 "spl.y"
     {
             printf("postfixOp?\n");
         }
@@ -4323,7 +4337,7 @@ yyreduce:
   case 216:
 
 /* Line 1806 of yacc.c  */
-#line 1236 "spl.y"
+#line 1243 "spl.y"
     {
             printf("postfixOp?\n");
         }
@@ -4332,7 +4346,7 @@ yyreduce:
   case 217:
 
 /* Line 1806 of yacc.c  */
-#line 1242 "spl.y"
+#line 1249 "spl.y"
     {
             printf("conditionalExpr?\n");
         }
@@ -4341,7 +4355,7 @@ yyreduce:
   case 218:
 
 /* Line 1806 of yacc.c  */
-#line 1248 "spl.y"
+#line 1255 "spl.y"
     {
             (yyval.reference) = (yyvsp[(1) - (1)].reference);
         }
@@ -4350,7 +4364,7 @@ yyreduce:
   case 219:
 
 /* Line 1806 of yacc.c  */
-#line 1251 "spl.y"
+#line 1258 "spl.y"
     {
             printf("literal?\n");
         }
@@ -4359,7 +4373,7 @@ yyreduce:
   case 220:
 
 /* Line 1806 of yacc.c  */
-#line 1254 "spl.y"
+#line 1261 "spl.y"
     {
             printf("literal?\n");
         }
@@ -4368,7 +4382,7 @@ yyreduce:
   case 221:
 
 /* Line 1806 of yacc.c  */
-#line 1257 "spl.y"
+#line 1264 "spl.y"
     {
             printf("literal?\n");
         }
@@ -4377,7 +4391,7 @@ yyreduce:
   case 222:
 
 /* Line 1806 of yacc.c  */
-#line 1260 "spl.y"
+#line 1267 "spl.y"
     {
             printf("literal?\n");
         }
@@ -4386,7 +4400,7 @@ yyreduce:
   case 223:
 
 /* Line 1806 of yacc.c  */
-#line 1266 "spl.y"
+#line 1273 "spl.y"
     {
             printf("listLiteral?\n");
         }
@@ -4395,7 +4409,7 @@ yyreduce:
   case 224:
 
 /* Line 1806 of yacc.c  */
-#line 1272 "spl.y"
+#line 1279 "spl.y"
     {
             printf("setLiteral?\n");
         }
@@ -4404,7 +4418,7 @@ yyreduce:
   case 225:
 
 /* Line 1806 of yacc.c  */
-#line 1278 "spl.y"
+#line 1285 "spl.y"
     {
             printf("mapLiteral?\n");
         }
@@ -4413,7 +4427,7 @@ yyreduce:
   case 226:
 
 /* Line 1806 of yacc.c  */
-#line 1284 "spl.y"
+#line 1291 "spl.y"
     {
             printf("map_list?\n");
         }
@@ -4422,7 +4436,7 @@ yyreduce:
   case 227:
 
 /* Line 1806 of yacc.c  */
-#line 1287 "spl.y"
+#line 1294 "spl.y"
     {
             printf("map_list?\n");
         }
@@ -4431,7 +4445,7 @@ yyreduce:
   case 228:
 
 /* Line 1806 of yacc.c  */
-#line 1293 "spl.y"
+#line 1300 "spl.y"
     {
             printf("map?\n");
         }
@@ -4440,7 +4454,7 @@ yyreduce:
   case 229:
 
 /* Line 1806 of yacc.c  */
-#line 1299 "spl.y"
+#line 1306 "spl.y"
     {
             printf("tupleLiteral?\n");
         }
@@ -4449,7 +4463,7 @@ yyreduce:
   case 230:
 
 /* Line 1806 of yacc.c  */
-#line 1305 "spl.y"
+#line 1312 "spl.y"
     {
             printf("primitiveLiteral?\n");
         }
@@ -4458,7 +4472,7 @@ yyreduce:
   case 231:
 
 /* Line 1806 of yacc.c  */
-#line 1308 "spl.y"
+#line 1315 "spl.y"
     {
             printf("primitiveLiteral?\n");
         }
@@ -4467,7 +4481,7 @@ yyreduce:
   case 232:
 
 /* Line 1806 of yacc.c  */
-#line 1311 "spl.y"
+#line 1318 "spl.y"
     {
 	    (yyval.reference) = spl_new_constant();
 	    (yyval.reference)->node.constant.token = string_constant;
@@ -4479,7 +4493,7 @@ yyreduce:
   case 233:
 
 /* Line 1806 of yacc.c  */
-#line 1317 "spl.y"
+#line 1324 "spl.y"
     {
 	    (yyval.reference) = spl_new_constant();
 	    (yyval.reference)->node.constant.token = floating_constant;
@@ -4491,7 +4505,7 @@ yyreduce:
   case 234:
 
 /* Line 1806 of yacc.c  */
-#line 1323 "spl.y"
+#line 1330 "spl.y"
     {
 	    (yyval.reference) = spl_new_constant();
 	    (yyval.reference)->node.constant.token = integer_constant;
@@ -4503,7 +4517,7 @@ yyreduce:
   case 235:
 
 /* Line 1806 of yacc.c  */
-#line 1332 "spl.y"
+#line 1339 "spl.y"
     {
             printf("standAloneTypeDef?");
         }
@@ -4512,7 +4526,7 @@ yyreduce:
   case 236:
 
 /* Line 1806 of yacc.c  */
-#line 1335 "spl.y"
+#line 1342 "spl.y"
     {
             printf("standAloneTypeDef?\n");
         }
@@ -4521,7 +4535,7 @@ yyreduce:
   case 237:
 
 /* Line 1806 of yacc.c  */
-#line 1341 "spl.y"
+#line 1348 "spl.y"
     {
             printf("compositeTypeDef?");
         }
@@ -4530,7 +4544,7 @@ yyreduce:
   case 238:
 
 /* Line 1806 of yacc.c  */
-#line 1344 "spl.y"
+#line 1351 "spl.y"
     {
             printf("compositeTypeDef?\n");
         }
@@ -4539,7 +4553,7 @@ yyreduce:
   case 240:
 
 /* Line 1806 of yacc.c  */
-#line 1351 "spl.y"
+#line 1358 "spl.y"
     {
             printf("static_opt?\n");
         }
@@ -4548,7 +4562,7 @@ yyreduce:
   case 242:
 
 /* Line 1806 of yacc.c  */
-#line 1358 "spl.y"
+#line 1365 "spl.y"
     {
             printf("typeArgs_list?\n");
         }
@@ -4557,7 +4571,7 @@ yyreduce:
   case 243:
 
 /* Line 1806 of yacc.c  */
-#line 1364 "spl.y"
+#line 1371 "spl.y"
     {
             printf("type?\n");
         }
@@ -4566,7 +4580,7 @@ yyreduce:
   case 244:
 
 /* Line 1806 of yacc.c  */
-#line 1367 "spl.y"
+#line 1374 "spl.y"
     {
             printf("type?\n");
         }
@@ -4575,7 +4589,7 @@ yyreduce:
   case 245:
 
 /* Line 1806 of yacc.c  */
-#line 1370 "spl.y"
+#line 1377 "spl.y"
     {
             (yyval.reference)=(yyvsp[(1) - (1)].reference);
         }
@@ -4584,7 +4598,7 @@ yyreduce:
   case 246:
 
 /* Line 1806 of yacc.c  */
-#line 1373 "spl.y"
+#line 1380 "spl.y"
     {
             printf("type?");
         }
@@ -4593,7 +4607,7 @@ yyreduce:
   case 247:
 
 /* Line 1806 of yacc.c  */
-#line 1379 "spl.y"
+#line 1386 "spl.y"
     {
             printf("typeArgs?\n");
         }
@@ -4602,7 +4616,7 @@ yyreduce:
   case 248:
 
 /* Line 1806 of yacc.c  */
-#line 1385 "spl.y"
+#line 1392 "spl.y"
     {
             printf("type_list?");
         }
@@ -4611,7 +4625,7 @@ yyreduce:
   case 249:
 
 /* Line 1806 of yacc.c  */
-#line 1388 "spl.y"
+#line 1395 "spl.y"
     {
             printf("type_list?");
         }
@@ -4620,7 +4634,7 @@ yyreduce:
   case 250:
 
 /* Line 1806 of yacc.c  */
-#line 1394 "spl.y"
+#line 1401 "spl.y"
     {
             printf("typeDims?\n");
         }
@@ -4629,7 +4643,7 @@ yyreduce:
   case 251:
 
 /* Line 1806 of yacc.c  */
-#line 1400 "spl.y"
+#line 1407 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4638,7 +4652,7 @@ yyreduce:
   case 252:
 
 /* Line 1806 of yacc.c  */
-#line 1403 "spl.y"
+#line 1410 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4647,7 +4661,7 @@ yyreduce:
   case 253:
 
 /* Line 1806 of yacc.c  */
-#line 1406 "spl.y"
+#line 1413 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4656,7 +4670,7 @@ yyreduce:
   case 254:
 
 /* Line 1806 of yacc.c  */
-#line 1409 "spl.y"
+#line 1416 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4665,7 +4679,7 @@ yyreduce:
   case 255:
 
 /* Line 1806 of yacc.c  */
-#line 1412 "spl.y"
+#line 1419 "spl.y"
     {
 	    (yyval.reference) = spl_new_type_specifier();
 	    (yyval.reference)->node.type_specifier.lx_srcpos = (yyvsp[(1) - (1)].info).lx_srcpos;
@@ -4676,7 +4690,7 @@ yyreduce:
   case 256:
 
 /* Line 1806 of yacc.c  */
-#line 1417 "spl.y"
+#line 1424 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4685,7 +4699,7 @@ yyreduce:
   case 257:
 
 /* Line 1806 of yacc.c  */
-#line 1420 "spl.y"
+#line 1427 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4694,7 +4708,7 @@ yyreduce:
   case 258:
 
 /* Line 1806 of yacc.c  */
-#line 1423 "spl.y"
+#line 1430 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4703,7 +4717,7 @@ yyreduce:
   case 259:
 
 /* Line 1806 of yacc.c  */
-#line 1426 "spl.y"
+#line 1433 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4712,7 +4726,7 @@ yyreduce:
   case 260:
 
 /* Line 1806 of yacc.c  */
-#line 1429 "spl.y"
+#line 1436 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4721,7 +4735,7 @@ yyreduce:
   case 261:
 
 /* Line 1806 of yacc.c  */
-#line 1432 "spl.y"
+#line 1439 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4730,7 +4744,7 @@ yyreduce:
   case 262:
 
 /* Line 1806 of yacc.c  */
-#line 1435 "spl.y"
+#line 1442 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4739,7 +4753,7 @@ yyreduce:
   case 263:
 
 /* Line 1806 of yacc.c  */
-#line 1438 "spl.y"
+#line 1445 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4748,7 +4762,7 @@ yyreduce:
   case 264:
 
 /* Line 1806 of yacc.c  */
-#line 1441 "spl.y"
+#line 1448 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4757,7 +4771,7 @@ yyreduce:
   case 265:
 
 /* Line 1806 of yacc.c  */
-#line 1444 "spl.y"
+#line 1451 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4766,7 +4780,7 @@ yyreduce:
   case 266:
 
 /* Line 1806 of yacc.c  */
-#line 1447 "spl.y"
+#line 1454 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4775,7 +4789,7 @@ yyreduce:
   case 267:
 
 /* Line 1806 of yacc.c  */
-#line 1450 "spl.y"
+#line 1457 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4784,7 +4798,7 @@ yyreduce:
   case 268:
 
 /* Line 1806 of yacc.c  */
-#line 1453 "spl.y"
+#line 1460 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4793,7 +4807,7 @@ yyreduce:
   case 269:
 
 /* Line 1806 of yacc.c  */
-#line 1456 "spl.y"
+#line 1463 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4802,7 +4816,7 @@ yyreduce:
   case 270:
 
 /* Line 1806 of yacc.c  */
-#line 1459 "spl.y"
+#line 1466 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4811,7 +4825,7 @@ yyreduce:
   case 271:
 
 /* Line 1806 of yacc.c  */
-#line 1462 "spl.y"
+#line 1469 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4820,7 +4834,7 @@ yyreduce:
   case 272:
 
 /* Line 1806 of yacc.c  */
-#line 1465 "spl.y"
+#line 1472 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4829,7 +4843,7 @@ yyreduce:
   case 273:
 
 /* Line 1806 of yacc.c  */
-#line 1468 "spl.y"
+#line 1475 "spl.y"
     {
             printf("primitiveType?\n");
         }
@@ -4838,7 +4852,7 @@ yyreduce:
   case 275:
 
 /* Line 1806 of yacc.c  */
-#line 1475 "spl.y"
+#line 1482 "spl.y"
     {
             printf("typeDims_opt?\n");
         }
@@ -4847,7 +4861,7 @@ yyreduce:
   case 276:
 
 /* Line 1806 of yacc.c  */
-#line 1481 "spl.y"
+#line 1488 "spl.y"
     {
             printf("compositeType?\n");
             (yyval.list)=(yyvsp[(1) - (1)].list);
@@ -4857,7 +4871,7 @@ yyreduce:
   case 277:
 
 /* Line 1806 of yacc.c  */
-#line 1485 "spl.y"
+#line 1492 "spl.y"
     {
             printf("compositeType?\n");
         }
@@ -4866,7 +4880,7 @@ yyreduce:
   case 278:
 
 /* Line 1806 of yacc.c  */
-#line 1488 "spl.y"
+#line 1495 "spl.y"
     {
             printf("compositeType?\n");
         }
@@ -4875,7 +4889,7 @@ yyreduce:
   case 279:
 
 /* Line 1806 of yacc.c  */
-#line 1491 "spl.y"
+#line 1498 "spl.y"
     {
             printf("compositeType?\n");
         }
@@ -4884,7 +4898,7 @@ yyreduce:
   case 280:
 
 /* Line 1806 of yacc.c  */
-#line 1497 "spl.y"
+#line 1504 "spl.y"
     {
             printf("tupleType?\n");
             (yyval.list)=(yyvsp[(3) - (4)].list);
@@ -4894,7 +4908,7 @@ yyreduce:
   case 281:
 
 /* Line 1806 of yacc.c  */
-#line 1504 "spl.y"
+#line 1511 "spl.y"
     {
             (yyval.list)=(yyvsp[(1) - (1)].list);
         }
@@ -4903,7 +4917,7 @@ yyreduce:
   case 282:
 
 /* Line 1806 of yacc.c  */
-#line 1507 "spl.y"
+#line 1514 "spl.y"
     {
             printf("tupleBody?\n");
         }
@@ -4912,7 +4926,7 @@ yyreduce:
   case 283:
 
 /* Line 1806 of yacc.c  */
-#line 1513 "spl.y"
+#line 1520 "spl.y"
     {
             (yyval.list) = malloc(sizeof(struct list_struct));
             (yyval.list)->node = (yyvsp[(1) - (1)].reference);
@@ -4923,7 +4937,7 @@ yyreduce:
   case 284:
 
 /* Line 1806 of yacc.c  */
-#line 1518 "spl.y"
+#line 1525 "spl.y"
     {
 	    sm_list tmp = (yyvsp[(1) - (3)].list);
 	    while (tmp->next != NULL) {
@@ -4939,7 +4953,7 @@ yyreduce:
   case 285:
 
 /* Line 1806 of yacc.c  */
-#line 1531 "spl.y"
+#line 1538 "spl.y"
     {
             printf("id_tt_list?\n");
         }
@@ -4948,7 +4962,7 @@ yyreduce:
   case 286:
 
 /* Line 1806 of yacc.c  */
-#line 1534 "spl.y"
+#line 1541 "spl.y"
     {
             printf("id_tt_list?\n");
         }
@@ -4957,7 +4971,7 @@ yyreduce:
   case 287:
 
 /* Line 1806 of yacc.c  */
-#line 1537 "spl.y"
+#line 1544 "spl.y"
     {
             printf("id_tt_list?\n");
         }
@@ -4966,7 +4980,7 @@ yyreduce:
   case 288:
 
 /* Line 1806 of yacc.c  */
-#line 1540 "spl.y"
+#line 1547 "spl.y"
     {
             printf("id_tt_list?\n");
         }
@@ -4975,7 +4989,7 @@ yyreduce:
   case 289:
 
 /* Line 1806 of yacc.c  */
-#line 1546 "spl.y"
+#line 1553 "spl.y"
     {
 	    (yyval.reference) = spl_new_identifier();
             (yyval.reference)->node.identifier.cg_type =(yyvsp[(1) - (2)].reference)->node.type_specifier.token;
@@ -4987,7 +5001,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 4991 "/Users/drewbratcher/nightly_build_area/spl/spl.tab.c"
+#line 5005 "/Users/drewbratcher/nightly_build_area/spl/spl.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -5218,7 +5232,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 1554 "spl.y"
+#line 1561 "spl.y"
 
 
 #include "lex.yy.c"
@@ -5523,40 +5537,46 @@ void program2(sm_ref one, sm_list two) {
     fprintf(fp,"\n");
     sm_list tmp = two;
     while (tmp != NULL) {
-        if(tmp->node->node.assignment_expression.left){
-            printf("\n\nNode's left\n--------------\n\n");
-            spl_print(tmp->node->node.assignment_expression.left);
-            fflush(stdout);
+        //pull relevant parts out of abstract syntax tree
+        sm_ref left_stream_decl=tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec->node;
+        const char * stream_name=left_stream_decl->node.field.name;
+        sm_list output_ids= left_stream_decl->node.field.type_spec;
+        printf("stream name:%s\n",stream_name);
+        printf("stream outputs:");
+        sm_list ids=output_ids;
+        while(ids != NULL){
+            printf(" %s", ids->node->node.identifier.id);
+            ids=ids->next;
         }
-        if(tmp->node->node.assignment_expression.left->node.assignment_expression.left){
-            //pull relevant parts out of abstract syntax tree
-            sm_ref stream_decl=tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec->node;
-            printf("\n\nNode's left left\n--------------\n\n");
-            spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.left);
-            printf("\n\nNode's left right\n--------------\n\n");
-            spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.right);
-            const char * name=stream_decl->node.field.name;
-            sm_list ids= stream_decl->node.field.type_spec;
-            spl_print(stream_decl);
-            
-            //print filter
-            print_filter(fp, name, ids);
-            
-            //print struct
-            print_struct(fp, name, ids);
-            
-            //print FMfield
-            print_FMfield(fp, name, ids);
-            
-            //print FMstruct
-            print_FMstruct(fp, name);
-            
-            //print handler
-            print_handler(fp, name, ids);
-            
-            //print generate functions
-            print_generate(fp, name, ids);
+        printf("\n");
+        const char *right_side_name = tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.name;
+        printf("right side name:%s\n",right_side_name);
+        if(tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec){
+            const char *input=tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec->node->node.field.type_spec->node->node.identifier.id;
+            printf("stream input:%s\n",input);
         }
+        printf("right side:");
+        spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.right);
+        printf("left side:");
+        spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.left);
+        printf("\n\n");
+        //print filter
+        print_filter(fp, stream_name, output_ids);
+        
+        //print struct
+        print_struct(fp, stream_name, output_ids);
+        
+        //print FMfield
+        print_FMfield(fp, stream_name, output_ids);
+        
+        //print FMstruct
+        print_FMstruct(fp, stream_name);
+        
+        //print handler
+        print_handler(fp, stream_name, output_ids);
+        
+        //print generate functions
+        print_generate(fp, stream_name, output_ids);
         tmp = tmp->next;
     }
     
