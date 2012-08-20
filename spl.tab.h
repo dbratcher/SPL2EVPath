@@ -201,7 +201,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 61 "spl.y"
+#line 63 "spl.y"
 
     lx_info info;
     sm_ref reference;

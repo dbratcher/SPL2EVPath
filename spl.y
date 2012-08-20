@@ -53,6 +53,8 @@ static sm_ref yyparse_value;
 static int yyerror_count = 1;
 extern void yyerror(char *str);
 static int parsing_type = 0;
+void program1(sm_ref one, sm_list two);
+void program2(sm_ref one, sm_list two);
 static int parsing_param_spec = 0;
 static spl_parse_context yycontext;
 static const char *spl_code_string;
@@ -231,13 +233,13 @@ static const char *spl_code_string;
 %type <reference> infixExpr;
 %type <reference> compositeHead;
 %type <reference> opOutput;
-%type <reference> opInputs;
 %type <reference> opInvokeHead;
 %type <reference> opInvokeActual;
 %type <reference> opActual;
 %type <reference> opInvokeBody;
 %type <reference> opInvoke;
 %type <reference> opInvokeOutput;
+%type <list> opInputs;
 %type <list> opOutputs;
 %type <list> portInputs;
 %type <list> opInvokeActual_list;
@@ -258,37 +260,37 @@ static const char *spl_code_string;
 
 start : 
 	compilationUnit {
-            printf("start?\n")
+            printf("start?\n");
         }
 	;
 
 compilationUnit:
 	namespace useDirective_list	comp_or_func_list {
-            printf("compilationUnit?\n")
+            printf("compilationUnit?\n");
         }
 	;
 
 comp_or_func_list
 	:comp_or_func {
-            printf("comp_or_func_list?\n")
+            printf("comp_or_func_list?\n");
         }
 	|comp_or_func_list comp_or_func {
-            printf("comp_or_func_list?\n")
+            printf("comp_or_func_list?\n");
         }
 	;
 
 comp_or_func
 	:compositeDef {
-            printf("comp_or_func?\n")
+            printf("comp_or_func?\n");
         }
 	|functionDef {
-            printf("comp_or_func?\n")
+            printf("comp_or_func?\n");
         }
 	;
 
 namespace:
 	NAMESPACE id_list_dot SEMI {
-            printf("namespace?\n")
+            printf("namespace?\n");
         }
 	;
 
@@ -526,7 +528,7 @@ opInvokeActual:
 	identifier_ref COLON opActual SEMI {
             $$ = spl_new_field();
             $$->node.field.name = $1.string;
-            $$->node.field.type_spec = $3
+            $$->node.field.sm_complex_type = $3;
         }
 	;
 
@@ -535,7 +537,9 @@ opActual:
             printf("opActual?");
         }
 	| expr_list_comma {
-            $$=$1;
+            $$ = spl_new_field();
+            $$->node.field.name = "opActual";
+            $$->node.field.type_spec = $1;
         }
 	;
 
@@ -568,7 +572,10 @@ opInvoke:
 opInvokeHead:
 	opOutputs ASSIGN identifier_ref opInputs {
             $$= spl_new_assignment_expression();
-            $$->node.assignment_expression.left = $1;
+            sm_ref tmp2= spl_new_field();
+            tmp2->node.field.name = $3.string;
+            tmp2->node.field.type_spec = $1;
+            $$->node.assignment_expression.left = tmp2;
             sm_ref tmp= spl_new_field();
             tmp->node.field.name = $3.string;
             tmp->node.field.type_spec = $4;
@@ -577,7 +584,9 @@ opInvokeHead:
 	;
 
 as_clause:
-	/*empty*/
+	/*empty*/{
+            printf("as_clause?\n");
+        }
 	| AS identifier_ref {
 	    $$ = spl_new_field();
 	    $$->node.field.name = $2.string;
@@ -585,11 +594,15 @@ as_clause:
 	;
 
 opOutputs:
-	opOutput {
-            $$ = $1;
+	opOutput {  
+            $$ = malloc(sizeof(struct list_struct));
+            $$->node = $1;
+            $$->next = NULL;
         }
 	| LPAREN RPAREN as_clause  {
-            $$=$3;
+            $$ = malloc(sizeof(struct list_struct));
+            $$->node = $3;
+            $$->next = NULL;
         }
 	| LPAREN opOutput_list RPAREN as_clause  {
             printf("opOutputs?\n");
@@ -624,8 +637,11 @@ opInputs:
 
 opInput_list:
 	portInputs {
-            $$ = malloc(sizeof(struct list_struct));
-            $$->node = $1;
+            $$ = malloc(sizeof(struct list_struct));   
+            sm_ref temp = spl_new_field();
+            temp->node.field.type_spec = $1;
+            temp->node.field.name = "opInput_list";
+            $$->node = temp;
             $$->next = NULL;
         }
 	| opInput_list SEMI portInputs {
@@ -644,7 +660,7 @@ portInputs:
 
 opInvokeBody:
 	LCURLY invoke_logic_opt invoke_window_opt invoke_actual_opt invoke_output_opt invoke_config_opt RCURLY {
-            $$=NULL
+            $$=NULL;
         }
 	;
 
@@ -656,21 +672,27 @@ invoke_logic_opt:
 	;
 
 invoke_window_opt:
-	/* empty */
+	/* empty */{
+            printf("invoke_window_opt?\n");
+        }
 	| WINDOW opInvokeWindow_list {
             printf("invoke_window_opt?\n");
         }
 	;
 
 invoke_actual_opt:
-	/* empty */
+	/* empty */{
+            printf("invoke_actual_opt?\n");
+        }
 	| PARAM opInvokeActual_list {
             $$=$2;
         }
 	;
 
 invoke_output_opt:
-	/* empty */
+	/* empty */{
+            printf("invoke_output_opt?\n");
+        }
 	| OUTPUT opInvokeOutput_list {
             $$=$2;
         }
@@ -850,9 +872,7 @@ functionFormal:
 	;
 
 /* !!!!!!!!!  this is missing from the grammar on the web !!!!!!!!!!!!!!!!!!!!!!!*/
-formalModifier_list:
-	/*empty*/
-	;
+
 stmt:
 	varDef  {
             printf("stmt?\n");
@@ -1547,7 +1567,7 @@ struct parse_struct {
     err_out_func_t error_func;
 };
 
-void program1(sm_ref one, sm_ref two) {
+void program1(sm_ref one, sm_list two) {
     FILE* fp = fopen("main.c", "w");
     fprintf(fp,"#include <stdio.h>\n");
     fprintf(fp,"#include <string.h>\n");
@@ -1820,7 +1840,7 @@ void print_child(FILE* fp, const char *name) {
     fprintf(fp, "}\n");
 }
 
-void program2(sm_ref one, sm_ref two) {
+void program2(sm_ref one, sm_list two) {
     FILE* fp = fopen("main.c", "w");
     fprintf(fp,"#include <stdio.h>\n");
     fprintf(fp,"#include <stdlib.h>\n");
@@ -1834,22 +1854,22 @@ void program2(sm_ref one, sm_ref two) {
     fprintf(fp,"static EVdfg test_dfg;\n");
     fprintf(fp,"\n");
     sm_list tmp = two;
-    while (tmp->next != NULL) {
-        if(tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec){
+    while (tmp != NULL) {
+        if(tmp->node->node.assignment_expression.left){
+            printf("\n\nNode's left\n--------------\n\n");
+            spl_print(tmp->node->node.assignment_expression.left);
+            fflush(stdout);
+        }
+        if(tmp->node->node.assignment_expression.left->node.assignment_expression.left){
             //pull relevant parts out of abstract syntax tree
-            sm_ref node_ref=tmp->node->node.assignment_expression.left->node.assignment_expression.left;
+            sm_ref stream_decl=tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec->node;
             printf("\n\nNode's left left\n--------------\n\n");
             spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.left);
             printf("\n\nNode's left right\n--------------\n\n");
             spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.right);
-            if(tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec != NULL) {
-                if(tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec->node != NULL) {
-                    printf("\n\nNode's left right type_spec\n--------------\n\n");
-                    sm_list hey=tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec->node;
-                }
-            }
-            const char * name=node_ref->node.field.name;
-            sm_ref ids= node_ref->node.field.type_spec;
+            const char * name=stream_decl->node.field.name;
+            sm_list ids= stream_decl->node.field.type_spec;
+            spl_print(stream_decl);
             
             //print filter
             print_filter(fp, name, ids);

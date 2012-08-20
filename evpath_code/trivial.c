@@ -150,35 +150,6 @@ void generate_Hop_record(Hop_rec_ptr event)
 	event->sum = 0;
 }
 
-static char* SinkOp_filter = "{\n\
-int hop_count;\n\
-hop_count = attr_ivalue(event_attrs, \"hop_count_atom\");\n\
-hop_count++;\n\
-set_int_attr(event_attrs, \"hop_count_atom\", hop_count);\n\
-}\0\0";
-
-typedef struct _SinkOp_rec {
-} SinkOp_rec, *SinkOp_rec_ptr;
-
-static FMField SinkOp_field_list [] = {
-	{NULL, NULL, 0, 0}
-};
-
-static FMStructDescRec SinkOp_format_list [] = {
-	{"SinkOp", SinkOp_field_list, sizeof(SinkOp_rec), NULL},
-	{NULL, NULL}
-};
-
-static int SinkOp_handler(CManager cm, void *vevent, void *client_data, attr_list attrs) {
-	SinkOp_rec_ptr event = vevent;
-	printf("SinkOp got a struct with the following:\n");
-	EVdfg_shutdown(test_dfg, 0);
-};
-
-void generate_SinkOp_record(SinkOp_rec_ptr event)
-{
-}
-
 
 
 extern int be_test_master(int argc, char **argv) {
