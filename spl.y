@@ -238,6 +238,9 @@ static const char *spl_code_string;
 %type <reference> opActual;
 %type <reference> opInvokeBody;
 %type <reference> opInvoke;
+%type <reference> invoke_logic_opt;
+%type <reference> invoke_window_opt;
+%type <reference> invoke_config_opt;
 %type <reference> opInvokeOutput;
 %type <list> opInputs;
 %type <list> opOutputs;
@@ -534,7 +537,7 @@ opInvokeActual:
 
 opActual:
 	type {
-            printf("opActual?");
+            printf("opActual?\n");
         }
 	| expr_list_comma {
             $$ = spl_new_field();
@@ -585,7 +588,7 @@ opInvokeHead:
 
 as_clause:
 	/*empty*/{
-            printf("as_clause?\n");
+            //do nothing
         }
 	| AS identifier_ref {
 	    $$ = spl_new_field();
@@ -660,14 +663,81 @@ portInputs:
 
 opInvokeBody:
 	LCURLY invoke_logic_opt invoke_window_opt invoke_actual_opt invoke_output_opt invoke_config_opt RCURLY {
-            printf("neet to read in stuff here\n");
-            $$=NULL;
+            sm_list temp_list = NULL;
+                    printf("start\n");
+                    fflush(stdout);
+            if($2!=NULL){
+                    printf("two\n");
+                    fflush(stdout);
+                temp_list = malloc(sizeof(struct list_struct));
+                temp_list->node = $2;
+                temp_list->next = NULL;
+            }
+            if($3!=NULL){
+                    printf("three\n");
+                    fflush(stdout);
+                if(temp_list){
+                    temp_list->next = malloc(sizeof(struct list_struct));
+                    temp_list->next->node = $3;
+                    temp_list->next->next = NULL;
+                } else {
+                    temp_list = malloc(sizeof(struct list_struct));
+                    temp_list->node = $3;
+                    temp_list->next = NULL;
+                }
+            }
+            if($4!=NULL){
+                    printf("four\n");
+                    fflush(stdout);
+                sm_ref temp3 = spl_new_field();
+                temp3->node.field.type_spec = $4;
+                temp3->node.field.name = "invoke_actual";
+                
+                if(temp_list){
+                    sm_list atemp=temp_list;
+                    while(atemp->next){
+                        atemp=atemp->next;
+                    }
+                    atemp->next = malloc(sizeof(struct list_struct));
+                    atemp->next->node = temp3;
+                    atemp->next->next = NULL;
+                } else {
+                    temp_list = malloc(sizeof(struct list_struct));
+                    temp_list->node = temp3;
+                    temp_list->next = NULL;
+                }
+            }
+            if($5!=NULL){
+                    printf("five\n");
+                    fflush(stdout);
+                sm_ref temp4 = spl_new_field();
+                temp4->node.field.type_spec = $5;
+                temp4->node.field.name = "invoke_output";
+                if(temp_list){
+                    sm_list atemp=temp_list;
+                    while(atemp->next){
+                        atemp=atemp->next;
+                    }
+                    atemp->next = malloc(sizeof(struct list_struct));
+                    atemp->next->node = temp4;
+                    atemp->next->next = NULL;
+                } else {
+                    temp_list = malloc(sizeof(struct list_struct));
+                    temp_list->node = temp4;
+                    temp_list->next = NULL;
+                }
+            }
+            //6th param ignored
+            sm_ref temp = spl_new_field();
+            temp->node.field.type_spec = temp_list;
+            temp->node.field.name = "invoke body";
+            $$=temp;
         }
 	;
 
 invoke_logic_opt:
 	/* empty */{
-            printf("invoke_logic_opt?\n");
+            $$=NULL;
         }
 	| LOGIC opInvokeLogic_list {
             printf("invoke_logic_opt?\n");
@@ -676,7 +746,7 @@ invoke_logic_opt:
 
 invoke_window_opt:
 	/* empty */{
-            printf("invoke_window_opt?\n");
+            $$=NULL;
         }
 	| WINDOW opInvokeWindow_list {
             printf("invoke_window_opt?\n");
@@ -685,23 +755,19 @@ invoke_window_opt:
 
 invoke_actual_opt:
 	/* empty */{
-            printf("invoke_actual_opt?\n");
+            $$=NULL;
         }
 	| PARAM opInvokeActual_list {
             $$=$2;
-            spl_print($2->node);
-            printf("not reading param lines\n");
         }
 	;
 
 invoke_output_opt:
 	/* empty */{
-            printf("invoke_output_opt?\n");
+            $$=NULL;
         }
 	| OUTPUT opInvokeOutput_list {
             $$=$2;
-            spl_print($2->node);
-            printf("not reading ouptut lines\n");
         }
 	;
 
@@ -849,7 +915,7 @@ functionDef:
 
 functionHead:
 	functionModifier_list type identifier_ref LPAREN functionFormal_list RPAREN {
-            printf("functionHead?");
+            printf("functionHead?\n");
         }
 	;
 
@@ -874,7 +940,7 @@ functionFormal_list:
 
 functionFormal:
 	mutable_opt type identifier_ref {
-            printf("functionFormal?");
+            printf("functionFormal?\n");
         }
 	;
 
@@ -912,7 +978,7 @@ stmt:
 
 varDef:
 	mutable_opt type assign_expr_list SEMI {
-            printf("varDef?");
+            printf("varDef?\n");
         }
 	;
 
@@ -956,7 +1022,7 @@ ifStmt:
 
 forStmt:
 	FOR LPAREN type identifier_ref IN expr RPAREN stmt {
-            printf("forStmt?");
+            printf("forStmt?\n");
         }
 	;
 
@@ -1207,7 +1273,7 @@ postfixExpr:
             printf("postfixExpr?\n");
         }
 	| type LPAREN expr RPAREN {
-            printf("postfixExpr?");
+            printf("postfixExpr?\n");
         }
 	| expr LBRACKET subscript RBRACKET {
             printf("postfixExpr?\n");
@@ -1337,7 +1403,7 @@ primitiveLiteral:
 
 standAloneTypeDef:
 	TYPE identifier_ref ASSIGN type SEMI {
-            printf("standAloneTypeDef?");
+            printf("standAloneTypeDef?\n");
         }
 	|TYPE identifier_ref ASSIGN tupleBody SEMI {
             printf("standAloneTypeDef?\n");
@@ -1346,7 +1412,7 @@ standAloneTypeDef:
 
 compositeTypeDef:
 	static_opt identifier_ref ASSIGN type SEMI {
-            printf("compositeTypeDef?");
+            printf("compositeTypeDef?\n");
         }
 	| static_opt identifier_ref ASSIGN tupleBody SEMI {
             printf("compositeTypeDef?\n");
@@ -1378,7 +1444,7 @@ type:
             $$=$1;
         }
 	| compositeType {
-            printf("type?");
+            printf("type?\n");
         }
 	;
 
@@ -1390,10 +1456,10 @@ typeArgs:
 
 type_list:
 	type {
-            printf("type_list?");
+            printf("type_list?\n");
         }
 	| type_list COMMA type{
-            printf("type_list?");
+            printf("type_list?\n");
         }
 	;
 
@@ -1881,9 +1947,15 @@ void program2(sm_ref one, sm_list two) {
             printf("stream input:%s\n",input);
         }
         printf("right side:");
-        spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.right);
-        printf("left side:");
-        spl_print(tmp->node->node.assignment_expression.left->node.assignment_expression.left);
+        spl_print(tmp->node->node.assignment_expression.right);
+        sm_list alist=tmp->node->node.assignment_expression.right->node.field.type_spec;
+        int j=1;
+        while(alist && alist->node){
+            printf("line %d:\n",j++);
+            spl_print(alist->node);
+            spl_print(alist->node->node.field.type_spec->node);
+            alist=alist->next;
+        }
         printf("\n\n");
         //print filter
         print_filter(fp, stream_name, output_ids);
