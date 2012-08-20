@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:applicationSet xmlns="http://www.ibm.com/xmlns/prod/streams/sharedvar" xmlns:ns2="http://www.ibm.com/xmlns/prod/streams/application" xmlns:ns3="http://www.ibm.com/xmlns/prod/streams/application/augmented" xmlns:ns4="http://www.ibm.com/xmlns/prod/streams/runtime/sam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" productVersion="2.0.0.4" name="my.sample::Main.appset" xsi:noNamespaceSchemaLocation="http://www.ibm.com/xmlns/prod/streams/application">
+    <ns2:description>my.sample::Main application set</ns2:description>
+    <ns2:application version="1.0.0" outputDirectory="/home/streamsadmin/workspace/034_odbc_adapters_for_db2_at_work/output/my.sample.Main/Distributed" name="my.sample::Main" logLevel="error" dataDirectory="../../../data" checkpointDirectory="../../../data/ckpt" applicationScope="Default" applicationDirectory="../../../.">
+        <ns2:libraries/>
+        <ns2:hostpools>
+            <ns2:hostpool size="1" name="Pool1" membershipMode="shared" index="0">
+                <ns2:host hostname="streams"/>
+            </ns2:hostpool>
+        </ns2:hostpools>
+        <ns2:tupleTypes>
+            <ns2:tupleType index="0">
+                <ns2:attribute type="int32" name="OrderId"/>
+                <ns2:attribute type="rstring" name="CustomerName"/>
+                <ns2:attribute type="int32" name="CustomerId"/>
+                <ns2:attribute type="rstring" name="ProductName"/>
+                <ns2:attribute type="int32" name="ProductId"/>
+                <ns2:attribute type="rstring" name="Price"/>
+            </ns2:tupleType>
+            <ns2:tupleType index="1">
+                <ns2:attribute type="int32" name="OrderId"/>
+                <ns2:attribute type="rstring" name="CustomerName"/>
+                <ns2:attribute type="int32" name="CustomerId"/>
+                <ns2:attribute type="rstring" name="ProductName"/>
+                <ns2:attribute type="int32" name="ProductId"/>
+                <ns2:attribute type="rstring" name="Price"/>
+                <ns2:attribute type="int32" name="ShipmentStatus"/>
+                <ns2:attribute type="rstring" name="ShippingDate"/>
+            </ns2:tupleType>
+            <ns2:tupleType index="2">
+                <ns2:attribute type="int32" name="OrderId"/>
+                <ns2:attribute type="int32" name="ShipmentStatus"/>
+                <ns2:attribute type="rstring" name="ShippingDate"/>
+            </ns2:tupleType>
+        </ns2:tupleTypes>
+        <ns2:pes>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="0" class="BeJwzNPQvSkktCkpNzi9KiQcAI5wFAd">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="pHXEfGSkywSt8MJtiEKs51i757A=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNPQvSkktCkpNzi9KiQcAI5wFAd.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="OrderRecord" index="0" definitionIndex="0" class="OrderRecord">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="5" name="lit$0"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts/>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="OrderRecord" tupleTypeIndex="0" name="OrderRecord" isMutable="true" index="0">
+<ns2:interPeConnection operInstanceIndex="1" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts/>
+                <ns2:outputPorts>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="1" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="0" operInstanceIndex="0"/>
+                    </ns2:outputPort>
+                </ns2:outputPorts>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="1" class="BeJwzNPcvSkktCkotLs0pCUpNzi9KiQcATB0HCi">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="ghbImU5jMN+0Pjx0TWRIfYpQADw=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNPcvSkktCkotLs0pCUpNzi9KiQcATB0HCi.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="OrderResultRecord" index="1" definitionIndex="1" class="OrderResultRecord">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="true" name="lit$0"/>
+                            <ns2:runtimeConstant value="0" name="lit$1"/>
+                            <ns2:runtimeConstant value="1" name="lit$2"/>
+                            <ns2:runtimeConstant value="0" name="lit$3"/>
+                            <ns2:runtimeConstant value="&quot;None&quot;" name="lit$4"/>
+                            <ns2:runtimeConstant value="0" name="lit$5"/>
+                            <ns2:runtimeConstant value="&quot;&quot;" name="lit$6"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="OrderRecord" isMutable="false" index="0">
+<ns2:interPeConnection oportIndex="0" operInstanceIndex="0"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="OrderResultRecord" tupleTypeIndex="1" name="OrderResultRecord" isMutable="true" index="0">
+<ns2:interPeConnection operInstanceIndex="2" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="1" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts>
+                    <ns2:outputPort tupleTypeIndex="1" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="2" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="0" operInstanceIndex="1"/>
+                    </ns2:outputPort>
+                </ns2:outputPorts>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="2" class="BeJwzD87My_1YvMIwHAA9nAMc">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="cYxkGNwPK4gNKGLUQPzthN/XV4g=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzD87My_1YvMIwHAA9nAMc.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="SinkOp1" index="2" definitionIndex="2" class="SinkOp1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants/>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="1" name="OrderResultRecord" isMutable="false" index="0">
+<ns2:interPeConnection oportIndex="0" operInstanceIndex="1"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="1" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="1" oportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="2" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="3" class="BeJwztPQvSkktCs7ILMhNzSsJLkksKS2OBwBdDwiS">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="pB3Xi0orO84HKfhhSLxspZ8xJVM=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwztPQvSkktCs7ILMhNzSsJLkksKS2OBwBdDwiS.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="OrderShipmentStatus" index="3" definitionIndex="3" class="OrderShipmentStatus">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="&quot;ShipmentStatus.txt&quot;" name="lit$0"/>
+                            <ns2:runtimeConstant value="7" name="lit$1"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts/>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="OrderShipmentStatus" tupleTypeIndex="2" name="OrderShipmentStatus" isMutable="true" index="0">
+<ns2:interPeConnection operInstanceIndex="4" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts/>
+                <ns2:outputPorts>
+                    <ns2:outputPort tupleTypeIndex="2" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="4" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="0" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                </ns2:outputPorts>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="4" class="BeJwztHTNK8pMzkhN8S9KSS0KSk3OL0qJBwBayQhH">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="fChrr7pFyh1fYof40wNarCV4ZQI=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwztHTNK8pMzkhN8S9KSS0KSk3OL0qJBwBayQhH.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="EnrichedOrderRecord" index="4" definitionIndex="4" class="EnrichedOrderRecord">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants/>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="2" name="OrderShipmentStatus" isMutable="false" index="0">
+<ns2:interPeConnection oportIndex="0" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="EnrichedOrderRecord" tupleTypeIndex="1" name="EnrichedOrderRecord" isMutable="true" index="0">
+<ns2:interPeConnection operInstanceIndex="5" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="2" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="3" oportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="4" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts>
+                    <ns2:outputPort tupleTypeIndex="1" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="5" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="0" operInstanceIndex="4"/>
+                    </ns2:outputPort>
+                </ns2:outputPorts>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="5" class="BeJwzD87My_1YvMIoHAA9pAMd">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="kCg8pGDRvTnN2fg6OY+l9+oHuBg=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzD87My_1YvMIoHAA9pAMd.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="SinkOp2" index="5" definitionIndex="5" class="SinkOp2">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="&quot;odbc_enrich.result&quot;" name="lit$0"/>
+                            <ns2:runtimeConstant value="1" name="lit$1"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="1" name="EnrichedOrderRecord" isMutable="false" index="0">
+<ns2:interPeConnection oportIndex="0" operInstanceIndex="4"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="1" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="4" oportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="5" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+        </ns2:pes>
+        <ns2:operDefinitions>
+            <ns2:operDefinition kind="com.ibm.streams.db::ODBCSource" index="0"/>
+            <ns2:operDefinition kind="spl.relational::Functor" index="1"/>
+            <ns2:operDefinition kind="com.ibm.streams.db::ODBCAppend" index="2">
+                <ns2:customMetricIndicies>
+                    <ns2:customMetricIndex>0</ns2:customMetricIndex>
+                </ns2:customMetricIndicies>
+            </ns2:operDefinition>
+            <ns2:operDefinition kind="spl.adapter::FileSource" index="3">
+                <ns2:customMetricIndicies>
+                    <ns2:customMetricIndex>1</ns2:customMetricIndex>
+                    <ns2:customMetricIndex>2</ns2:customMetricIndex>
+                </ns2:customMetricIndicies>
+            </ns2:operDefinition>
+            <ns2:operDefinition kind="com.ibm.streams.db::ODBCEnrich" index="4">
+                <ns2:customMetricIndicies>
+                    <ns2:customMetricIndex>3</ns2:customMetricIndex>
+                </ns2:customMetricIndicies>
+            </ns2:operDefinition>
+            <ns2:operDefinition kind="spl.adapter::FileSink" index="5">
+                <ns2:customMetricIndicies>
+                    <ns2:customMetricIndex>4</ns2:customMetricIndex>
+                </ns2:customMetricIndicies>
+            </ns2:operDefinition>
+        </ns2:operDefinitions>
+        <ns2:composites>
+            <ns2:sourceUris>
+                <ns2:uri path="file:///home/streamsadmin/workspace/034_odbc_adapters_for_db2_at_work/my.sample/Main.spl" index="0"/>
+                <ns2:uri path="file:///home/streamsadmin/Streams-2.0.0.4/toolkits/spl/spl/Sys.spl" index="1"/>
+            </ns2:sourceUris>
+            <ns2:compositeOpers>
+                <ns2:compositeOper toolkitIndex="0" numberOfOutputPorts="0" numberOfInputPorts="0" kind="my.sample::Main" index="0" startLine="66" sourceIndex="0" endLine="162">
+                    <ns2:description>my.sample::Main Composite</ns2:description>
+                </ns2:compositeOper>
+                <ns2:compositeOper toolkitIndex="2" numberOfOutputPorts="0" numberOfInputPorts="0" kind="spl::Sys" index="1" startLine="16" sourceIndex="1" endLine="61">
+                    <ns2:description>spl::Sys Composite</ns2:description>
+                </ns2:compositeOper>
+            </ns2:compositeOpers>
+            <ns2:compositeOperInstances>
+                <ns2:compositeOperInstance name="my.sample::Main" index="6" compositeOperIndex="0" startLine="66" sourceIndex="0" endLine="162">
+                    <ns2:primitiveOperInstance toolkitIndex="1" name="OrderRecord" kind="com.ibm.streams.db::ODBCSource" index="0" startLine="69" sourceIndex="0" endLine="78">
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="OrderResultRecord" operIndex="1"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="OrderResultRecord" kind="spl.relational::Functor" index="1" startLine="81" sourceIndex="0" endLine="106">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="OrderRecord" operIndex="0"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="SinkOp1" operIndex="2"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="1" name="SinkOp1" kind="com.ibm.streams.db::ODBCAppend" index="2" startLine="109" sourceIndex="0" endLine="117">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="OrderResultRecord" operIndex="1"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="OrderShipmentStatus" kind="spl.adapter::FileSource" index="3" startLine="125" sourceIndex="0" endLine="133">
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="EnrichedOrderRecord" operIndex="4"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="1" name="EnrichedOrderRecord" kind="com.ibm.streams.db::ODBCEnrich" index="4" startLine="136" sourceIndex="0" endLine="145">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="OrderShipmentStatus" operIndex="3"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="SinkOp2" operIndex="5"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="SinkOp2" kind="spl.adapter::FileSink" index="5" startLine="148" sourceIndex="0" endLine="157">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="EnrichedOrderRecord" operIndex="4"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                    </ns2:primitiveOperInstance>
+                </ns2:compositeOperInstance>
+            </ns2:compositeOperInstances>
+        </ns2:composites>
+        <ns2:toolkits>
+            <ns2:toolkit version="1.0.0" uri="file:///home/streamsadmin/workspace/034_odbc_adapters_for_db2_at_work" name="034_odbc_adapters_for_db2_at_work" index="0"/>
+            <ns2:toolkit version="1.0.0" uri="file:///home/streamsadmin/Streams-2.0.0.4/toolkits/com.ibm.streams.db" name="com.ibm.streams.db" index="1"/>
+            <ns2:toolkit version="1.0.1" uri="file:///home/streamsadmin/Streams-2.0.0.4/toolkits/spl" name="spl" index="2"/>
+        </ns2:toolkits>
+        <ns2:customMetrics>
+            <ns2:customMetric name="droppedTuples" kind="Counter" index="0">
+                <ns2:description>Number of input tuples for which an INSERT failure occurred.</ns2:description>
+            </ns2:customMetric>
+            <ns2:customMetric name="nFilesOpened" kind="Counter" index="1">
+                <ns2:description>Number of files opened by the FileSource operator</ns2:description>
+            </ns2:customMetric>
+            <ns2:customMetric name="nInvalidTuples" kind="Counter" index="2">
+                <ns2:description>Number of tuples that failed to read correctly</ns2:description>
+            </ns2:customMetric>
+            <ns2:customMetric name="droppedTuples" kind="Counter" index="3">
+                <ns2:description>Number of input tuples for which an query failure occurred.</ns2:description>
+            </ns2:customMetric>
+            <ns2:customMetric name="nFilesOpened" kind="Counter" index="4">
+                <ns2:description>Number of files opened by the FileSink operator</ns2:description>
+            </ns2:customMetric>
+        </ns2:customMetrics>
+    </ns2:application>
+</ns2:applicationSet>

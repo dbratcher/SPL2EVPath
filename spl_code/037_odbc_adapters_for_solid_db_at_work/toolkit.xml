@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.4" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="037_odbc_adapters_for_solid_db_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>A simple application that uses the odbc adapters to read write into SolidDB.</description>
+    <uriTable>
+      <uri index="1" value="my.sample/Main.spl"/>
+    </uriTable>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="119" name="Main" potentialMain="true" uriIndex="1"/>
+      <function column="1" line="103" name="timeStampToMicroseconds" native="false" returnType="int64" uriIndex="1">
+        <prototype>int64 timeStampToMicroseconds(timestamp ts)</prototype>
+        <parameter name="ts" type="timestamp"/>
+      </function>
+      <function column="1" line="107" name="timeMicroseconds" native="false" returnType="int64" stateful="true" uriIndex="1">
+        <prototype>stateful int64 timeMicroseconds()</prototype>
+      </function>
+      <function column="1" line="111" name="gmtime_" native="false" returnType="rstring" uriIndex="1">
+        <prototype>rstring gmtime_(int64 micros)</prototype>
+        <parameter name="micros" type="int64"/>
+      </function>
+    </namespace>
+    <dependency>
+      <common:name>com.ibm.streams.db</common:name>
+      <common:version>1.0.0</common:version>
+    </dependency>
+  </toolkit>
+
+</toolkitModel>

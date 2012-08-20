@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:applicationSet xmlns="http://www.ibm.com/xmlns/prod/streams/sharedvar" xmlns:ns2="http://www.ibm.com/xmlns/prod/streams/application" xmlns:ns3="http://www.ibm.com/xmlns/prod/streams/runtime/sam" xmlns:ns4="http://www.ibm.com/xmlns/prod/streams/application/augmented" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" productVersion="2.0.0.0" name="my.sample3::Main.appset" xsi:noNamespaceSchemaLocation="http://www.ibm.com/xmlns/prod/streams/application">
+    <ns2:description>my.sample3::Main application set</ns2:description>
+    <ns2:application version="1.0.0" outputDirectory="/homes/hny5/sen/workspace2/030_spl_config_at_work/output/my.sample3.Main/Distributed" name="my.sample3::Main" logLevel="error" dataDirectory="../../../data" checkpointDirectory="../../../data/ckpt" applicationScope="ConfigurationTest" applicationDirectory="../../../.">
+        <ns2:libraries/>
+        <ns2:hostpools>
+            <ns2:hostpool size="4" name="Pool1" membershipMode="shared" index="0">
+                <ns2:host hostname="a0217b10e1"/>
+                <ns2:host hostname="a0217b11e1"/>
+                <ns2:host hostname="a0217b12e1"/>
+                <ns2:host hostname="10.4.40.213"/>
+            </ns2:hostpool>
+        </ns2:hostpools>
+        <ns2:tupleTypes>
+            <ns2:tupleType index="0">
+                <ns2:attribute type="rstring" name="flightNumber"/>
+                <ns2:attribute type="rstring" name="airline"/>
+                <ns2:attribute type="rstring" name="sourceAirport"/>
+                <ns2:attribute type="rstring" name="destinationAirport"/>
+                <ns2:attribute type="rstring" name="departureTime"/>
+                <ns2:attribute type="rstring" name="arrivalTime"/>
+                <ns2:attribute type="boolean" name="mealService"/>
+            </ns2:tupleType>
+        </ns2:tupleTypes>
+        <ns2:pes>
+            <ns2:pe restartable="true" relocatable="true" optimized="false" logLevel="error" language="C++" index="0" class="BeJwzMnDMTS3KTE7Mc8vJTM8oCUpNzi9KiTe0CEstKUlNQREEAGqlBCQ">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="Tv4dUROxuIN4Ga9+JeN1oEhlS/8=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzMnDMTS3KTE7Mc8vJTM8oCUpNzi9KiTe0CEstKUlNQREEAGqlBCQ.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" restartable="true" relocatable="true" name="VettedFlightRecord" index="2" definitionIndex="0" class="VettedFlightRecord">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="1"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="&quot;Iran Air&quot;" name="lit$0"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="FlightRecord" isMutable="false" index="0">
+<ns2:interPeConnection oportIndex="0" operInstanceIndex="1"/>
+<ns2:threadedPort singleThreadedOnInput="true" queueSize="150" congestionPolicy="dropLast"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="VettedFlightRecord" tupleTypeIndex="0" name="VettedFlightRecord" isMutable="true" index="0">
+<ns2:intraPeConnection operInstanceIndex="3" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" restartable="true" relocatable="true" name="AmericanFlightRecord" index="3" definitionIndex="1" class="AmericanFlightRecord">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="1"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="&quot;AirlinesSplitter.txt&quot;" name="lit$0"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="VettedFlightRecord" isMutable="false" index="0">
+<ns2:intraPeConnection oportIndex="0" operInstanceIndex="2"/>
+<ns2:threadedPort singleThreadedOnInput="true" queueSize="100" congestionPolicy="wait"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="AmericanFlightRecord" tupleTypeIndex="0" name="AmericanFlightRecord" isMutable="false" index="0">
+<ns2:interPeConnection operInstanceIndex="4" iportIndex="0"/>
+                            </ns2:outputPort>
+                            <ns2:outputPort streamName="UnitedFlightRecord" tupleTypeIndex="0" name="UnitedFlightRecord" isMutable="false" index="1">
+<ns2:interPeConnection operInstanceIndex="5" iportIndex="0"/>
+                            </ns2:outputPort>
+                            <ns2:outputPort streamName="DeltaFlightRecord" tupleTypeIndex="0" name="DeltaFlightRecord" isMutable="false" index="2">
+<ns2:interPeConnection operInstanceIndex="6" iportIndex="0"/>
+                            </ns2:outputPort>
+                            <ns2:outputPort streamName="ContinentalFlightRecord" tupleTypeIndex="0" name="ContinentalFlightRecord" isMutable="false" index="3">
+<ns2:interPeConnection operInstanceIndex="7" iportIndex="0"/>
+                            </ns2:outputPort>
+                            <ns2:outputPort streamName="SouthWestFlightRecord" tupleTypeIndex="0" name="SouthWestFlightRecord" isMutable="false" index="4">
+<ns2:interPeConnection operInstanceIndex="8" iportIndex="0"/>
+                            </ns2:outputPort>
+                            <ns2:outputPort streamName="JetBlueFlightRecord" tupleTypeIndex="0" name="JetBlueFlightRecord" isMutable="false" index="5">
+<ns2:interPeConnection operInstanceIndex="9" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="1" oportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="2" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="2" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="0" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="1" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="3" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="1" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="2" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="4" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="2" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="3" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="5" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="3" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="4" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="6" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="4" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="5" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="7" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="5" operInstanceIndex="3"/>
+                    </ns2:outputPort>
+                </ns2:outputPorts>
+            </ns2:pe>
+            <ns2:pe restartable="true" relocatable="false" optimized="false" logLevel="error" language="C++" index="1" class="BeJwzMnBKTUzOz0tNccvJTM8oCUpNzi9KiTc0QuECAApOA4P">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="HffonlPqr0HqLjiimcjBfDy4hV8=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzMnBKTUzOz0tNccvJTM8oCUpNzi9KiTc0QuECAApOA4P.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" restartable="true" relocatable="false" name="BeaconedFlightRecord" index="0" definitionIndex="2" class="BeaconedFlightRecord">
+                        <ns2:resources isolation="true">
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="0"/>
+                            <ns2:coLocation colocId="Beacon"/>
+                        </ns2:resources>
+                        <ns2:checkpointing policy="periodic" period="3000.0"/>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="3.5" name="lit$0"/>
+                            <ns2:runtimeConstant value="5000" name="lit$1"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts/>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="BeaconedFlightRecord" tupleTypeIndex="0" name="BeaconedFlightRecord" isMutable="false" index="0">
+<ns2:intraPeConnection operInstanceIndex="1" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="FlightRecord" index="1" definitionIndex="3" class="FlightRecord">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="0"/>
+                            <ns2:coLocation colocId="Beacon"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="7" name="lit$0"/>
+                            <ns2:runtimeConstant value="100" name="lit$1"/>
+                            <ns2:runtimeConstant value="0" name="lit$2"/>
+                            <ns2:runtimeConstant value="1" name="lit$3"/>
+                            <ns2:runtimeConstant value="false" name="lit$4"/>
+                            <ns2:runtimeConstant value="0" name="lit$5"/>
+                            <ns2:runtimeConstant value="true" name="lit$6"/>
+                            <ns2:runtimeConstant value="0" name="lit$7"/>
+                            <ns2:runtimeConstant value="0" name="lit$8"/>
+                            <ns2:runtimeConstant value="[&quot;452&quot;, &quot;928&quot;, &quot;712&quot;, &quot;629&quot;, &quot;42&quot;, &quot;626&quot;, &quot;769&quot;]" name="lit$9"/>
+                            <ns2:runtimeConstant value="[&quot;Iran Air&quot;, &quot;American Airlines&quot;, &quot;Continental&quot;, &quot;Delta&quot;, &quot;SouthWest&quot;, &quot;United Airlines&quot;, &quot;Jet Blue&quot;]" name="lit$10"/>
+                            <ns2:runtimeConstant value="[&quot;JFK&quot;, &quot;Newark&quot;, &quot;LAX&quot;, &quot;DFW&quot;, &quot;Midway&quot;, &quot;Dulles&quot;, &quot;Atlanta&quot;]" name="lit$11"/>
+                            <ns2:runtimeConstant value="[&quot;San Diego&quot;, &quot;Seattle&quot;, &quot;Boston&quot;, &quot;Minneapolis&quot;, &quot;Denver&quot;, &quot;Orlando&quot;, &quot;Phoenix&quot;]" name="lit$12"/>
+                            <ns2:runtimeConstant value="[&quot;12:34:56&quot;, &quot;05:38:12&quot;, &quot;11:30:23&quot;, &quot;18:45:25&quot;, &quot;21:45:00&quot;, &quot;23:12:34&quot;, &quot;07:10:34&quot;]" name="lit$13"/>
+                            <ns2:runtimeConstant value="[&quot;16:23:45&quot;, &quot;05:23:45&quot;, &quot;07:23:34&quot;, &quot;08:34:36&quot;, &quot;23:15:23&quot;, &quot;15:34:18&quot;, &quot;05:36:15&quot;]" name="lit$14"/>
+                            <ns2:runtimeConstant value="0" name="lit$15"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="BeaconedFlightRecord" isMutable="true" index="0">
+<ns2:intraPeConnection oportIndex="0" operInstanceIndex="0"/>
+<ns2:threadedPort singleThreadedOnInput="true" queueSize="175" congestionPolicy="dropFirst"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:outputPort streamName="FlightRecord" tupleTypeIndex="0" name="FlightRecord" isMutable="true" index="0">
+<ns2:interPeConnection operInstanceIndex="2" iportIndex="0"/>
+                            </ns2:outputPort>
+                        </ns2:outputPorts>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts/>
+                <ns2:outputPorts>
+                    <ns2:outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" iportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection oportIndex="0" operInstanceIndex="1"/>
+                    </ns2:outputPort>
+                </ns2:outputPorts>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="2" class="BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="hk7OfusERqZNd1Q2OwtYKIrC2e4=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="ScreenWriter1.ScreenWriter1" index="4" definitionIndex="3" class="ScreenWriter1::ScreenWriter1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="1"/>
+                            <ns2:coLocation colocId="WriterHostGroup1"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="0" name="lit$0"/>
+                            <ns2:runtimeConstant value="&quot;\na) Flight tuples from the American Airlines:&quot;" name="lit$1"/>
+                            <ns2:runtimeConstant value="&quot;) &quot;" name="lit$2"/>
+                            <ns2:runtimeConstant value="&quot;a&quot;" name="lit$3"/>
+                            <ns2:runtimeConstant value="0" name="lit$4"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="I" isMutable="true" index="0">
+<ns2:interPeConnection oportIndex="0" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="0"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="4" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="3" class="BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="hk7OfusERqZNd1Q2OwtYKIrC2e4=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="ScreenWriter2.ScreenWriter1" index="5" definitionIndex="3" class="ScreenWriter1::ScreenWriter1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="1"/>
+                            <ns2:coLocation colocId="WriterHostGroup1"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="0" name="lit$0"/>
+                            <ns2:runtimeConstant value="&quot;\nb) Flight tuples from the United Airlines:&quot;" name="lit$1"/>
+                            <ns2:runtimeConstant value="&quot;) &quot;" name="lit$2"/>
+                            <ns2:runtimeConstant value="&quot;b&quot;" name="lit$3"/>
+                            <ns2:runtimeConstant value="0" name="lit$4"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="I" isMutable="true" index="0">
+<ns2:interPeConnection oportIndex="1" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="1"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="5" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="4" class="BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="hk7OfusERqZNd1Q2OwtYKIrC2e4=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="ScreenWriter3.ScreenWriter1" index="6" definitionIndex="3" class="ScreenWriter1::ScreenWriter1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="2"/>
+                            <ns2:coLocation colocId="WriterHostGroup2"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="0" name="lit$0"/>
+                            <ns2:runtimeConstant value="&quot;\nc) Flight tuples from the Delta:&quot;" name="lit$1"/>
+                            <ns2:runtimeConstant value="&quot;) &quot;" name="lit$2"/>
+                            <ns2:runtimeConstant value="&quot;c&quot;" name="lit$3"/>
+                            <ns2:runtimeConstant value="0" name="lit$4"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="I" isMutable="true" index="0">
+<ns2:interPeConnection oportIndex="2" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="2"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="6" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="5" class="BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="hk7OfusERqZNd1Q2OwtYKIrC2e4=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="ScreenWriter4.ScreenWriter1" index="7" definitionIndex="3" class="ScreenWriter1::ScreenWriter1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="2"/>
+                            <ns2:coLocation colocId="WriterHostGroup2"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="0" name="lit$0"/>
+                            <ns2:runtimeConstant value="&quot;\nd) Flight tuples from the Continental:&quot;" name="lit$1"/>
+                            <ns2:runtimeConstant value="&quot;) &quot;" name="lit$2"/>
+                            <ns2:runtimeConstant value="&quot;d&quot;" name="lit$3"/>
+                            <ns2:runtimeConstant value="0" name="lit$4"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="I" isMutable="true" index="0">
+<ns2:interPeConnection oportIndex="3" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="3"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="7" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="6" class="BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="hk7OfusERqZNd1Q2OwtYKIrC2e4=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="ScreenWriter5.ScreenWriter1" index="8" definitionIndex="3" class="ScreenWriter1::ScreenWriter1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="3"/>
+                            <ns2:coLocation colocId="WriterHostGroup3"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="0" name="lit$0"/>
+                            <ns2:runtimeConstant value="&quot;\ne) Flight tuples from the South West:&quot;" name="lit$1"/>
+                            <ns2:runtimeConstant value="&quot;) &quot;" name="lit$2"/>
+                            <ns2:runtimeConstant value="&quot;e&quot;" name="lit$3"/>
+                            <ns2:runtimeConstant value="0" name="lit$4"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="I" isMutable="true" index="0">
+<ns2:interPeConnection oportIndex="4" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="4"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="8" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+            <ns2:pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="7" class="BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE">
+                <ns2:envVars/>
+                <ns2:executable dynamicLoad="true" digest="hk7OfusERqZNd1Q2OwtYKIrC2e4=">
+                    <ns2:wrapper>none</ns2:wrapper>
+                    <ns2:executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTI0ROXGAwCwHgtE.dpe</ns2:executableUri>
+                    <ns2:arguments></ns2:arguments>
+                    <ns2:dependencies/>
+                </ns2:executable>
+                <ns2:operInstances>
+                    <ns2:operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" relocatable="false" name="ScreenWriter6.ScreenWriter1" index="9" definitionIndex="3" class="ScreenWriter1::ScreenWriter1">
+                        <ns2:resources>
+                            <ns2:poolLocation poolIndex="0" inpoolIndex="3"/>
+                            <ns2:coLocation colocId="WriterHostGroup3"/>
+                        </ns2:resources>
+                        <ns2:runtimeConstants>
+                            <ns2:runtimeConstant value="0" name="lit$0"/>
+                            <ns2:runtimeConstant value="&quot;\nf) Flight tuples from the Jet Blue:&quot;" name="lit$1"/>
+                            <ns2:runtimeConstant value="&quot;) &quot;" name="lit$2"/>
+                            <ns2:runtimeConstant value="&quot;f&quot;" name="lit$3"/>
+                            <ns2:runtimeConstant value="0" name="lit$4"/>
+                        </ns2:runtimeConstants>
+                        <ns2:inputPorts>
+                            <ns2:inputPort tupleTypeIndex="0" name="I" isMutable="true" index="0">
+<ns2:interPeConnection oportIndex="5" operInstanceIndex="3"/>
+                            </ns2:inputPort>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts/>
+                    </ns2:operInstance>
+                </ns2:operInstances>
+                <ns2:inputPorts>
+                    <ns2:inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <ns2:staticConnections>
+                            <ns2:staticConnection peIndex="0" oportIndex="5"/>
+                        </ns2:staticConnections>
+                        <ns2:operInstanceConnection operInstanceIndex="9" iportIndex="0"/>
+                    </ns2:inputPort>
+                </ns2:inputPorts>
+                <ns2:outputPorts/>
+            </ns2:pe>
+        </ns2:pes>
+        <ns2:operDefinitions>
+            <ns2:operDefinition kind="spl.relational::Functor" index="0"/>
+            <ns2:operDefinition kind="spl.utility::Split" index="1"/>
+            <ns2:operDefinition kind="spl.utility::Beacon" index="2"/>
+            <ns2:operDefinition kind="spl.utility::Custom" index="3"/>
+        </ns2:operDefinitions>
+        <ns2:composites>
+            <ns2:sourceUris>
+                <ns2:uri path="file:///homes/hny5/sen/workspace2/030_spl_config_at_work/my.sample3/Main.spl" index="0"/>
+                <ns2:uri path="file:///homes/hny5/sen/InfoSphereStreams20_64/toolkits/spl/spl/Sys.spl" index="1"/>
+                <ns2:uri path="file:///homes/hny5/sen/workspace2/025_dynamic_filter_at_work/my.sample/Main.spl" index="2"/>
+            </ns2:sourceUris>
+            <ns2:compositeOpers>
+                <ns2:compositeOper toolkitIndex="0" numberOfOutputPorts="0" numberOfInputPorts="0" kind="my.sample3::Main" index="0" startLine="11" sourceIndex="0" endLine="186">
+                    <ns2:description>my.sample3::Main Composite</ns2:description>
+                </ns2:compositeOper>
+                <ns2:compositeOper toolkitIndex="2" numberOfOutputPorts="0" numberOfInputPorts="0" kind="spl::Sys" index="1" startLine="16" sourceIndex="1" endLine="48">
+                    <ns2:description>spl::Sys Composite</ns2:description>
+                </ns2:compositeOper>
+                <ns2:compositeOper toolkitIndex="1" numberOfOutputPorts="0" numberOfInputPorts="0" kind="my.sample::Main" index="2" startLine="41" sourceIndex="2" endLine="139">
+                    <ns2:description>my.sample::Main Composite</ns2:description>
+                </ns2:compositeOper>
+                <ns2:compositeOper toolkitIndex="1" numberOfOutputPorts="0" numberOfInputPorts="1" kind="my.sample::Writer" index="3" startLine="144" sourceIndex="2" endLine="165">
+                    <ns2:description>my.sample::Writer Composite</ns2:description>
+                </ns2:compositeOper>
+            </ns2:compositeOpers>
+            <ns2:compositeOperInstances>
+                <ns2:compositeOperInstance name="my.sample3::Main" index="10" compositeOperIndex="0" startLine="11" sourceIndex="0" endLine="186">
+                    <ns2:compositeOperInstance name="ScreenWriter1" index="11" compositeOperIndex="3" startLine="110" sourceIndex="0" endLine="119">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:incomingConnections>
+    <ns2:connection portKind="output" portIndex="0" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:incomingConnections>
+<ns2:outgoingConnections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter1.ScreenWriter1" operIndex="4"/>
+</ns2:outgoingConnections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:primitiveOperInstance toolkitIndex="2" name="ScreenWriter1.ScreenWriter1" kind="spl.utility::Custom" index="4" startLine="151" sourceIndex="2" endLine="163">
+                            <ns2:inputPorts>
+<ns2:port index="0">
+    <ns2:connections>
+        <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter1" operIndex="11"/>
+    </ns2:connections>
+</ns2:port>
+                            </ns2:inputPorts>
+                        </ns2:primitiveOperInstance>
+                    </ns2:compositeOperInstance>
+                    <ns2:compositeOperInstance name="ScreenWriter2" index="12" compositeOperIndex="3" startLine="121" sourceIndex="0" endLine="130">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:incomingConnections>
+    <ns2:connection portKind="output" portIndex="1" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:incomingConnections>
+<ns2:outgoingConnections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter2.ScreenWriter1" operIndex="5"/>
+</ns2:outgoingConnections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:primitiveOperInstance toolkitIndex="2" name="ScreenWriter2.ScreenWriter1" kind="spl.utility::Custom" index="5" startLine="151" sourceIndex="2" endLine="163">
+                            <ns2:inputPorts>
+<ns2:port index="0">
+    <ns2:connections>
+        <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter2" operIndex="12"/>
+    </ns2:connections>
+</ns2:port>
+                            </ns2:inputPorts>
+                        </ns2:primitiveOperInstance>
+                    </ns2:compositeOperInstance>
+                    <ns2:compositeOperInstance name="ScreenWriter3" index="13" compositeOperIndex="3" startLine="132" sourceIndex="0" endLine="141">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:incomingConnections>
+    <ns2:connection portKind="output" portIndex="2" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:incomingConnections>
+<ns2:outgoingConnections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter3.ScreenWriter1" operIndex="6"/>
+</ns2:outgoingConnections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:primitiveOperInstance toolkitIndex="2" name="ScreenWriter3.ScreenWriter1" kind="spl.utility::Custom" index="6" startLine="151" sourceIndex="2" endLine="163">
+                            <ns2:inputPorts>
+<ns2:port index="0">
+    <ns2:connections>
+        <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter3" operIndex="13"/>
+    </ns2:connections>
+</ns2:port>
+                            </ns2:inputPorts>
+                        </ns2:primitiveOperInstance>
+                    </ns2:compositeOperInstance>
+                    <ns2:compositeOperInstance name="ScreenWriter4" index="14" compositeOperIndex="3" startLine="143" sourceIndex="0" endLine="152">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:incomingConnections>
+    <ns2:connection portKind="output" portIndex="3" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:incomingConnections>
+<ns2:outgoingConnections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter4.ScreenWriter1" operIndex="7"/>
+</ns2:outgoingConnections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:primitiveOperInstance toolkitIndex="2" name="ScreenWriter4.ScreenWriter1" kind="spl.utility::Custom" index="7" startLine="151" sourceIndex="2" endLine="163">
+                            <ns2:inputPorts>
+<ns2:port index="0">
+    <ns2:connections>
+        <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter4" operIndex="14"/>
+    </ns2:connections>
+</ns2:port>
+                            </ns2:inputPorts>
+                        </ns2:primitiveOperInstance>
+                    </ns2:compositeOperInstance>
+                    <ns2:compositeOperInstance name="ScreenWriter5" index="15" compositeOperIndex="3" startLine="154" sourceIndex="0" endLine="163">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:incomingConnections>
+    <ns2:connection portKind="output" portIndex="4" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:incomingConnections>
+<ns2:outgoingConnections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter5.ScreenWriter1" operIndex="8"/>
+</ns2:outgoingConnections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:primitiveOperInstance toolkitIndex="2" name="ScreenWriter5.ScreenWriter1" kind="spl.utility::Custom" index="8" startLine="151" sourceIndex="2" endLine="163">
+                            <ns2:inputPorts>
+<ns2:port index="0">
+    <ns2:connections>
+        <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter5" operIndex="15"/>
+    </ns2:connections>
+</ns2:port>
+                            </ns2:inputPorts>
+                        </ns2:primitiveOperInstance>
+                    </ns2:compositeOperInstance>
+                    <ns2:compositeOperInstance name="ScreenWriter6" index="16" compositeOperIndex="3" startLine="165" sourceIndex="0" endLine="174">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:incomingConnections>
+    <ns2:connection portKind="output" portIndex="5" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:incomingConnections>
+<ns2:outgoingConnections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter6.ScreenWriter1" operIndex="9"/>
+</ns2:outgoingConnections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:primitiveOperInstance toolkitIndex="2" name="ScreenWriter6.ScreenWriter1" kind="spl.utility::Custom" index="9" startLine="151" sourceIndex="2" endLine="163">
+                            <ns2:inputPorts>
+<ns2:port index="0">
+    <ns2:connections>
+        <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter6" operIndex="16"/>
+    </ns2:connections>
+</ns2:port>
+                            </ns2:inputPorts>
+                        </ns2:primitiveOperInstance>
+                    </ns2:compositeOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="BeaconedFlightRecord" kind="spl.utility::Beacon" index="0" startLine="19" sourceIndex="0" endLine="30">
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="FlightRecord" operIndex="1"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="FlightRecord" kind="spl.utility::Custom" index="1" startLine="33" sourceIndex="0" endLine="74">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="BeaconedFlightRecord" operIndex="0"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="VettedFlightRecord" operIndex="2"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="VettedFlightRecord" kind="spl.relational::Functor" index="2" startLine="77" sourceIndex="0" endLine="88">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="FlightRecord" operIndex="1"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="AmericanFlightRecord" operIndex="3"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                    <ns2:primitiveOperInstance toolkitIndex="2" name="AmericanFlightRecord" kind="spl.utility::Split" index="3" startLine="91" sourceIndex="0" endLine="107">
+                        <ns2:inputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="output" portIndex="0" operName="VettedFlightRecord" operIndex="2"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:inputPorts>
+                        <ns2:outputPorts>
+                            <ns2:port index="0">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter1" operIndex="11"/>
+</ns2:connections>
+                            </ns2:port>
+                            <ns2:port index="1">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter2" operIndex="12"/>
+</ns2:connections>
+                            </ns2:port>
+                            <ns2:port index="2">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter3" operIndex="13"/>
+</ns2:connections>
+                            </ns2:port>
+                            <ns2:port index="3">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter4" operIndex="14"/>
+</ns2:connections>
+                            </ns2:port>
+                            <ns2:port index="4">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter5" operIndex="15"/>
+</ns2:connections>
+                            </ns2:port>
+                            <ns2:port index="5">
+<ns2:connections>
+    <ns2:connection portKind="input" portIndex="0" operName="ScreenWriter6" operIndex="16"/>
+</ns2:connections>
+                            </ns2:port>
+                        </ns2:outputPorts>
+                    </ns2:primitiveOperInstance>
+                </ns2:compositeOperInstance>
+            </ns2:compositeOperInstances>
+        </ns2:composites>
+        <ns2:toolkits>
+            <ns2:toolkit version="1.0.0" uri="file:///homes/hny5/sen/workspace2/030_spl_config_at_work" name="030_spl_config_at_work" index="0"/>
+            <ns2:toolkit version="1.0.0" uri="file:///homes/hny5/sen/workspace2/025_dynamic_filter_at_work" name="025_dynamic_filter_at_work" index="1"/>
+            <ns2:toolkit version="1.0.0" uri="file:///homes/hny5/sen/InfoSphereStreams20_64/toolkits/spl" name="spl" index="2"/>
+        </ns2:toolkits>
+    </ns2:application>
+</ns2:applicationSet>

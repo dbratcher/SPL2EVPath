@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="019_import_export_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description></description>
+    <uriTable>
+      <uri index="1" value="my.sample/Main.spl"/>
+      <uri index="2" value="my.sample2/Main.spl"/>
+    </uriTable>
+    <namespace name="my.sample2">
+      <compositeOp column="11" line="12" name="Main" potentialMain="true" uriIndex="2">
+        <type column="3" line="14" name="employee" type="tuple&lt;rstring name, uint32 employeeDepartment>" uriIndex="2"/>
+        <type column="3" line="15" name="department" type="tuple&lt;uint32 departmentId, rstring departmentName>" uriIndex="2"/>
+        <type column="3" line="16" name="ticker" type="tuple&lt;rstring symbol, float32 price, uint32 quantity, rstring tradeType>" uriIndex="2"/>
+      </compositeOp>
+    </namespace>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="14" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="16" name="employee" type="tuple&lt;rstring name, uint32 employeeDepartment>" uriIndex="1"/>
+        <type column="3" line="17" name="department" type="tuple&lt;uint32 departmentId, rstring departmentName>" uriIndex="1"/>
+        <type column="3" line="18" name="ticker" type="tuple&lt;rstring symbol, float32 price, uint32 quantity, rstring tradeType>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="012_filter_functor_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>A simple example that shows how the filter and functor operators work.</description>
+    <uriTable>
+      <uri index="1" value="my.sample/Main.spl"/>
+    </uriTable>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="11" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="13" name="Employee" type="tuple&lt;rstring name, rstring title, int32 age, float32 salary>" uriIndex="1"/>
+        <type column="3" line="14" name="Account" type="tuple&lt;rstring accountHolder, rstring accountNumber, rstring ticker, int32 quantity>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

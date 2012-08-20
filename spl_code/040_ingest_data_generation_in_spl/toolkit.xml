@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="040_ingest_data_generation_in_spl" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>A simple application that demonstrates how the SPL code logic could be used to generate synthetic data.</description>
+    <uriTable>
+      <uri index="1" value="my.sample/Main.spl"/>
+      <uri index="2" value="test.datagen/native.function/function.xml"/>
+    </uriTable>
+    <namespace name="test.datagen">
+      <function modelUriIndex="2" name="sprintf" native="true" public="true" returnType="rstring" uriIndex="0">
+        <description>Datagen C++ utilities</description>
+        <prototype>public rstring sprintf(uint64 number, uint16 numberOfZeroPaddingsNeeded)</prototype>
+        <parameter name="number" type="uint64"/>
+        <parameter name="numberOfZeroPaddingsNeeded" type="uint16"/>
+      </function>
+    </namespace>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="20" name="Main" potentialMain="true" uriIndex="1">
+        <parameter defaultValue="2u" metaType="Expression" name="UINT32_NUMBER_OF_MONTHS_DATA_NEEDED" optional="true" type="&lt;uint32>"/>
+        <parameter defaultValue="12u" metaType="Expression" name="UINT32_TOTAL_MONTHS_IN_A_YEAR" optional="true" type="&lt;uint32>"/>
+        <parameter defaultValue="[&quot;&quot;, &quot;JAN&quot;, &quot;FEB&quot;, &quot;MAR&quot;, &quot;APR&quot;, &quot;MAY&quot;, &quot;JUN&quot;, &quot;JUL&quot;, &quot;AUG&quot;, &quot;SEP&quot;, &quot;OCT&quot;, &quot;NOV&quot;, &quot;DEC&quot;]" metaType="Expression" name="LIST_RSTRING_MONTHS" optional="true" type="&lt;list&lt;rstring>>"/>
+        <parameter defaultValue="&quot;2010&quot;" metaType="Expression" name="RSTRING_YEAR_TO_BE_USED" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="30u" metaType="Expression" name="UINT32_NUMBER_OF_DAYS_IN_A_MONTH" optional="true" type="&lt;uint32>"/>
+        <parameter defaultValue="5u" metaType="Expression" name="UINT32_MAX_TRANSACTIONS_NEEDED_PER_DAY" optional="true" type="&lt;uint32>"/>
+        <parameter defaultValue="1000000u" metaType="Expression" name="UINT32_FIRST_ACCOUNT_ID" optional="true" type="&lt;uint32>"/>
+        <parameter defaultValue="500000u" metaType="Expression" name="UINT32_NUMBER_OF_ACCOUNT_IDS_NEEDED" optional="true" type="&lt;uint32>"/>
+        <parameter defaultValue="&quot;w+&quot;" metaType="Expression" name="RSTRING_FILE_MODE" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="&quot;.transactions&quot;" metaType="Expression" name="RSTRING_TRANSACTION_FILE_EXTENSION" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="getThisFileDir() + &quot;/../data/&quot;" metaType="Expression" name="RSTRING_TRANSACTION_FILE_STAGING_DIR" optional="true" type="&lt;rstring>"/>
+        <parameter defaultValue="&quot;# tuple&lt;uint32 accountId, rstring activityDate, &quot; + &quot;uint32 transactionCode, uint32 branchId, uint32 activityType, &quot; + &quot;float32 amount, rstring checkNumber>\n&quot;" metaType="Expression" name="RSTRING_TRANSACTION_FILE_HEADER" optional="true" type="&lt;rstring>"/>
+        <type column="3" line="58" name="accountActivity" type="tuple&lt;uint32 accountId, rstring activityDate, uint32 transactionCode, uint32 branchId, uint32 activityType, float32 amount, rstring checkNumber>" uriIndex="1"/>
+        <type column="3" line="61" name="dummyType" type="tuple&lt;int32 ignore>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

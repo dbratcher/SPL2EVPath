@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<applicationSet xmlns="http://www.ibm.com/xmlns/prod/streams/application" xmlns:ns2="http://www.ibm.com/xmlns/prod/streams/application/augmented" xmlns:ns3="http://www.ibm.com/xmlns/prod/streams/sharedvar" xmlns:ns4="http://www.ibm.com/xmlns/prod/streams/runtime/sam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" productVersion="2.0.0.0" name="my.sample::Main.appset" xsi:noNamespaceSchemaLocation="http://www.ibm.com/xmlns/prod/streams/application">
+    <description>my.sample::Main application set</description>
+    <application version="1.0.0" outputDirectory="/homes/hny5/sen/workspace2/026_metrics_sink_at_work/output/my.sample.Main/Distributed" name="my.sample::Main" logLevel="error" dataDirectory="../../../data" checkpointDirectory="../../../data/ckpt" applicationScope="Default" applicationDirectory="../../../.">
+        <libraries/>
+        <hostpools>
+            <hostpool name="$default" membershipMode="shared" index="0"/>
+        </hostpools>
+        <tupleTypes>
+            <tupleType index="0">
+                <attribute type="int64" name="a"/>
+                <attribute type="int64" name="b"/>
+            </tupleType>
+        </tupleTypes>
+        <pes>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="0" class="BeJwzdIwHAAF3ADS">
+                <envVars/>
+                <executable dynamicLoad="true" digest="uU2FnDxk8qajTXv/O/yF698j7cw=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwzdIwHAAF3ADS.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="A" index="0" definitionIndex="0" class="A">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants/>
+                        <inputPorts/>
+                        <outputPorts>
+                            <outputPort streamName="A" tupleTypeIndex="0" name="A" isMutable="true" index="0">
+<interPeConnection operInstanceIndex="1" iportIndex="0"/>
+                            </outputPort>
+                        </outputPorts>
+                    </operInstance>
+                </operInstances>
+                <inputPorts/>
+                <outputPorts>
+                    <outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="1" iportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection oportIndex="0" operInstanceIndex="0"/>
+                    </outputPort>
+                </outputPorts>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="1" class="BeJwz9svMiQcABK4BC2">
+                <envVars/>
+                <executable dynamicLoad="true" digest="NhT0FOo5sjHsg1UCgsGjDroZ0XE=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwz9svMiQcABK4BC2.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="Nil" index="1" definitionIndex="1" class="Nil">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="&quot;a&quot;" name="lit$0"/>
+                            <runtimeConstant value="&quot;b&quot;" name="lit$1"/>
+                            <runtimeConstant value="&quot;sum&quot;" name="lit$2"/>
+                            <runtimeConstant value="&quot;product&quot;" name="lit$3"/>
+                            <runtimeConstant value="&quot;A&quot;" name="lit$4"/>
+                            <runtimeConstant value="&quot;B&quot;" name="lit$5"/>
+                            <runtimeConstant value="&quot;sum of A and B&quot;" name="lit$6"/>
+                            <runtimeConstant value="&quot;product of A and B&quot;" name="lit$7"/>
+                            <runtimeConstant value="100" name="lit$8"/>
+                            <runtimeConstant value="1000" name="lit$9"/>
+                            <runtimeConstant value="-900" name="lit$10"/>
+                            <runtimeConstant value="5" name="lit$11"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="A" isMutable="false" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="0"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts/>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="0" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="1" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts/>
+            </pe>
+        </pes>
+        <operDefinitions>
+            <operDefinition kind="spl.utility::Beacon" index="0"/>
+            <operDefinition kind="spl.adapter::MetricsSink" index="1"/>
+        </operDefinitions>
+        <composites>
+            <sourceUris>
+                <uri path="file:///homes/hny5/sen/workspace2/026_metrics_sink_at_work/my.sample/Main.spl" index="0"/>
+            </sourceUris>
+            <compositeOpers>
+                <compositeOper toolkitIndex="0" numberOfOutputPorts="0" numberOfInputPorts="0" kind="my.sample::Main" index="0" startLine="3" sourceIndex="0" endLine="15">
+                    <description>my.sample::Main Composite</description>
+                </compositeOper>
+            </compositeOpers>
+            <compositeOperInstances>
+                <compositeOperInstance name="my.sample::Main" index="2" compositeOperIndex="0" startLine="3" sourceIndex="0" endLine="15">
+                    <primitiveOperInstance toolkitIndex="1" name="A" kind="spl.utility::Beacon" index="0" startLine="5" sourceIndex="0" endLine="6">
+                        <outputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="input" portIndex="0" operName="Nil" operIndex="1"/>
+</connections>
+                            </port>
+                        </outputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="Nil" kind="spl.adapter::MetricsSink" index="1" startLine="8" sourceIndex="0" endLine="14">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="A" operIndex="0"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                    </primitiveOperInstance>
+                </compositeOperInstance>
+            </compositeOperInstances>
+        </composites>
+        <toolkits>
+            <toolkit version="1.0.0" uri="file:///homes/hny5/sen/workspace2/026_metrics_sink_at_work" name="026_metrics_sink_at_work" index="0"/>
+            <toolkit version="1.0.0" uri="file:///homes/hny5/sen/InfoSphereStreams20_64/toolkits/spl" name="spl" index="1"/>
+        </toolkits>
+    </application>
+</applicationSet>

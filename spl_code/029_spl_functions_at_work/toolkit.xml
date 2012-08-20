@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="029_spl_functions_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description></description>
+    <uriTable>
+      <uri index="1" value="my.sample/Main.spl"/>
+      <uri index="2" value="my.sample/Calculator.spl"/>
+    </uriTable>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="9" name="Main" potentialMain="true" uriIndex="1"/>
+      <function column="1" line="6" name="addition" native="false" public="true" returnType="uint32" uriIndex="2">
+        <prototype>public uint32 addition(uint32 operand1, uint32 operand2)</prototype>
+        <parameter name="operand1" type="uint32"/>
+        <parameter name="operand2" type="uint32"/>
+      </function>
+      <function column="1" line="10" name="subtraction" native="false" public="true" returnType="uint32" uriIndex="2">
+        <prototype>public uint32 subtraction(uint32 operand1, uint32 operand2)</prototype>
+        <parameter name="operand1" type="uint32"/>
+        <parameter name="operand2" type="uint32"/>
+      </function>
+      <function column="1" line="14" name="multiplication" native="false" public="true" returnType="uint32" uriIndex="2">
+        <prototype>public uint32 multiplication(uint32 operand1, uint32 operand2)</prototype>
+        <parameter name="operand1" type="uint32"/>
+        <parameter name="operand2" type="uint32"/>
+      </function>
+      <function column="1" line="18" name="division" native="false" public="true" returnType="uint32" uriIndex="2">
+        <prototype>public uint32 division(uint32 operand1, uint32 operand2)</prototype>
+        <parameter name="operand1" type="uint32"/>
+        <parameter name="operand2" type="uint32"/>
+      </function>
+      <type column="6" line="4" name="arithmeticOperation" static="true" type="tuple&lt;rstring operation, uint32 operand1, uint32 operand2, uint32 result>" uriIndex="2"/>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

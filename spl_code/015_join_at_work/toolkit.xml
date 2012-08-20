@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="015_join_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>An example to show off the Join features.</description>
+    <uriTable>
+      <uri index="1" value="my/sample/Main.spl"/>
+    </uriTable>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="15" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="17" name="employee" type="tuple&lt;rstring name, uint32 employeeDepartment>" uriIndex="1"/>
+        <type column="3" line="18" name="department" type="tuple&lt;uint32 departmentId, rstring departmentName>" uriIndex="1"/>
+        <type column="3" line="19" name="orders" type="tuple&lt;uint32 orderId, rstring customerName, rstring orderDate, rstring product, uint32 quantity>" uriIndex="1"/>
+        <type column="3" line="20" name="inventory" type="tuple&lt;uint32 productId, rstring productName, uint32 quantity, float32 price>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>
