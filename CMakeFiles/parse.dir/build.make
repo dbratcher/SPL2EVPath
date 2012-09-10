@@ -35,10 +35,10 @@ RM = /opt/local/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /opt/local/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/drewbratcher/nightly_build_area/spl
+CMAKE_SOURCE_DIR = /Users/drewbratcher/projects/Nightly_build_area/spl
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/drewbratcher/nightly_build_area/spl
+CMAKE_BINARY_DIR = /Users/drewbratcher/projects/Nightly_build_area/spl
 
 # Include any dependencies generated for this target.
 include CMakeFiles/parse.dir/depend.make
@@ -50,39 +50,39 @@ include CMakeFiles/parse.dir/progress.make
 include CMakeFiles/parse.dir/flags.make
 
 spl.tab.c: spl.y
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "[BISON][SPLParser] Building parser with bison 2.5"
-	/opt/local/bin/bison -d -d -o /Users/drewbratcher/nightly_build_area/spl/spl.tab.c spl.y
+	/opt/local/bin/bison -d -d -o /Users/drewbratcher/projects/Nightly_build_area/spl/spl.tab.c spl.y
 
 spl.tab.h: spl.tab.c
 
 spl_node.c: lex.yy.c
 spl_node.c: spl.structs
 spl_node.c: struct.pl
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_2)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_2)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "Generating spl_node.c, structs.h"
-	perl /Users/drewbratcher/nightly_build_area/spl/struct.pl /Users/drewbratcher/nightly_build_area/spl/spl.structs
+	perl /Users/drewbratcher/projects/Nightly_build_area/spl/struct.pl /Users/drewbratcher/projects/Nightly_build_area/spl/spl.structs
 
 structs.h: spl_node.c
 
 lex.yy.c: spl.l
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_3)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_3)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold "[FLEX][SPLScanner] Building scanner with flex 2.5.35"
-	/opt/local/bin/flex -o/Users/drewbratcher/nightly_build_area/spl/lex.yy.c spl.l
+	/opt/local/bin/flex -o/Users/drewbratcher/projects/Nightly_build_area/spl/lex.yy.c spl.l
 
 CMakeFiles/parse.dir/spl.tab.c.o: CMakeFiles/parse.dir/flags.make
 CMakeFiles/parse.dir/spl.tab.c.o: spl.tab.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_4)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_4)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/parse.dir/spl.tab.c.o"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/parse.dir/spl.tab.c.o   -c /Users/drewbratcher/nightly_build_area/spl/spl.tab.c
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/parse.dir/spl.tab.c.o   -c /Users/drewbratcher/projects/Nightly_build_area/spl/spl.tab.c
 
 CMakeFiles/parse.dir/spl.tab.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/parse.dir/spl.tab.c.i"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /Users/drewbratcher/nightly_build_area/spl/spl.tab.c > CMakeFiles/parse.dir/spl.tab.c.i
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /Users/drewbratcher/projects/Nightly_build_area/spl/spl.tab.c > CMakeFiles/parse.dir/spl.tab.c.i
 
 CMakeFiles/parse.dir/spl.tab.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/parse.dir/spl.tab.c.s"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /Users/drewbratcher/nightly_build_area/spl/spl.tab.c -o CMakeFiles/parse.dir/spl.tab.c.s
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /Users/drewbratcher/projects/Nightly_build_area/spl/spl.tab.c -o CMakeFiles/parse.dir/spl.tab.c.s
 
 CMakeFiles/parse.dir/spl.tab.c.o.requires:
 .PHONY : CMakeFiles/parse.dir/spl.tab.c.o.requires
@@ -95,17 +95,17 @@ CMakeFiles/parse.dir/spl.tab.c.o.provides.build: CMakeFiles/parse.dir/spl.tab.c.
 
 CMakeFiles/parse.dir/spl_node.c.o: CMakeFiles/parse.dir/flags.make
 CMakeFiles/parse.dir/spl_node.c.o: spl_node.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_5)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_5)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/parse.dir/spl_node.c.o"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/parse.dir/spl_node.c.o   -c /Users/drewbratcher/nightly_build_area/spl/spl_node.c
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/parse.dir/spl_node.c.o   -c /Users/drewbratcher/projects/Nightly_build_area/spl/spl_node.c
 
 CMakeFiles/parse.dir/spl_node.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/parse.dir/spl_node.c.i"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /Users/drewbratcher/nightly_build_area/spl/spl_node.c > CMakeFiles/parse.dir/spl_node.c.i
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /Users/drewbratcher/projects/Nightly_build_area/spl/spl_node.c > CMakeFiles/parse.dir/spl_node.c.i
 
 CMakeFiles/parse.dir/spl_node.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/parse.dir/spl_node.c.s"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /Users/drewbratcher/nightly_build_area/spl/spl_node.c -o CMakeFiles/parse.dir/spl_node.c.s
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /Users/drewbratcher/projects/Nightly_build_area/spl/spl_node.c -o CMakeFiles/parse.dir/spl_node.c.s
 
 CMakeFiles/parse.dir/spl_node.c.o.requires:
 .PHONY : CMakeFiles/parse.dir/spl_node.c.o.requires
@@ -118,17 +118,17 @@ CMakeFiles/parse.dir/spl_node.c.o.provides.build: CMakeFiles/parse.dir/spl_node.
 
 CMakeFiles/parse.dir/parse.c.o: CMakeFiles/parse.dir/flags.make
 CMakeFiles/parse.dir/parse.c.o: parse.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_6)
+	$(CMAKE_COMMAND) -E cmake_progress_report /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles $(CMAKE_PROGRESS_6)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/parse.dir/parse.c.o"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/parse.dir/parse.c.o   -c /Users/drewbratcher/nightly_build_area/spl/parse.c
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/parse.dir/parse.c.o   -c /Users/drewbratcher/projects/Nightly_build_area/spl/parse.c
 
 CMakeFiles/parse.dir/parse.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/parse.dir/parse.c.i"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /Users/drewbratcher/nightly_build_area/spl/parse.c > CMakeFiles/parse.dir/parse.c.i
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /Users/drewbratcher/projects/Nightly_build_area/spl/parse.c > CMakeFiles/parse.dir/parse.c.i
 
 CMakeFiles/parse.dir/parse.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/parse.dir/parse.c.s"
-	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /Users/drewbratcher/nightly_build_area/spl/parse.c -o CMakeFiles/parse.dir/parse.c.s
+	/usr/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /Users/drewbratcher/projects/Nightly_build_area/spl/parse.c -o CMakeFiles/parse.dir/parse.c.s
 
 CMakeFiles/parse.dir/parse.c.o.requires:
 .PHONY : CMakeFiles/parse.dir/parse.c.o.requires
@@ -174,6 +174,6 @@ CMakeFiles/parse.dir/depend: spl.tab.h
 CMakeFiles/parse.dir/depend: spl_node.c
 CMakeFiles/parse.dir/depend: structs.h
 CMakeFiles/parse.dir/depend: lex.yy.c
-	cd /Users/drewbratcher/nightly_build_area/spl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/drewbratcher/nightly_build_area/spl /Users/drewbratcher/nightly_build_area/spl /Users/drewbratcher/nightly_build_area/spl /Users/drewbratcher/nightly_build_area/spl /Users/drewbratcher/nightly_build_area/spl/CMakeFiles/parse.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/drewbratcher/projects/Nightly_build_area/spl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/drewbratcher/projects/Nightly_build_area/spl /Users/drewbratcher/projects/Nightly_build_area/spl /Users/drewbratcher/projects/Nightly_build_area/spl /Users/drewbratcher/projects/Nightly_build_area/spl /Users/drewbratcher/projects/Nightly_build_area/spl/CMakeFiles/parse.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/parse.dir/depend
 

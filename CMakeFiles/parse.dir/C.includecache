@@ -6,9 +6,9 @@
 
 #IncludeRegexTransform: 
 
-/Users/drewbratcher/nightly_build_area/spl/config.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/config.h
 
-/Users/drewbratcher/nightly_build_area/spl/lex.yy.c
+/Users/drewbratcher/projects/Nightly_build_area/spl/lex.yy.c
 stdio.h
 -
 string.h
@@ -22,11 +22,11 @@ inttypes.h
 unistd.h
 -
 
-/Users/drewbratcher/nightly_build_area/spl/spl.tab.c
+/Users/drewbratcher/projects/Nightly_build_area/spl/spl.tab.c
 config.h
-/Users/drewbratcher/nightly_build_area/spl/config.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/config.h
 stdio.h
-/Users/drewbratcher/nightly_build_area/spl/stdio.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/stdio.h
 stdlib.h
 -
 malloc.h
@@ -34,9 +34,9 @@ malloc.h
 string.h
 -
 spl_internal.h
-/Users/drewbratcher/nightly_build_area/spl/spl_internal.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/spl_internal.h
 structs.h
-/Users/drewbratcher/nightly_build_area/spl/structs.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/structs.h
 stddef.h
 -
 libintl.h
@@ -52,9 +52,9 @@ stdlib.h
 stdio.h
 -
 lex.yy.c
-/Users/drewbratcher/nightly_build_area/spl/lex.yy.c
+/Users/drewbratcher/projects/Nightly_build_area/spl/lex.yy.c
 
-/Users/drewbratcher/nightly_build_area/spl/spl_internal.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/spl_internal.h
 
-/Users/drewbratcher/nightly_build_area/spl/structs.h
+/Users/drewbratcher/projects/Nightly_build_area/spl/structs.h
 

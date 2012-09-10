@@ -35,11 +35,11 @@ typedef struct _RawData_rec {
 } RawData_rec, *RawData_rec_ptr;
 
 static FMField RawData_field_list [] = {
-	{"a", "integer", sizeof(int), FMOffset(RawData_rec_ptr, a)},
-	{"b", "integer", sizeof(int), FMOffset(RawData_rec_ptr, b)},
-	{"c", "integer", sizeof(int), FMOffset(RawData_rec_ptr, c)},
-	{"d", "integer", sizeof(int), FMOffset(RawData_rec_ptr, d)},
-	{"e", "integer", sizeof(int), FMOffset(RawData_rec_ptr, e)},
+	{"a", "integer", 4, FMOffset(RawData_rec_ptr, a)},
+	{"b", "integer", 4, FMOffset(RawData_rec_ptr, b)},
+	{"c", "integer", 4, FMOffset(RawData_rec_ptr, c)},
+	{"d", "integer", 4, FMOffset(RawData_rec_ptr, d)},
+	{"e", "integer", 4, FMOffset(RawData_rec_ptr, e)},
 	{NULL, NULL, 0, 0}
 };
 
@@ -85,8 +85,8 @@ typedef struct _Sum_rec {
 } Sum_rec, *Sum_rec_ptr;
 
 static FMField Sum_field_list [] = {
-	{"hops", "integer", sizeof(int), FMOffset(Sum_rec_ptr, hops)},
-	{"sum", "integer", sizeof(int), FMOffset(Sum_rec_ptr, sum)},
+	{"hops", "integer", 4, FMOffset(Sum_rec_ptr, hops)},
+	{"sum", "integer", 4, FMOffset(Sum_rec_ptr, sum)},
 	{NULL, NULL, 0, 0}
 };
 
@@ -126,8 +126,8 @@ typedef struct _Hop_rec {
 } Hop_rec, *Hop_rec_ptr;
 
 static FMField Hop_field_list [] = {
-	{"hops", "integer", sizeof(int), FMOffset(Hop_rec_ptr, hops)},
-	{"sum", "integer", sizeof(int), FMOffset(Hop_rec_ptr, sum)},
+	{"hops", "integer", 4, FMOffset(Hop_rec_ptr, hops)},
+	{"sum", "integer", 4, FMOffset(Hop_rec_ptr, sum)},
 	{NULL, NULL, 0, 0}
 };
 

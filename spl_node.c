@@ -13,15 +13,6 @@
 #ifndef NULL
 #define NULL 0
 #endif
-
-extern sm_ref
-spl_new_general_node()
-{
-    sm_ref tmp = malloc(sizeof(*tmp));
-    memset(tmp,0,sizeof(*tmp));
-    tmp->node_type= spl_general;
-    return tmp;
-}
 extern sm_ref
 spl_new_selection_statement()
 {

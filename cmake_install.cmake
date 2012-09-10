@@ -1,4 +1,4 @@
-# Install script for directory: /Users/drewbratcher/nightly_build_area/spl
+# Install script for directory: /Users/drewbratcher/projects/Nightly_build_area/spl
 
 # Set the install prefix
 IF(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -33,7 +33,7 @@ ELSE(CMAKE_INSTALL_COMPONENT)
   SET(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
 ENDIF(CMAKE_INSTALL_COMPONENT)
 
-FILE(WRITE "/Users/drewbratcher/nightly_build_area/spl/${CMAKE_INSTALL_MANIFEST}" "")
+FILE(WRITE "/Users/drewbratcher/projects/Nightly_build_area/spl/${CMAKE_INSTALL_MANIFEST}" "")
 FOREACH(file ${CMAKE_INSTALL_MANIFEST_FILES})
-  FILE(APPEND "/Users/drewbratcher/nightly_build_area/spl/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
+  FILE(APPEND "/Users/drewbratcher/projects/Nightly_build_area/spl/${CMAKE_INSTALL_MANIFEST}" "${file}\n")
 ENDFOREACH(file)
