@@ -30,13 +30,18 @@
 
 static int status;
 static EVdfg test_dfg;
+int repeat_count = 3;
 
 static int end_handler(CManager cm, void *vevent, void *client_data, attr_list attrs)
 {
+    static int count = 0;
     end_rec_ptr event = vevent;
     printf("recieved field 1: %d\n",event->field1);
     printf("recieved field 2: %d\n",event->field2);
-    EVdfg_shutdown(test_dfg, 0);
+    printf("on message:%d\n\n",count++);
+    if(count == repeat_count) {
+        EVdfg_shutdown(test_dfg, 0);
+    }
     return 0;
 }
 

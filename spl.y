@@ -230,7 +230,10 @@ static const char *spl_code_string;
 %type <reference> attributeDecl;
 %type <reference> expr;
 %type <reference> infixOp;
+%type <reference> mappedOp;
 %type <reference> infixExpr;
+%type <reference> prefixOp;
+%type <reference> prefixExpr;
 %type <reference> compositeHead;
 %type <reference> opOutput;
 %type <reference> opInvokeHead;
@@ -1055,8 +1058,8 @@ returnStmt:
 
 expr:
 	prefixExpr   {
-            printf("expr?\n");
-        }
+        	$$=$1;
+	}
 	| infixExpr {
             $$= $1;
         }
@@ -1081,25 +1084,46 @@ expr:
 
 prefixExpr:
 	prefixOp expr {
-            printf("prefixExpr?\n");
-        }
+        	$$= $1;
+		$$->node.operator.right = $2;
+	}
 	;
 
 prefixOp:
 	BANG {
-            printf("prefixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = BANG;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
         | MINUS {
-            printf("prefixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = MINUS;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| TILDE {
-            printf("prefixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = TILDE;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| INC_OP {
-            printf("prefixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = INC_OP;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DEC_OP {
-            printf("prefixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DEC_OP;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	;
 
@@ -1126,91 +1150,195 @@ infixOp:
 	    $$->node.operator.left = NULL;
         }
 	| MINUS {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = MINUS;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| STAR {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = STAR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| SLASH {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = SLASH;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| MODULUS {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = MODULUS;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| LEFT_SHIFT {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = LEFT_SHIFT;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| ">>" {
-            printf("infixOp?\n");
-        }
+        	printf("infixop?\n");	
+	}
 	| ARITH_AND {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = ARITH_AND;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| ARITH_XOR {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = ARITH_XOR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| ARITH_OR {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = ARITH_OR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| LOG_AND {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = LOG_AND;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| LOG_OR {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = LOG_OR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| IN {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = IN;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| LT {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = LT;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| LEQ {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = LEQ;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| '>' {
-            printf("infixOp?\n");
-        }
+        	printf("infixop?\n");
+	}
 	| GEQ {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = GEQ;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| NEQ {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = NEQ;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| EQ {
-            printf("infixOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = EQ;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	;
 
 mappedOp:
 	DOT_PLUS {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_PLUS;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_MINUS {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_PLUS;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_STAR {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_STAR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_SLASH {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_SLASH;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_MODULUS {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_MODULUS;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_LEFT_SHIFT {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_LEFT_SHIFT;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_RIGHT_SHIFT {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_RIGHT_SHIFT;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_ARITH_AND {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_ARITH_AND;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_ARITH_XOR {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_ARITH_XOR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_ARITH_OR {
-            printf("mappedOp?\n");
+	    $$ = spl_new_operator();
+	    $$->node.operator.operation_type = DOT_ARITH_OR;
+	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
+	    $$->node.operator.right = NULL;
+	    $$->node.operator.left = NULL;
         }
 	| DOT_LEQ {
             printf("mappedOp?\n");
@@ -1376,10 +1504,16 @@ tupleLiteral:
 
 primitiveLiteral:
 	TRUE {
-            printf("primitiveLiteral?\n");
+	    $$ = spl_new_constant();
+	    $$->node.constant.token = integer_constant;
+	    $$->node.constant.const_val = "1";
+	    $$->node.constant.lx_srcpos = $1.lx_srcpos;
         }
 	| FALSE {
-            printf("primitiveLiteral?\n");
+	    $$ = spl_new_constant();
+	    $$->node.constant.token = integer_constant;
+	    $$->node.constant.const_val = "0";
+	    $$->node.constant.lx_srcpos = $1.lx_srcpos;
         }
 	| string_constant {
 	    $$ = spl_new_constant();
@@ -1477,57 +1611,89 @@ primitiveType:
             printf("primitiveType?\n");
         }
 	| INT8 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = INT8;
         }
 	| INT16 {
-            printf("primitiveType?\n");
-        }
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = INT16;
+	}
 	| INT32 {
 	    $$ = spl_new_type_specifier();
 	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
 	    $$->node.type_specifier.token = INT32;
 	}
 	| INT64 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = INT64;
         }
 	| INT128 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = INT128;
         }
 	| UINT8 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = UINT8;
         }
 	| UINT16 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = UINT16;
         }
 	| UINT32 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = UINT32;
         }
 	| UINT64 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = UINT64;
         }
 	| UINT128 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = UINT128;
         }
 	| FLOAT32 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = FLOAT32;
         }
 	| FLOAT64 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = FLOAT64;
         }
 	| DECIMAL32 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = DECIMAL32;
         }
 	| DECIMAL64 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = DECIMAL64;
         }
 	| DECIMAL128 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = DECIMAL128;
         }
 	| COMPLEX32 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = COMPLEX32;
         }
 	| COMPLEX64 {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = COMPLEX64;;
         }
 	| TIMESTAMP {
             printf("primitiveType?\n");
@@ -1536,10 +1702,15 @@ primitiveType:
             printf("primitiveType?\n");
         }
 	| STRING8 typeDims_opt {
-            printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = STRING8;
         }
 	| STRING16 {
             printf("primitiveType?\n");
+	    $$ = spl_new_type_specifier();
+	    $$->node.type_specifier.lx_srcpos = $1.lx_srcpos;
+	    $$->node.type_specifier.token = STRING16;
         }
 	;
 
@@ -1777,10 +1948,74 @@ void print_struct(FILE* fp, const char *name, sm_list ids){
     fprintf(fp,"} %s_rec, *%s_rec_ptr;\n\n",name,name);
 }
 
+const char *get_FMField_type(int cg_type){
+	switch(cg_type){
+		default:
+		case INT8:
+		case INT16:
+		case INT32:
+		case INT64:
+		case INT128:
+			return "integer";
+		case UINT8:
+		case UINT16:
+		case UINT32:
+		case UINT64:
+		case UINT128:
+			return "unsigned integer";
+		case FLOAT32:
+		case FLOAT64:
+			return "float";
+		case DECIMAL32:
+		case DECIMAL64:
+		case DECIMAL128:
+			return "double";
+		case STRING8:
+		case STRING16:
+			return "char";
+		case COMPLEX32:
+		case COMPLEX64:
+			return "complex";
+	}
+}
+
+int get_FMField_size(int cg_type){
+	switch(cg_type){
+		default:
+		case INT32:
+		case UINT32:
+		case FLOAT32:
+		case DECIMAL32:
+		case COMPLEX32:
+			return 4;
+		case INT8:
+		case UINT8:
+			return 1;
+		case INT16:
+		case UINT16:
+			return 2;
+		case INT64:
+		case UINT64:
+		case FLOAT64:
+		case DECIMAL64:
+		case COMPLEX64:
+		case STRING8:
+			return 8;
+		case INT128:
+		case UINT128:
+		case DECIMAL128:
+		case STRING16:
+			return 16;
+	}
+}
+
 void print_FMfield(FILE* fp, const char * name, sm_list ids) {
     fprintf(fp,"static FMField %s_field_list [] = {\n",name);
     while(ids != NULL){
-        fprintf(fp,"\t{\"%s\", \"integer\", sizeof(int), FMOffset(%s_rec_ptr, %s)},\n",ids->node->node.identifier.id,name,ids->node->node.identifier.id);
+	char *id = ids->node->node.identifier.id;
+        const char* type=get_FMField_type(ids->node->node.identifier.cg_type);
+	int size = get_FMField_size(ids->node->node.identifier.cg_type);
+	fprintf(fp,"\t{\"%s\", \"%s\", %d, FMOffset(%s_rec_ptr, %s)},\n",id, type, size, name,id);
         ids=ids->next;
     }
     fprintf(fp,"\t{NULL, NULL, 0, 0}\n");
