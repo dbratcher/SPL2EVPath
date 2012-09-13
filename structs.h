@@ -6,7 +6,6 @@ struct list_struct {
 };
 
 typedef enum {
-    spl_general,
     spl_selection_statement,
     spl_assignment_expression,
     spl_reference_type_decl,
@@ -36,12 +35,6 @@ typedef struct {
     sm_ref else_part;
     srcpos lx_srcpos;
 } selection_statement;
-
-
-typedef struct {
-    sm_list types;
-    sm_ref id;
-} general;
 
 typedef struct {
     int cg_type;

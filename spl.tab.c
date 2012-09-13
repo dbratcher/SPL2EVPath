@@ -130,7 +130,7 @@ static const char *spl_code_string;
 
 
 /* Line 268 of yacc.c  */
-#line 134 "/Users/drewbratcher/nightly_build_area/spl/spl.tab.c"
+#line 134 "/home/drew/projects/SPL2EVPath/spl.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -331,7 +331,7 @@ typedef union YYSTYPE
 
 
 /* Line 293 of yacc.c  */
-#line 335 "/Users/drewbratcher/nightly_build_area/spl/spl.tab.c"
+#line 335 "/home/drew/projects/SPL2EVPath/spl.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -343,7 +343,7 @@ typedef union YYSTYPE
 
 
 /* Line 343 of yacc.c  */
-#line 347 "/Users/drewbratcher/nightly_build_area/spl/spl.tab.c"
+#line 347 "/home/drew/projects/SPL2EVPath/spl.tab.c"
 
 #ifdef short
 # undef short
@@ -5064,7 +5064,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 5068 "/Users/drewbratcher/nightly_build_area/spl/spl.tab.c"
+#line 5068 "/home/drew/projects/SPL2EVPath/spl.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -5626,6 +5626,9 @@ void program2(sm_ref one, sm_list two) {
             printf("line %d:\n",j++);
             spl_print(alist->node);
             spl_print(alist->node->node.field.type_spec->node);
+            if(alist->node->node.field.type_spec->node->node.field.sm_complex_type){
+                spl_print(alist->node->node.field.type_spec->node->node.field.sm_complex_type);
+            }
             alist=alist->next;
         }
         printf("\n\n");

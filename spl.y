@@ -1954,6 +1954,9 @@ void program2(sm_ref one, sm_list two) {
             printf("line %d:\n",j++);
             spl_print(alist->node);
             spl_print(alist->node->node.field.type_spec->node);
+            if(alist->node->node.field.type_spec->node->node.field.sm_complex_type){
+                spl_print(alist->node->node.field.type_spec->node->node.field.sm_complex_type);
+            }
             alist=alist->next;
         }
         printf("\n\n");
