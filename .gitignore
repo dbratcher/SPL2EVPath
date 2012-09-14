@@ -2,4 +2,10 @@ CMakeCache.txt
 CMakeFiles/
 Makefile
 parse
+config.h
+cmake_install.cmake
+lex.yy.c
+main.c
+spl.tab.c
+spl.tab.h
 evpath
