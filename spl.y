@@ -53,8 +53,7 @@ static sm_ref yyparse_value;
 static int yyerror_count = 1;
 extern void yyerror(char *str);
 static int parsing_type = 0;
-void program1(sm_ref one, sm_list two);
-void program2(sm_ref one, sm_list two);
+void process_graph( sm_list two);
 static int parsing_param_spec = 0;
 static spl_parse_context yycontext;
 static const char *spl_code_string;
@@ -458,8 +457,7 @@ graph_opt:
 	/*empty*/
 	| GRAPH opInvoke_list {
             printf("printing program to main.c\n");
-            //program1(NULL, $2); //prints individual stones each with with its own output type
-            program2(NULL,$2); //closer to dfg_chain_test
+            process_graph($2);
         }
 	;
 
@@ -2047,7 +2045,7 @@ void print_child(FILE* fp, const char *name) {
     fprintf(fp, "}\n");
 }
 
-void program2(sm_ref one, sm_list two) {
+void process_graph( sm_list two) {
     FILE* fp = fopen("main.c", "w");
     fprintf(fp,"#include <stdio.h>\n");
     fprintf(fp,"#include <stdlib.h>\n");
@@ -2063,7 +2061,9 @@ void program2(sm_ref one, sm_list two) {
     sm_list tmp = two;
     while (tmp != NULL) {
         //pull relevant parts out of abstract syntax tree
-        sm_ref left_stream_decl=tmp->node->node.assignment_expression.left->node.assignment_expression.left->node.field.type_spec->node;
+        sm_ref stream = tmp->node;
+        sm_ref stream_decl = stream->node.assignment_expression.left;
+        sm_ref left_stream_decl=stream_decl->node.assignment_expression.left->node.field.type_spec->node;
         const char * stream_name=left_stream_decl->node.field.name;
         sm_list output_ids= left_stream_decl->node.field.type_spec;
         printf("stream name:%s\n",stream_name);
@@ -2074,26 +2074,35 @@ void program2(sm_ref one, sm_list two) {
             ids=ids->next;
         }
         printf("\n");
-        const char *right_side_name = tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.name;
-        printf("right side name:%s\n",right_side_name);
-        if(tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec){
-            const char *input=tmp->node->node.assignment_expression.left->node.assignment_expression.right->node.field.type_spec->node->node.field.type_spec->node->node.identifier.id;
+        sm_ref right_stream_decl=stream_decl->node.assignment_expression.right;
+        const char *right_side_name = right_stream_decl->node.field.name;
+        printf("structure type:%s\n",right_side_name);
+        if(right_stream_decl->node.field.type_spec){
+            const char *input=right_stream_decl->node.field.type_spec->node->node.field.type_spec->node->node.identifier.id;
             printf("stream input:%s\n",input);
         }
-        printf("right side:");
-        spl_print(tmp->node->node.assignment_expression.right);
-        sm_list alist=tmp->node->node.assignment_expression.right->node.field.type_spec;
+
+
+        printf("Body:");
+        sm_ref body = stream->node.assignment_expression.right;
+        spl_print(body);
+
+        sm_list lines=body->node.field.type_spec;
         int j=1;
-        while(alist && alist->node){
-            printf("line %d:\n",j++);
-            spl_print(alist->node);
-            spl_print(alist->node->node.field.type_spec->node);
-            if(alist->node->node.field.type_spec->node->node.field.sm_complex_type){
-                spl_print(alist->node->node.field.type_spec->node->node.field.sm_complex_type);
+        while(lines && lines->node){
+            printf("\n\nline %d:\n",j++);
+            spl_print(lines->node);
+            printf("line type_spec:\n");
+            spl_print(lines->node->node.field.type_spec->node);
+            if(lines->node->node.field.type_spec->node->node.field.sm_complex_type){
+                printf("line type_spec complex type\n");
+                spl_print(lines->node->node.field.type_spec->node->node.field.sm_complex_type);
             }
-            alist=alist->next;
+            lines=lines->next;
         }
         printf("\n\n");
+        
+
         //print filter
         print_filter(fp, stream_name, output_ids);
         
