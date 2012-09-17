@@ -54,6 +54,7 @@ static int yyerror_count = 1;
 extern void yyerror(char *str);
 static int parsing_type = 0;
 void process_graph( sm_list two);
+char *process_expr(sm_ref node, const char *str);
 static int parsing_param_spec = 0;
 static spl_parse_context yycontext;
 static const char *spl_code_string;
@@ -665,8 +666,6 @@ portInputs:
 opInvokeBody:
 	LCURLY invoke_logic_opt invoke_window_opt invoke_actual_opt invoke_output_opt invoke_config_opt RCURLY {
             sm_list temp_list = NULL;
-                    printf("start\n");
-                    fflush(stdout);
             if($2!=NULL){
                     printf("two\n");
                     fflush(stdout);
@@ -688,8 +687,6 @@ opInvokeBody:
                 }
             }
             if($4!=NULL){
-                    printf("four\n");
-                    fflush(stdout);
                 sm_ref temp3 = spl_new_field();
                 temp3->node.field.type_spec = $4;
                 temp3->node.field.name = "invoke_actual";
@@ -709,8 +706,6 @@ opInvokeBody:
                 }
             }
             if($5!=NULL){
-                    printf("five\n");
-                    fflush(stdout);
                 sm_ref temp4 = spl_new_field();
                 temp4->node.field.type_spec = $5;
                 temp4->node.field.name = "invoke_output";
@@ -888,6 +883,9 @@ assign_expr_list:
             $$ = malloc(sizeof(struct list_struct));
             sm_ref tmp = spl_new_assignment_expression();
             tmp->node.assignment_expression.right= $3;
+            sm_ref id = spl_new_identifier();
+            id->node.identifier.id=$1.string;
+            tmp->node.assignment_expression.left= id;
             $$->node = tmp;
             $$->next = NULL;
         }
@@ -1799,6 +1797,62 @@ attributeDecl:
 
 typedef struct scope *scope_ptr;
 
+typedef struct _symbol {
+    sm_ref node;
+    char *name;
+    int type;
+    struct _symbol *next;
+} Symbol;
+
+Symbol *list=NULL;
+int stream_count=0;
+
+void add_symbol(sm_ref node, const char *name, int type){
+    Symbol *temp=list;
+    if(temp==NULL){
+        list=malloc(sizeof(Symbol));
+        temp=list;
+    } else {
+        while(temp->next){
+            temp=temp->next;
+        }
+        temp->next = malloc(sizeof(Symbol));
+        temp=temp->next;
+    }
+    temp->type=type;
+    temp->node=node;
+    temp->name=strdup(name);
+    if(type==1){
+        stream_count++;
+    }
+}
+
+sm_ref find_next_type(Symbol *start, int type) {
+    sm_ref temp=NULL;
+    while(start && start->type != type) {
+        start=start->next;
+    }
+    if(start) {
+        temp=start->node;
+    }
+    return temp;
+}
+
+sm_ref find_stream(const char *name) {
+    Symbol *temp=list;
+    while(temp && strcmp(temp->name, name)!=0){
+        while(temp && temp->type != 1) {
+            temp=temp->next;
+        }
+        temp=temp->next;
+    }
+    sm_ref temp2=NULL;
+    if(temp){
+        temp2=temp->node;
+    }
+    return temp2;
+}
+
 struct parse_struct {
     sm_list decls;
     sm_list standard_decls;
@@ -1836,26 +1890,24 @@ void print_filter(FILE* fp, const char *name, sm_list ids) {
     fprintf(fp,"}\\0\\0\";\n\n");
 }
 
-void print_transforms(FILE* fp, const char *name, sm_list inputs, sm_list lines){
-    while( inputs!=NULL ) {
-        const char* input_name = inputs->node->node.identifier.id;
-        fprintf(fp,"static char* %s_to_%s_transform = \"{\\n\\\n", input_name,name);
-        
-        //remove
-        if(strcmp(input_name, "RawData")==0){
-            fprintf(fp,"    output.sum = input.a + input.b + input.c + input.d + input.e;\\n\\\n");
-            fprintf(fp,"    output.hops = 1;\\n\\\n");
-        }  else if(strcmp(input_name, "Sum")==0){
-            fprintf(fp,"    output.sum = input.sum;\\n\\\n");
-            fprintf(fp,"    output.hops = input.hops+1;\\n\\\n");    
+void print_transforms(FILE* fp, const char *name, const char *input, sm_list lines){
+    fprintf(fp,"static char* %s_to_%s_transform = \"{\\n\\\n", input,name);
+    
+    while(lines && lines->node){
+        printf("output line:\n");
+        if(lines->node->node.assignment_expression.left){
+            fprintf(fp,"    %s", process_expr(lines->node->node.assignment_expression.left,"output."));
         }
-        
-        
-        
-        fprintf(fp,"    return 1;\\n\\\n");
-        fprintf(fp,"}\";\n\n\n");
-        inputs=inputs->next;
+        if(lines->node->node.assignment_expression.right){
+            fprintf(fp," = %s;\\n\\\n", process_expr(lines->node->node.assignment_expression.right,"input."));
+        }
+        lines=lines->next;
     }
+    
+    
+    
+    fprintf(fp,"    return 1;\\n\\\n");
+    fprintf(fp,"}\";\n\n\n");
 }
 
 void print_struct(FILE* fp, const char *name, sm_list ids){
@@ -1970,6 +2022,194 @@ void print_generate(FILE* fp, const char *name, sm_list ids) {
     fprintf(fp, "}\n\n");
 }
 
+
+char *process_expr(sm_ref node, const char *str){
+    if(node->node_type==spl_operator){
+        char *buffer=calloc(sizeof(char),100);
+        if(node->node.operator.operation_type == PLUS){
+            strcpy(buffer, process_expr(node->node.operator.left, str));
+            strcat(buffer, " + ");
+            strcat(buffer, process_expr(node->node.operator.right, str));
+            return buffer;
+        } else {
+            printf("ERROR!!!!\n\n\n\n");
+        }
+    } else if(node->node_type == spl_identifier){
+        char *buffer=calloc(sizeof(char),100);
+        strcpy(buffer, str);
+        strcat(buffer, node->node.identifier.id);
+        return buffer;
+    } else if (node->node_type == spl_constant){
+        return node->node.constant.const_val;
+    }
+    return "unknown";
+}
+
+char *get_stream_type(sm_ref stream){
+    sm_ref stream_decl = stream->node.assignment_expression.left;
+    sm_ref right_stream_decl=stream_decl->node.assignment_expression.right;
+    char *stream_type = right_stream_decl->node.field.name;
+    return stream_type;
+}
+
+char *get_stream_input_name(sm_ref stream){
+    sm_ref stream_decl = stream->node.assignment_expression.left;
+    sm_ref right_stream_decl=stream_decl->node.assignment_expression.right;
+    sm_list inputs=NULL;
+    char *input=NULL;
+    if(right_stream_decl->node.field.type_spec){
+        inputs = right_stream_decl->node.field.type_spec->node->node.field.type_spec;
+        input = inputs->node->node.identifier.id;
+    }
+    return input;
+}
+
+const char *get_print_type(int cg_type){
+    switch(cg_type){
+		default:
+		case INT8:
+		case INT16:
+		case INT32:
+		case INT64:
+		case INT128:
+			return "d";
+		case UINT8:
+		case UINT16:
+		case UINT32:
+		case UINT64:
+		case UINT128:
+			return "u";
+		case FLOAT32:
+		case FLOAT64:
+			return "g";
+		case DECIMAL32:
+		case DECIMAL64:
+		case DECIMAL128:
+			return "g";
+		case STRING8:
+		case STRING16:
+			return "s";
+		case COMPLEX32:
+		case COMPLEX64:
+			return "d";
+	}
+}
+
+sm_list get_stream_output_ids(sm_ref stream){
+    sm_ref stream_decl = stream->node.assignment_expression.left;
+    sm_ref left_stream_decl=stream_decl->node.assignment_expression.left->node.field.type_spec->node;
+    sm_list output_ids= left_stream_decl->node.field.type_spec;
+    return output_ids;
+}
+
+const char *get_file_name(sm_ref stream){
+    sm_ref body = stream->node.assignment_expression.right;
+    sm_list blocks=body->node.field.type_spec;
+    char * block_name=NULL;
+    sm_list lines=NULL;
+    sm_list inside_lines=NULL;
+    while(blocks && blocks->node){
+        block_name = blocks->node->node.field.name;
+        lines = blocks->node->node.field.type_spec;
+        while(lines && lines->node){
+            if(strcmp(lines->node->node.field.name,"file")==0){
+                return lines->node->node.field.sm_complex_type->node.field.type_spec->node->node.constant.const_val;
+            }
+            lines=lines->next;
+        }
+        blocks=blocks->next;
+    }
+    printf("\n\n");
+}
+
+void print_active_sources(FILE* fp){
+    Symbol *temp=list;
+    while(temp){
+        if(strcmp(get_stream_type(temp->node),"FileSource")==0){
+            const char * file_name = get_file_name(temp->node);
+            fprintf(fp, "   if (EVdfg_source_active(%s_source_handle)) {\n", temp->name);
+            fprintf(fp, "       %s_rec rec;\n", temp->name);
+            fprintf(fp, "       attr_list attrs = create_attr_list();\n");
+            fprintf(fp, "       FILE* file = fopen(\"%s\",\"r\");\n", file_name);
+            fprintf(fp, "       if(file) {\n");
+            fprintf(fp, "           while(!feof(file)) { \n");
+            
+            
+            fprintf(fp, "               fscanf(file, \"");
+            sm_list myids= get_stream_output_ids(temp->node);
+            while(myids != NULL){
+                const char* type=get_print_type(myids->node->node.identifier.cg_type);
+                fprintf(fp, "%%%s",type);
+                myids=myids->next;
+                if(myids){
+                    fprintf(fp, ",");
+                }
+            }
+            fprintf(fp, "\",");
+            myids= get_stream_output_ids(temp->node);
+            while(myids != NULL){
+                char *id = myids->node->node.identifier.id;
+                fprintf(fp, "&rec.%s",id);
+                myids=myids->next;
+                if(myids){
+                    fprintf(fp,",");
+                }
+            }
+            fprintf(fp, ");\n");
+            fprintf(fp, "               EVsubmit(%s_source_handle, &rec, attrs);\n", temp->name);
+            fprintf(fp, "           }\n");
+            fprintf(fp, "           fclose(file);\n");
+            fprintf(fp, "        } else {  \n");
+            fprintf(fp, "           generate_%s_record(&rec);\n", temp->name);
+            fprintf(fp, "           EVsubmit(%s_source_handle, &rec, attrs);\n", temp->name);
+            fprintf(fp, "       }\n");
+            fprintf(fp, "   }\n");
+        }
+        temp=temp->next;
+    }
+}
+
+void print_sink_handler(FILE* fp, const char *name, const char *input_name, const char* file_name){
+    sm_ref input_stream = find_stream(input_name);
+    sm_list ids = get_stream_output_ids(input_stream);
+    fprintf(fp,"static int %s_handler(CManager cm, void *vevent, void *client_data, attr_list attrs) {\n",name);
+    fprintf(fp,"\t%s_rec_ptr event = vevent;\n",input_name);
+    fprintf(fp,"\tprintf(\"%s got a struct with the following :\\n\");\n",name);
+    fflush(stdout);
+    while(ids !=NULL){
+        fprintf(fp,"\tprintf(\"%s:%%d\\n\",event->%s);\n",ids->node->node.identifier.id,ids->node->node.identifier.id);
+        ids=ids->next;
+    }
+    fprintf(fp,"\tprintf(\"printing to file %s:\\n\");\n",file_name);
+    fprintf(fp,"\tFILE* fp=fopen(\"%s\",\"a\");\n",file_name);
+    fprintf(fp, "\tfprintf(fp, \"");
+    ids = get_stream_output_ids(input_stream);
+    fflush(stdout);
+    while(ids != NULL){
+        const char* type=get_print_type(ids->node->node.identifier.cg_type);
+        fprintf(fp, "%%%s",type);
+        ids=ids->next;
+        if(ids){
+            fprintf(fp, ",");
+        }
+    }
+    fprintf(fp, "\\n\",");
+    ids= get_stream_output_ids(input_stream);
+    fflush(stdout);
+    while(ids != NULL){
+        char *id = ids->node->node.identifier.id;
+        fprintf(fp, "event->%s",id);
+        ids=ids->next;
+        if(ids){
+            fprintf(fp,",");
+        }
+    }
+    fprintf(fp, ");\n");
+    fprintf(fp,"\tfclose(fp);\n",file_name);
+    fprintf(fp,"}\n",file_name);
+    
+}
+
 void process_graph( sm_list two) {
     FILE* fp = fopen("main.c", "w");
     fprintf(fp,"#include <stdio.h>\n");
@@ -2000,8 +2240,8 @@ void process_graph( sm_list two) {
         }
         printf("\n");
         sm_ref right_stream_decl=stream_decl->node.assignment_expression.right;
-        const char *right_side_name = right_stream_decl->node.field.name;
-        printf("structure type:%s\n",right_side_name);
+        const char *stream_type = right_stream_decl->node.field.name;
+        printf("structure type:%s\n",stream_type);
         sm_list inputs=NULL;
         const char *input=NULL;
         if(right_stream_decl->node.field.type_spec){
@@ -2011,29 +2251,49 @@ void process_graph( sm_list two) {
         }
 
 
-        printf("Body:");
+        printf("Body:\n");
         sm_ref body = stream->node.assignment_expression.right;
-        spl_print(body);
-
-        sm_list lines=body->node.field.type_spec;
-        int j=1;
-        while(lines && lines->node){
-            printf("\n\nline %d:\n",j++);
-            spl_print(lines->node);
-            printf("line type_spec:\n");
-            spl_print(lines->node->node.field.type_spec->node);
-            if(lines->node->node.field.type_spec->node->node.field.sm_complex_type){
-                printf("line type_spec complex type\n");
-                spl_print(lines->node->node.field.type_spec->node->node.field.sm_complex_type);
+        sm_list blocks=body->node.field.type_spec;
+        printf("Blocks:\n");
+        char * block_name=NULL;
+        sm_list lines=NULL;
+        sm_list inside_lines=NULL;
+        while(blocks && blocks->node){
+            block_name = blocks->node->node.field.name;
+            printf("block name:%s\n", block_name);
+            lines = blocks->node->node.field.type_spec;
+            sm_list temp=lines;
+            while(temp && temp->node){
+                if(strcmp(block_name,"invoke_output")==0){
+                    inside_lines = lines->node->node.field.type_spec;
+                    sm_list temp2=inside_lines;
+                    while(temp2 && temp2->node){
+                        printf("output line:\n");
+                        if(temp2->node->node.assignment_expression.left){
+                            printf("assign left:%s\n", process_expr(temp2->node->node.assignment_expression.left, "output."));
+                        }
+                        if(temp2->node->node.assignment_expression.right){
+                            printf("assign right:%s\n", process_expr(temp2->node->node.assignment_expression.right, "input."));
+                        }
+                        
+                        temp2=temp2->next;   
+                    }
+                } else if(strcmp(block_name, "invoke_actual")==0) {
+                    const char *file_name = get_file_name(stream);
+                    printf("filename:%s\n",file_name);
+                    break;
+                }
+                temp=temp->next;   
             }
-            lines=lines->next;
+            blocks=blocks->next;
         }
         printf("\n\n");
         
+        add_symbol(stream, stream_name, 1);
 
         //print transform for each input
-        if(input!=NULL){
-            print_transforms(fp, stream_name, inputs, body->node.field.type_spec);
+        if(strcmp(block_name,"invoke_output")==0){
+            print_transforms(fp, stream_name, input, inside_lines);
         }
         
         //print struct
@@ -2045,8 +2305,11 @@ void process_graph( sm_list two) {
         //print FMstruct
         print_FMstruct(fp, stream_name);
         
-        //print handler
-        print_handler(fp, stream_name, output_ids);
+        if(strcmp(stream_type,"FileSink")==0){
+            //print handler
+            const char *file_name = get_file_name(stream);
+            print_sink_handler(fp, stream_name, input, file_name);
+        }
         
         //print generate functions
         print_generate(fp, stream_name, output_ids);
@@ -2070,23 +2333,20 @@ void process_graph( sm_list two) {
     
     // print stream names
     fprintf(fp, "    char **nodes;\n");
-    fprintf(fp, "    int node_count = 4;\n");
+    fprintf(fp, "    int node_count = %d;\n", stream_count);
     fprintf(fp, "    int i=0;\n");
     fprintf(fp, "    nodes = malloc(sizeof(nodes[0]) * (node_count+1));\n");
-    fprintf(fp, "    /* RawData Stream */\n");
-    fprintf(fp, "    nodes[i] = strdup(\"RawData\");\n");
-    fprintf(fp, "    i++;\n");
-    fprintf(fp, "    EVsource RawData_source_handle;\n");
-    fprintf(fp, "    /* Sum Stream */\n");
-    fprintf(fp, "    nodes[i] = strdup(\"Sum\");\n");
-    fprintf(fp, "    i++;\n");
-    fprintf(fp, "    /* Hop Stream */\n");
-    fprintf(fp, "    nodes[i] = strdup(\"Hop\");\n");
-    fprintf(fp, "    i++;\n");
-    fprintf(fp, "    /* SinkOp Stream */\n");
-    fprintf(fp, "    nodes[i] = strdup(\"SinkOp\");\n");
-    fprintf(fp, "    i++;\n");
     
+    Symbol *temp=list;
+    while(temp){
+        fprintf(fp, "    /* %s Stream */\n", temp->name);
+        fprintf(fp, "    nodes[i] = strdup(\"%s\");\n", temp->name);
+        fprintf(fp, "    i++;\n");
+        if(strcmp(get_stream_type(temp->node),"FileSource")==0){
+            fprintf(fp, "    EVsource %s_source_handle;\n", temp->name);    
+        }
+        temp=temp->next;
+    }
     
     // print initialization
     fprintf(fp, "    printf(\"initializing\\n\");\n");
@@ -2102,34 +2362,32 @@ void process_graph( sm_list two) {
     fprintf(fp, "    test_dfg = EVdfg_create(cm);\n");
     fprintf(fp, "    EVdfg_register_node_list(test_dfg, &nodes[0]);\n");
     
-    // print transforms
-    fprintf(fp, "    printf(\"--setting up sources\\n\");\n");
-    fprintf(fp, "    fflush(stdout);\n");
-    fprintf(fp, "    /* setup sources */\n");
-    fprintf(fp, "    RawData_source_handle = EVcreate_submit_handle(cm, -1, RawData_format_list);\n");
-    fprintf(fp, "    EVdfg_register_source(\"RawData\", RawData_source_handle);\n");
-    fprintf(fp, "    src = EVdfg_create_source_stone(test_dfg, \"RawData\");\n");
-    fprintf(fp, "    EVdfg_assign_node(src, nodes[0]);\n");
-    fprintf(fp, "    printf(\"--setting up transforms\\n\");\n");
-    fprintf(fp, "    fflush(stdout);\n");
-    fprintf(fp, "    /* set up transforms and links in graph */\n");
-    fprintf(fp, "    transform = create_transform_action_spec(RawData_format_list, Sum_format_list, RawData_to_Sum_transform);\n");
-    fprintf(fp, "    dst = EVdfg_create_stone(test_dfg, transform);\n");
-    fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
-    fprintf(fp, "    EVdfg_assign_node(dst, nodes[1]);\n");
-    fprintf(fp, "    src=dst;\n");
-    fprintf(fp, "    transform = create_transform_action_spec(Sum_format_list, Hop_format_list, Sum_to_Hop_transform);\n");
-    fprintf(fp, "    dst = EVdfg_create_stone(test_dfg, transform);\n");
-    fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
-    fprintf(fp, "    EVdfg_assign_node(dst, nodes[2]);\n");
-    fprintf(fp, "    src=dst;\n");
-    fprintf(fp, "        printf(\"setting up sinks\\n\");\n");
-    fprintf(fp, "    fflush(stdout);\n");
-    fprintf(fp, "    /* set up sinks */ \n");
-    fprintf(fp, "    EVdfg_register_sink_handler(cm, \"SinkOp_handler\", Hop_format_list, (EVSimpleHandlerFunc) Hop_handler);\n");
-    fprintf(fp, "    dst = EVdfg_create_sink_stone(test_dfg, \"SinkOp_handler\");\n");
-    fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
-    fprintf(fp, "    EVdfg_assign_node(dst, nodes[3]);   \n");
+    // setup graph
+    temp=list;
+    int cnt=0;
+    while(temp){
+        if(strcmp(get_stream_type(temp->node),"FileSource")==0){
+            fprintf(fp, "    %s_source_handle = EVcreate_submit_handle(cm, -1, %s_format_list);\n", temp->name, temp->name);
+            fprintf(fp, "    EVdfg_register_source(\"%s\", %s_source_handle);\n", temp->name, temp->name);
+            fprintf(fp, "    src = EVdfg_create_source_stone(test_dfg, \"%s\");\n", temp->name);
+            fprintf(fp, "    EVdfg_assign_node(src, nodes[%d]);\n", cnt);  
+        } else if (strcmp(get_stream_type(temp->node),"FileSink")==0){
+            char *input_name = get_stream_input_name(temp->node);
+            fprintf(fp, "    EVdfg_register_sink_handler(cm, \"%s_handler\", %s_format_list, (EVSimpleHandlerFunc) %s_handler);\n",temp->name, input_name, temp->name);
+            fprintf(fp, "    dst = EVdfg_create_sink_stone(test_dfg, \"%s_handler\");\n", temp->name);
+            fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
+            fprintf(fp, "    EVdfg_assign_node(dst, nodes[%d]);   \n",cnt);
+        } else {
+            char *input_name = get_stream_input_name(temp->node);
+            fprintf(fp, "    transform = create_transform_action_spec(%s_format_list, %s_format_list, %s_to_%s_transform);\n", input_name, temp->name, input_name, temp->name);
+            fprintf(fp, "    dst = EVdfg_create_stone(test_dfg, transform);\n");
+            fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
+            fprintf(fp, "    EVdfg_assign_node(dst, nodes[%d]);\n", cnt);
+            fprintf(fp, "    src=dst;\n");
+        }
+        cnt++;
+        temp=temp->next;
+    }
     
     // print startup
     fprintf(fp, "    EVdfg_realize(test_dfg);\n");
@@ -2141,21 +2399,7 @@ void process_graph( sm_list two) {
     fprintf(fp, "    }\n");
     
     // print active sources
-    fprintf(fp, "   if (EVdfg_source_active(RawData_source_handle)) {\n");
-    fprintf(fp, "       RawData_rec rec;\n");
-    fprintf(fp, "       attr_list attrs = create_attr_list();\n");
-    fprintf(fp, "       FILE* file = fopen(\"SourceData.csv\",\"r\");\n");
-    fprintf(fp, "       if(file) {\n");
-    fprintf(fp, "           while(!feof(file)) { \n");
-    fprintf(fp, "               fscanf(file, \"%%d,%%d,%%d,%%d,%%d\",&rec.a,&rec.b,&rec.c,&rec.d,&rec.e);\n"); 
-    fprintf(fp, "               EVsubmit(RawData_source_handle, &rec, attrs);\n");
-    fprintf(fp, "           }\n");
-    fprintf(fp, "           fclose(file);\n");
-    fprintf(fp, "        } else {  \n");
-    fprintf(fp, "           generate_RawData_record(&rec);\n");
-    fprintf(fp, "           EVsubmit(RawData_source_handle, &rec, attrs);\n");
-    fprintf(fp, "       }\n");
-    fprintf(fp, "   }\n");
+    print_active_sources(fp);
     
     // print shutdown check
     fprintf(fp, "   if (EVdfg_active_sink_count(test_dfg) == 0) {\n");
@@ -2168,9 +2412,6 @@ void process_graph( sm_list two) {
     fprintf(fp, "   CManager_close(cm);\n");
     fprintf(fp, "   return status;\n");
     fprintf(fp, "}\n\n");
-
-    
-    
     
     
     
@@ -2187,13 +2428,23 @@ void process_graph( sm_list two) {
     fprintf(fp, "       exit(1);\n");
     fprintf(fp, "   }\n");
     fprintf(fp, "   test_dfg = EVdfg_create(cm);\n");
-    fprintf(fp, "   src = EVcreate_submit_handle(cm, -1, RawData_format_list);\n");
-    fprintf(fp, "    /* setup sources */\n");
-    fprintf(fp, "   EVsource RawData_source_handle;\n");
-    fprintf(fp, "    RawData_source_handle = EVcreate_submit_handle(cm, -1, RawData_format_list);\n");
-    fprintf(fp, "    EVdfg_register_source(\"RawData\", RawData_source_handle);\n");
-    fprintf(fp, "   EVdfg_register_source(\"RawData\", src);\n");
-    fprintf(fp, "   EVdfg_register_sink_handler(cm, \"SinkOp_handler\", Hop_format_list, (EVSimpleHandlerFunc) Hop_handler);\n");
+    
+    
+    temp=list;
+    while(temp){
+        if(strcmp(get_stream_type(temp->node),"FileSource")==0){
+            fprintf(fp, "   src = EVcreate_submit_handle(cm, -1, %s_format_list);\n", temp->name);
+            fprintf(fp, "   EVsource %s_source_handle;\n", temp->name);
+            fprintf(fp, "    %s_source_handle = EVcreate_submit_handle(cm, -1, %s_format_list);\n", temp->name, temp->name);
+            fprintf(fp, "    EVdfg_register_source(\"%s\", %s_source_handle);\n", temp->name, temp->name);
+            fprintf(fp, "   EVdfg_register_source(\"%s\", src);\n", temp->name);
+        } else 
+        if(strcmp(get_stream_type(temp->node),"FileSink")==0){
+            char *input_name = get_stream_input_name(temp->node);
+            fprintf(fp, "   EVdfg_register_sink_handler(cm, \"%s_handler\", %s_format_list, (EVSimpleHandlerFunc) %s_handler);\n", temp->name, input_name, temp->name);
+        }
+        temp=temp->next;
+    }
     fprintf(fp, "   EVdfg_join_dfg(test_dfg, argv[1], argv[2]);\n");
     fprintf(fp, "   EVdfg_ready_wait(test_dfg);\n");
     
@@ -2203,21 +2454,7 @@ void process_graph( sm_list two) {
     fprintf(fp, "   }\n");
     
     // print active sources
-    fprintf(fp, "   if (EVdfg_source_active(RawData_source_handle)) {\n");
-    fprintf(fp, "       RawData_rec rec;\n");
-    fprintf(fp, "       attr_list attrs = create_attr_list();\n");
-    fprintf(fp, "       FILE* file = fopen(\"SourceData.csv\",\"r\");\n");
-    fprintf(fp, "       if(file) {\n");
-    fprintf(fp, "           while(!feof(file)) { \n");
-    fprintf(fp, "               fscanf(file, \"%%d,%%d,%%d,%%d,%%d\",&rec.a,&rec.b,&rec.c,&rec.d,&rec.e);\n"); 
-    fprintf(fp, "               EVsubmit(RawData_source_handle, &rec, attrs);\n");
-    fprintf(fp, "           }\n");
-    fprintf(fp, "           fclose(file);\n");
-    fprintf(fp, "        } else {  \n");
-    fprintf(fp, "           generate_RawData_record(&rec);\n");
-    fprintf(fp, "           EVsubmit(RawData_source_handle, &rec, attrs);\n");
-    fprintf(fp, "       }\n");
-    fprintf(fp, "   }\n");
+    print_active_sources(fp);
     
     // print child close  
     fprintf(fp, "   return EVdfg_wait_for_shutdown(test_dfg);\n");
