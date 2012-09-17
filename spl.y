@@ -1813,7 +1813,7 @@ struct parse_struct {
 void debug_print(FILE* fp, const char* string, int tabs){
     int i =0;
     for(i=0; i<tabs; i++){
-        fprintf(fp, "\t");
+        fprintf(fp, "   ");
     }
     fprintf(fp, "printf(\"%s\\n\");\n", string);
     for(i=0;  i<tabs; i++){
@@ -1834,6 +1834,28 @@ void print_filter(FILE* fp, const char *name, sm_list ids) {
     }
     fprintf(fp,"set_int_attr(event_attrs, \\\"hop_count_atom\\\", hop_count);\\n\\\n");
     fprintf(fp,"}\\0\\0\";\n\n");
+}
+
+void print_transforms(FILE* fp, const char *name, sm_list inputs, sm_list lines){
+    while( inputs!=NULL ) {
+        const char* input_name = inputs->node->node.identifier.id;
+        fprintf(fp,"static char* %s_to_%s_transform = \"{\\n\\\n", input_name,name);
+        
+        //remove
+        if(strcmp(input_name, "RawData")==0){
+            fprintf(fp,"    output.sum = input.a + input.b + input.c + input.d + input.e;\\n\\\n");
+            fprintf(fp,"    output.hops = 1;\\n\\\n");
+        }  else if(strcmp(input_name, "Sum")==0){
+            fprintf(fp,"    output.sum = input.sum;\\n\\\n");
+            fprintf(fp,"    output.hops = input.hops+1;\\n\\\n");    
+        }
+        
+        
+        
+        fprintf(fp,"    return 1;\\n\\\n");
+        fprintf(fp,"}\";\n\n\n");
+        inputs=inputs->next;
+    }
 }
 
 void print_struct(FILE* fp, const char *name, sm_list ids){
@@ -1948,103 +1970,6 @@ void print_generate(FILE* fp, const char *name, sm_list ids) {
     fprintf(fp, "}\n\n");
 }
 
-void print_master(FILE* fp, const char *name) {
-    fprintf(fp, "\n\nextern int be_test_master(int argc, char **argv) {\n");
-    debug_print(fp, "in master",1);
-    fprintf(fp, "\tchar **nodes;\n");
-    fprintf(fp, "\tCManager cm;\n");
-    fprintf(fp, "\tattr_list contact_list;\n");
-    fprintf(fp, "\tchar *str_contact;\n");
-    fprintf(fp, "\tEVdfg_stone src, last, tmp, sink;\n");
-    fprintf(fp, "\tEVsource source_handle;\n");
-    fprintf(fp, "\tint node_count = 5;\n");
-    fprintf(fp, "\tint i;\n");
-    fprintf(fp, "\tnodes = malloc(sizeof(nodes[0]) * (node_count+1));\n");
-    fprintf(fp, "\tfor (i=0; i < node_count; i++) {\n");
-    fprintf(fp, "\t\tnodes[i] = malloc(5);\n");
-    fprintf(fp, "\t\tsprintf(nodes[i], \"N%%d\", i);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\tcm = CManager_create();\n");
-    fprintf(fp, "\tCMlisten(cm);\n");
-    fprintf(fp, "\tcontact_list = CMget_contact_list(cm);\n");
-    fprintf(fp, "\tstr_contact = attr_list_to_string(contact_list);\n");
-    fprintf(fp, "\tsource_handle = EVcreate_submit_handle(cm, -1, %s_format_list);\n", name);
-    fprintf(fp, "\tEVdfg_register_source(\"master_source\", source_handle);\n");
-    fprintf(fp, "\tEVdfg_register_sink_handler(cm, \"%s_handler\", %s_format_list, (EVSimpleHandlerFunc) %s_handler);\n", name, name, name);
-    fprintf(fp, "\ttest_dfg = EVdfg_create(cm);\n");
-    fprintf(fp, "\tEVdfg_register_node_list(test_dfg, &nodes[0]);\n");
-    fprintf(fp, "\tsrc = EVdfg_create_source_stone(test_dfg, \"master_source\");\n");
-    fprintf(fp, "\tEVdfg_assign_node(src, nodes[0]);\n");
-    fprintf(fp, "\tchar *filter;\n");
-    fprintf(fp, "\tfilter = create_filter_action_spec(NULL, %s_filter);\n", name);
-    fprintf(fp, "\tlast = src;\n");
-    fprintf(fp, "\tfor (i=1; i < node_count -1; i++) {\n");
-    fprintf(fp, "\t\ttmp = EVdfg_create_stone(test_dfg, filter);\n");
-    fprintf(fp, "\t\tEVdfg_link_port(last, 0, tmp);\n");
-    fprintf(fp, "\t\tEVdfg_assign_node(tmp, nodes[i]);\n");
-    fprintf(fp, "\t\tlast = tmp;\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\tsink = EVdfg_create_sink_stone(test_dfg, \"%s_handler\");\n", name);
-    fprintf(fp, "\tEVdfg_link_port(last, 0, sink);\n");
-    fprintf(fp, "\tEVdfg_assign_node(sink, nodes[node_count-1]);\n");
-    fprintf(fp, "\tEVdfg_realize(test_dfg);\n");
-    fprintf(fp, "\tEVdfg_join_dfg(test_dfg, nodes[0], str_contact);\n");
-    fprintf(fp, "\ttest_fork_children(&nodes[0], str_contact);\n");
-    fprintf(fp, "\tif (EVdfg_ready_wait(test_dfg) != 1) {\n");
-    fprintf(fp, "\t\t/* dfg initialization failed! */\n");
-    fprintf(fp, "\t\texit(1);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\tif (EVdfg_active_sink_count(test_dfg) == 0) {\n");
-    fprintf(fp, "\t\tEVdfg_ready_for_shutdown(test_dfg);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\tif (EVdfg_source_active(source_handle)) {\n");
-    fprintf(fp, "\t\t%s_rec rec;\n", name);
-    fprintf(fp, "\t\tatom_t hop_count_atom;\n");
-    fprintf(fp, "\t\tattr_list attrs = create_attr_list();\n");
-    fprintf(fp, "\t\thop_count_atom = attr_atom_from_string(\"hop_count_atom\");\n");
-    fprintf(fp, "\t\tadd_int_attr(attrs, hop_count_atom, 1);\n");
-    fprintf(fp, "\t\tgenerate_%s_record(&rec);\n", name);
-    fprintf(fp, "\t\t/* submit would be quietly ignored if source is not active */\n");
-    fprintf(fp, "\t\tEVsubmit(source_handle, &rec, attrs);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\tstatus = EVdfg_wait_for_shutdown(test_dfg);\n");
-    fprintf(fp, "\twait_for_children(nodes);\n");
-    fprintf(fp, "\tCManager_close(cm);\n");
-    fprintf(fp, "\treturn status;\n");
-    fprintf(fp, "}\n\n");
-}
-
-void print_child(FILE* fp, const char *name) {
-    fprintf(fp, "extern int\n");
-    fprintf(fp, "be_test_child(int argc, char **argv)\n");
-    fprintf(fp, "{\n");
-    debug_print(fp, "in child", 1);
-    fprintf(fp, "\tCManager cm;\n");
-    fprintf(fp, "\tEVsource src;\n");
-    fprintf(fp, "\tcm = CManager_create();\n");
-    fprintf(fp, "\tif (argc != 3) {\n");
-    fprintf(fp, "\t\tprintf(\"Child usage:  evtest  <nodename> <mastercontact>\\n\");\n");
-    fprintf(fp, "\t\texit(1);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\ttest_dfg = EVdfg_create(cm);\n");
-    fprintf(fp, "\tsrc = EVcreate_submit_handle(cm, -1, %s_format_list);\n", name);
-    fprintf(fp, "\tEVdfg_register_source(\"master_source\", src);\n");
-    fprintf(fp, "\tEVdfg_register_sink_handler(cm, \"%s_handler\", %s_format_list, (EVSimpleHandlerFunc) %s_handler);\n", name, name, name);
-    fprintf(fp, "\tEVdfg_join_dfg(test_dfg, argv[1], argv[2]);\n");
-    fprintf(fp, "\tEVdfg_ready_wait(test_dfg);\n");
-    fprintf(fp, "\tif (EVdfg_active_sink_count(test_dfg) == 0) {\n");
-    fprintf(fp, "\t\tEVdfg_ready_for_shutdown(test_dfg);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\tif (EVdfg_source_active(src)) {\n");
-    fprintf(fp, "\t\t%s_rec rec;\n", name);
-    fprintf(fp, "\t\tgenerate_%s_record(&rec);\n", name);
-    fprintf(fp, "\t\t/* submit would be quietly ignored if source is not active */\n");
-    fprintf(fp, "\t\tEVsubmit(src, &rec, NULL);\n");
-    fprintf(fp, "\t}\n");
-    fprintf(fp, "\treturn EVdfg_wait_for_shutdown(test_dfg);\n");
-    fprintf(fp, "}\n");
-}
-
 void process_graph( sm_list two) {
     FILE* fp = fopen("main.c", "w");
     fprintf(fp,"#include <stdio.h>\n");
@@ -2077,8 +2002,11 @@ void process_graph( sm_list two) {
         sm_ref right_stream_decl=stream_decl->node.assignment_expression.right;
         const char *right_side_name = right_stream_decl->node.field.name;
         printf("structure type:%s\n",right_side_name);
+        sm_list inputs=NULL;
+        const char *input=NULL;
         if(right_stream_decl->node.field.type_spec){
-            const char *input=right_stream_decl->node.field.type_spec->node->node.field.type_spec->node->node.identifier.id;
+            inputs = right_stream_decl->node.field.type_spec->node->node.field.type_spec;
+            input = inputs->node->node.identifier.id;
             printf("stream input:%s\n",input);
         }
 
@@ -2103,8 +2031,10 @@ void process_graph( sm_list two) {
         printf("\n\n");
         
 
-        //print filter
-        print_filter(fp, stream_name, output_ids);
+        //print transform for each input
+        if(input!=NULL){
+            print_transforms(fp, stream_name, inputs, body->node.field.type_spec);
+        }
         
         //print struct
         print_struct(fp, stream_name, output_ids);
@@ -2123,12 +2053,176 @@ void process_graph( sm_list two) {
         tmp = tmp->next;
     }
     
-    //print master stuff
-    print_master(fp, "Sum");
     
-    //print child stuff
-    print_child(fp, "Sum");
+    
+    
+    //print master stuff
+    fprintf(fp, "\n\nextern int be_test_master(int argc, char **argv) {\n");
+    debug_print(fp, "in master",1);
+    
+    //print management structures
+    fprintf(fp, "   /*in graph management structures*/\n");
+    fprintf(fp, "   CManager cm;\n");
+    fprintf(fp, "   attr_list contact_list;\n");
+    fprintf(fp, "   char *str_contact;\n");
+    fprintf(fp, "   char *transform;\n");
+    fprintf(fp, "   EVdfg_stone src, dst;\n");
+    
+    // print stream names
+    fprintf(fp, "    char **nodes;\n");
+    fprintf(fp, "    int node_count = 4;\n");
+    fprintf(fp, "    int i=0;\n");
+    fprintf(fp, "    nodes = malloc(sizeof(nodes[0]) * (node_count+1));\n");
+    fprintf(fp, "    /* RawData Stream */\n");
+    fprintf(fp, "    nodes[i] = strdup(\"RawData\");\n");
+    fprintf(fp, "    i++;\n");
+    fprintf(fp, "    EVsource RawData_source_handle;\n");
+    fprintf(fp, "    /* Sum Stream */\n");
+    fprintf(fp, "    nodes[i] = strdup(\"Sum\");\n");
+    fprintf(fp, "    i++;\n");
+    fprintf(fp, "    /* Hop Stream */\n");
+    fprintf(fp, "    nodes[i] = strdup(\"Hop\");\n");
+    fprintf(fp, "    i++;\n");
+    fprintf(fp, "    /* SinkOp Stream */\n");
+    fprintf(fp, "    nodes[i] = strdup(\"SinkOp\");\n");
+    fprintf(fp, "    i++;\n");
+    
+    
+    // print initialization
+    fprintf(fp, "    printf(\"initializing\\n\");\n");
+    fprintf(fp, "    fflush(stdout);\n");
+    fprintf(fp, "    /* management initialization */\n");
+    fprintf(fp, "    cm = CManager_create();\n");
+    fprintf(fp, "    CMlisten(cm);\n");
+    fprintf(fp, "    contact_list = CMget_contact_list(cm);\n");
+    fprintf(fp, "    str_contact = attr_list_to_string(contact_list);\n");
+    fprintf(fp, "    printf(\"-setting up graph\\n\");\n");
+    fprintf(fp, "    fflush(stdout);\n");
+    fprintf(fp, "    /* setup graph */\n");
+    fprintf(fp, "    test_dfg = EVdfg_create(cm);\n");
+    fprintf(fp, "    EVdfg_register_node_list(test_dfg, &nodes[0]);\n");
+    
+    // print transforms
+    fprintf(fp, "    printf(\"--setting up sources\\n\");\n");
+    fprintf(fp, "    fflush(stdout);\n");
+    fprintf(fp, "    /* setup sources */\n");
+    fprintf(fp, "    RawData_source_handle = EVcreate_submit_handle(cm, -1, RawData_format_list);\n");
+    fprintf(fp, "    EVdfg_register_source(\"RawData\", RawData_source_handle);\n");
+    fprintf(fp, "    src = EVdfg_create_source_stone(test_dfg, \"RawData\");\n");
+    fprintf(fp, "    EVdfg_assign_node(src, nodes[0]);\n");
+    fprintf(fp, "    printf(\"--setting up transforms\\n\");\n");
+    fprintf(fp, "    fflush(stdout);\n");
+    fprintf(fp, "    /* set up transforms and links in graph */\n");
+    fprintf(fp, "    transform = create_transform_action_spec(RawData_format_list, Sum_format_list, RawData_to_Sum_transform);\n");
+    fprintf(fp, "    dst = EVdfg_create_stone(test_dfg, transform);\n");
+    fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
+    fprintf(fp, "    EVdfg_assign_node(dst, nodes[1]);\n");
+    fprintf(fp, "    src=dst;\n");
+    fprintf(fp, "    transform = create_transform_action_spec(Sum_format_list, Hop_format_list, Sum_to_Hop_transform);\n");
+    fprintf(fp, "    dst = EVdfg_create_stone(test_dfg, transform);\n");
+    fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
+    fprintf(fp, "    EVdfg_assign_node(dst, nodes[2]);\n");
+    fprintf(fp, "    src=dst;\n");
+    fprintf(fp, "        printf(\"setting up sinks\\n\");\n");
+    fprintf(fp, "    fflush(stdout);\n");
+    fprintf(fp, "    /* set up sinks */ \n");
+    fprintf(fp, "    EVdfg_register_sink_handler(cm, \"SinkOp_handler\", Hop_format_list, (EVSimpleHandlerFunc) Hop_handler);\n");
+    fprintf(fp, "    dst = EVdfg_create_sink_stone(test_dfg, \"SinkOp_handler\");\n");
+    fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
+    fprintf(fp, "    EVdfg_assign_node(dst, nodes[3]);   \n");
+    
+    // print startup
+    fprintf(fp, "    EVdfg_realize(test_dfg);\n");
+    fprintf(fp, "    EVdfg_join_dfg(test_dfg, nodes[0], str_contact);\n");
+    fprintf(fp, "    test_fork_children(&nodes[0], str_contact);\n");
+    fprintf(fp, "    if (EVdfg_ready_wait(test_dfg) != 1) {\n");
+    fprintf(fp, "        /* dfg initialization failed! */\n");
+    fprintf(fp, "        exit(1);\n");
+    fprintf(fp, "    }\n");
+    
+    // print active sources
+    fprintf(fp, "   if (EVdfg_source_active(RawData_source_handle)) {\n");
+    fprintf(fp, "       RawData_rec rec;\n");
+    fprintf(fp, "       attr_list attrs = create_attr_list();\n");
+    fprintf(fp, "       FILE* file = fopen(\"SourceData.csv\",\"r\");\n");
+    fprintf(fp, "       if(file) {\n");
+    fprintf(fp, "           while(!feof(file)) { \n");
+    fprintf(fp, "               fscanf(file, \"%%d,%%d,%%d,%%d,%%d\",&rec.a,&rec.b,&rec.c,&rec.d,&rec.e);\n"); 
+    fprintf(fp, "               EVsubmit(RawData_source_handle, &rec, attrs);\n");
+    fprintf(fp, "           }\n");
+    fprintf(fp, "           fclose(file);\n");
+    fprintf(fp, "        } else {  \n");
+    fprintf(fp, "           generate_RawData_record(&rec);\n");
+    fprintf(fp, "           EVsubmit(RawData_source_handle, &rec, attrs);\n");
+    fprintf(fp, "       }\n");
+    fprintf(fp, "   }\n");
+    
+    // print shutdown check
+    fprintf(fp, "   if (EVdfg_active_sink_count(test_dfg) == 0) {\n");
+    fprintf(fp, "       EVdfg_ready_for_shutdown(test_dfg);\n");
+    fprintf(fp, "   }\n");
+    
+    // print master close
+    fprintf(fp, "   status = EVdfg_wait_for_shutdown(test_dfg);\n");
+    fprintf(fp, "   wait_for_children(nodes);\n");
+    fprintf(fp, "   CManager_close(cm);\n");
+    fprintf(fp, "   return status;\n");
+    fprintf(fp, "}\n\n");
 
+    
+    
+    
+    
+    
+    // print child stuff
+    fprintf(fp, "extern int\n");
+    fprintf(fp, "be_test_child(int argc, char **argv)\n");
+    fprintf(fp, "{\n");
+    debug_print(fp, "in child", 1);
+    fprintf(fp, "   CManager cm;\n");
+    fprintf(fp, "   EVsource src;\n");
+    fprintf(fp, "   cm = CManager_create();\n");
+    fprintf(fp, "   if (argc != 3) {\n");
+    fprintf(fp, "       printf(\"Child usage:  evtest  <nodename> <mastercontact>\\n\");\n");
+    fprintf(fp, "       exit(1);\n");
+    fprintf(fp, "   }\n");
+    fprintf(fp, "   test_dfg = EVdfg_create(cm);\n");
+    fprintf(fp, "   src = EVcreate_submit_handle(cm, -1, RawData_format_list);\n");
+    fprintf(fp, "    /* setup sources */\n");
+    fprintf(fp, "   EVsource RawData_source_handle;\n");
+    fprintf(fp, "    RawData_source_handle = EVcreate_submit_handle(cm, -1, RawData_format_list);\n");
+    fprintf(fp, "    EVdfg_register_source(\"RawData\", RawData_source_handle);\n");
+    fprintf(fp, "   EVdfg_register_source(\"RawData\", src);\n");
+    fprintf(fp, "   EVdfg_register_sink_handler(cm, \"SinkOp_handler\", Hop_format_list, (EVSimpleHandlerFunc) Hop_handler);\n");
+    fprintf(fp, "   EVdfg_join_dfg(test_dfg, argv[1], argv[2]);\n");
+    fprintf(fp, "   EVdfg_ready_wait(test_dfg);\n");
+    
+    // print shutdown check
+    fprintf(fp, "   if (EVdfg_active_sink_count(test_dfg) == 0) {\n");
+    fprintf(fp, "       EVdfg_ready_for_shutdown(test_dfg);\n");
+    fprintf(fp, "   }\n");
+    
+    // print active sources
+    fprintf(fp, "   if (EVdfg_source_active(RawData_source_handle)) {\n");
+    fprintf(fp, "       RawData_rec rec;\n");
+    fprintf(fp, "       attr_list attrs = create_attr_list();\n");
+    fprintf(fp, "       FILE* file = fopen(\"SourceData.csv\",\"r\");\n");
+    fprintf(fp, "       if(file) {\n");
+    fprintf(fp, "           while(!feof(file)) { \n");
+    fprintf(fp, "               fscanf(file, \"%%d,%%d,%%d,%%d,%%d\",&rec.a,&rec.b,&rec.c,&rec.d,&rec.e);\n"); 
+    fprintf(fp, "               EVsubmit(RawData_source_handle, &rec, attrs);\n");
+    fprintf(fp, "           }\n");
+    fprintf(fp, "           fclose(file);\n");
+    fprintf(fp, "        } else {  \n");
+    fprintf(fp, "           generate_RawData_record(&rec);\n");
+    fprintf(fp, "           EVsubmit(RawData_source_handle, &rec, attrs);\n");
+    fprintf(fp, "       }\n");
+    fprintf(fp, "   }\n");
+    
+    // print child close  
+    fprintf(fp, "   return EVdfg_wait_for_shutdown(test_dfg);\n");
+    fprintf(fp, "}\n");
+    
     
     fclose(fp);
 }
