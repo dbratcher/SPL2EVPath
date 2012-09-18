@@ -2,7 +2,7 @@
 static	int lex_offset = 1;
 static  int line_count = 1;
 static char *create_string_from_yytext();
-#define RETURN(val) {yylval.info.lx_srcpos.line = line_count; yylval.info.lx_srcpos.character = lex_offset; lex_offset +=yyleng; return(val);}
+#define RETURN(val) { yylval.info.lx_srcpos.line = line_count; yylval.info.lx_srcpos.character = lex_offset; lex_offset +=yyleng; return(val);}
 static int type_count;
 static char**types;
 #ifdef input
@@ -293,7 +293,7 @@ sizeof			{RETURN(SIZEOF);}
 				RETURN(integer_constant);
 			}
 
-[0-9]*\.[0-9]*[sufdbhwlq]*	{
+[0-9]+\.[0-9]*[sufdbhwlq]*	{
 				yylval.info.string = create_string_from_yytext();
 				RETURN(floating_constant);
 			}

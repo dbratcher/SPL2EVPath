@@ -246,6 +246,7 @@ static const char *spl_code_string;
 %type <reference> invoke_window_opt;
 %type <reference> invoke_config_opt;
 %type <reference> opInvokeOutput;
+%type <reference> assign_expr;
 %type <list> opInputs;
 %type <list> opOutputs;
 %type <list> portInputs;
@@ -823,13 +824,11 @@ opInvokeActual_list:
 
 opInvokeOutput_list:
 	opInvokeOutput {
-            printf("start list");
             $$ = malloc(sizeof(struct list_struct));
             $$->node = $1;
             $$->next = NULL;
         }
 	| opInvokeOutput_list opInvokeOutput {
-            printf("continue list");
 	    sm_list tmp = $1;
 	    while (tmp->next != NULL) {
 		tmp = tmp->next;
@@ -885,45 +884,41 @@ opInvokeWindow:
 
 opInvokeOutput:
 	identifier_ref COLON assign_expr_list SEMI {
-            printf("output block\n");
-            fflush(stdout);
             $$=spl_new_field();
             $$->node.field.name=$1.string;
             $$->node.field.type_spec=$3;
         }
 	;
 
+assign_expr:
+    identifier_ref ASSIGN expr  {
+        sm_ref tmp = spl_new_assignment_expression();
+        tmp->node.assignment_expression.right= $3;
+        sm_ref id = spl_new_identifier();
+        id->node.identifier.id=$1.string;
+        tmp->node.assignment_expression.left= id;
+        $$=tmp;
+    }
+    ;
+
 assign_expr_list:
-	identifier_ref ASSIGN expr  {
-            printf("output block?\n");
-            fflush(stdout);
+	assign_expr {
             $$ = malloc(sizeof(struct list_struct));
-            sm_ref tmp = spl_new_assignment_expression();
-            tmp->node.assignment_expression.right= $3;
-            sm_ref id = spl_new_identifier();
-            id->node.identifier.id=$1.string;
-            tmp->node.assignment_expression.left= id;
-            $$->node = tmp;
+            $$->node = $1;
             $$->next = NULL;
         }
-	| assign_expr_list COMMA identifier_ref ASSIGN expr {
-            printf("output block2?\n");
-            fflush(stdout);
+	| assign_expr_list COMMA assign_expr {
 	    sm_list tmp = $1;
 	    while (tmp->next != NULL) {
 		tmp = tmp->next;
 	    }
 	    tmp->next = malloc(sizeof(struct list_struct));
-            sm_ref tmp2 = spl_new_assignment_expression();
-            tmp2->node.assignment_expression.right= $5;
-            sm_ref id = spl_new_identifier();
-            id->node.identifier.id=$3.string;
-            tmp2->node.assignment_expression.left= id;
-	    tmp->next->node = tmp2;
+	    tmp->next->node = $3;
 	    tmp->next->next = NULL;
 	    $$ = $1;
         }
 	;
+
 
 functionDef:
 	functionHead blockStmt {
@@ -1286,6 +1281,7 @@ infixOp:
 
 mappedOp:
 	DOT_PLUS {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_PLUS;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1293,6 +1289,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_MINUS {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_PLUS;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1300,6 +1297,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_STAR {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_STAR;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1307,6 +1305,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_SLASH {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_SLASH;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1314,6 +1313,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_MODULUS {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_MODULUS;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1321,6 +1321,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_LEFT_SHIFT {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_LEFT_SHIFT;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1328,6 +1329,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_RIGHT_SHIFT {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_RIGHT_SHIFT;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1335,6 +1337,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_ARITH_AND {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_ARITH_AND;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1342,6 +1345,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_ARITH_XOR {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_ARITH_XOR;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -1349,6 +1353,7 @@ mappedOp:
 	    $$->node.operator.left = NULL;
         }
 	| DOT_ARITH_OR {
+            printf("mappedOp?\n");
 	    $$ = spl_new_operator();
 	    $$->node.operator.operation_type = DOT_ARITH_OR;
 	    $$->node.operator.lx_srcpos = $1.lx_srcpos;
@@ -2298,15 +2303,17 @@ void process_graph( sm_list two) {
             while(temp && temp->node){
                 if(strcmp(block_name,"invoke_output")==0){
                     inside_lines = lines->node->node.field.type_spec;
+                    spl_print(lines->node);
                     sm_list temp2=inside_lines;
                     while(temp2 && temp2->node){
                         printf("output line:\n");
-                        if(temp2->node->node.assignment_expression.left){
+                        spl_print(temp2->node);
+                        /*if(temp2->node->node.assignment_expression.left){
                             printf("assign left:%s\n", process_expr(temp2->node->node.assignment_expression.left, "output."));
                         }
                         if(temp2->node->node.assignment_expression.right){
                             printf("assign right:%s\n", process_expr(temp2->node->node.assignment_expression.right, "input."));
-                        }
+                        }*/
                         
                         temp2=temp2->next;   
                     }
