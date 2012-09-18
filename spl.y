@@ -232,6 +232,7 @@ static const char *spl_code_string;
 %type <reference> infixOp;
 %type <reference> mappedOp;
 %type <reference> infixExpr;
+%type <reference> postfixExpr;
 %type <reference> prefixOp;
 %type <reference> prefixExpr;
 %type <reference> compositeHead;
@@ -650,7 +651,17 @@ opInput_list:
             $$->next = NULL;
         }
 	| opInput_list SEMI portInputs {
-            printf("opInput_list?\n");
+	    sm_list tmp = $1;
+	    while (tmp->next != NULL) {
+		tmp = tmp->next;
+	    }
+	    tmp->next = malloc(sizeof(struct list_struct));
+            sm_ref temp2 = spl_new_field();
+            temp2->node.field.type_spec = $1;
+            temp2->node.field.name = "opInput_list";
+	    tmp->next->node = temp2;
+	    tmp->next->next = NULL;
+	    $$ = $1;
         }
 	;
 
@@ -812,11 +823,13 @@ opInvokeActual_list:
 
 opInvokeOutput_list:
 	opInvokeOutput {
+            printf("start list");
             $$ = malloc(sizeof(struct list_struct));
             $$->node = $1;
             $$->next = NULL;
         }
 	| opInvokeOutput_list opInvokeOutput {
+            printf("continue list");
 	    sm_list tmp = $1;
 	    while (tmp->next != NULL) {
 		tmp = tmp->next;
@@ -872,6 +885,8 @@ opInvokeWindow:
 
 opInvokeOutput:
 	identifier_ref COLON assign_expr_list SEMI {
+            printf("output block\n");
+            fflush(stdout);
             $$=spl_new_field();
             $$->node.field.name=$1.string;
             $$->node.field.type_spec=$3;
@@ -880,6 +895,8 @@ opInvokeOutput:
 
 assign_expr_list:
 	identifier_ref ASSIGN expr  {
+            printf("output block?\n");
+            fflush(stdout);
             $$ = malloc(sizeof(struct list_struct));
             sm_ref tmp = spl_new_assignment_expression();
             tmp->node.assignment_expression.right= $3;
@@ -890,6 +907,8 @@ assign_expr_list:
             $$->next = NULL;
         }
 	| assign_expr_list COMMA identifier_ref ASSIGN expr {
+            printf("output block2?\n");
+            fflush(stdout);
 	    sm_list tmp = $1;
 	    while (tmp->next != NULL) {
 		tmp = tmp->next;
@@ -1054,13 +1073,13 @@ returnStmt:
 
 expr:
 	prefixExpr   {
-        	$$=$1;
+            printf("expr?\n");
 	}
 	| infixExpr {
             $$= $1;
         }
 	| postfixExpr {
-            printf("expr?\n");
+            $$= $1;
         }
 	| conditionalExpr  {
             printf("expr?\n");
@@ -1403,7 +1422,12 @@ postfixExpr:
             printf("postfixExpr?\n");
         }
 	| expr DOT identifier_ref {
-            printf("postfixExpr?\n");
+            sm_ref id = spl_new_identifier();
+	    id->node.identifier.lx_srcpos = $3.lx_srcpos;
+	    id->node.identifier.id = $3.string;
+            $$=spl_new_element_ref();
+            $$->node.element_ref.expression = $1;
+            $$->node.element_ref.array_ref = id;
         }
 	| expr postfixOp {
             printf("postfixExpr?\n");
@@ -1801,6 +1825,7 @@ typedef struct _symbol {
     sm_ref node;
     char *name;
     int type;
+    int port;
     struct _symbol *next;
 } Symbol;
 
@@ -1821,6 +1846,7 @@ void add_symbol(sm_ref node, const char *name, int type){
     }
     temp->type=type;
     temp->node=node;
+    temp->port=0;
     temp->name=strdup(name);
     if(type==1){
         stream_count++;
@@ -1838,7 +1864,7 @@ sm_ref find_next_type(Symbol *start, int type) {
     return temp;
 }
 
-sm_ref find_stream(const char *name) {
+Symbol *find_stream_symbol(const char*name) {
     Symbol *temp=list;
     while(temp && strcmp(temp->name, name)!=0){
         while(temp && temp->type != 1) {
@@ -1846,6 +1872,12 @@ sm_ref find_stream(const char *name) {
         }
         temp=temp->next;
     }
+    return temp;
+    
+}
+
+sm_ref find_stream(const char *name) {
+    Symbol *temp=find_stream_symbol(name);
     sm_ref temp2=NULL;
     if(temp){
         temp2=temp->node;
@@ -2341,6 +2373,7 @@ void process_graph( sm_list two) {
     while(temp){
         fprintf(fp, "    /* %s Stream */\n", temp->name);
         fprintf(fp, "    nodes[i] = strdup(\"%s\");\n", temp->name);
+        fprintf(fp, "    EVdfg_stone %s_stone;\n", temp->name);
         fprintf(fp, "    i++;\n");
         if(strcmp(get_stream_type(temp->node),"FileSource")==0){
             fprintf(fp, "    EVsource %s_source_handle;\n", temp->name);    
@@ -2366,25 +2399,24 @@ void process_graph( sm_list two) {
     temp=list;
     int cnt=0;
     while(temp){
-        if(strcmp(get_stream_type(temp->node),"FileSource")==0){
+        if(strcmp(get_stream_type(temp->node),"FileSource")==0) {
             fprintf(fp, "    %s_source_handle = EVcreate_submit_handle(cm, -1, %s_format_list);\n", temp->name, temp->name);
             fprintf(fp, "    EVdfg_register_source(\"%s\", %s_source_handle);\n", temp->name, temp->name);
-            fprintf(fp, "    src = EVdfg_create_source_stone(test_dfg, \"%s\");\n", temp->name);
-            fprintf(fp, "    EVdfg_assign_node(src, nodes[%d]);\n", cnt);  
-        } else if (strcmp(get_stream_type(temp->node),"FileSink")==0){
+            fprintf(fp, "    %s_stone = EVdfg_create_source_stone(test_dfg, \"%s\");\n", temp->name, temp->name);
+        } else if (strcmp(get_stream_type(temp->node),"FileSink")==0) {
             char *input_name = get_stream_input_name(temp->node);
+            Symbol *input_sym= find_stream_symbol(input_name);
             fprintf(fp, "    EVdfg_register_sink_handler(cm, \"%s_handler\", %s_format_list, (EVSimpleHandlerFunc) %s_handler);\n",temp->name, input_name, temp->name);
-            fprintf(fp, "    dst = EVdfg_create_sink_stone(test_dfg, \"%s_handler\");\n", temp->name);
-            fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
-            fprintf(fp, "    EVdfg_assign_node(dst, nodes[%d]);   \n",cnt);
+            fprintf(fp, "    %s_stone = EVdfg_create_sink_stone(test_dfg, \"%s_handler\");\n", temp->name, temp->name);
+            fprintf(fp, "    EVdfg_link_port(%s_stone, %d, %s_stone);\n", input_name, input_sym->port++, temp->name);
         } else {
             char *input_name = get_stream_input_name(temp->node);
+            Symbol *input_sym= find_stream_symbol(input_name);
             fprintf(fp, "    transform = create_transform_action_spec(%s_format_list, %s_format_list, %s_to_%s_transform);\n", input_name, temp->name, input_name, temp->name);
-            fprintf(fp, "    dst = EVdfg_create_stone(test_dfg, transform);\n");
-            fprintf(fp, "    EVdfg_link_port(src, 0, dst);\n");
-            fprintf(fp, "    EVdfg_assign_node(dst, nodes[%d]);\n", cnt);
-            fprintf(fp, "    src=dst;\n");
+            fprintf(fp, "    %s_stone = EVdfg_create_stone(test_dfg, transform);\n", temp->name);
+            fprintf(fp, "    EVdfg_link_port(%s_stone, %d, %s_stone);\n", input_name, input_sym->port++, temp->name);
         }
+        fprintf(fp, "    EVdfg_assign_node(%s_stone, nodes[%d]);\n", temp->name, cnt);
         cnt++;
         temp=temp->next;
     }

@@ -1,0 +1,29 @@
+namespace sample;
+
+composite SimpleBarrier{
+
+graph
+        stream<int32 a, int32 b> source1 = FileSource()
+        {
+                param file: "SourceData.csv";
+                format: csv;
+        }
+        
+        stream<int32 c, int32 d> source2 = FileSource()
+        {
+                param file: "SourceData2.csv";
+                format: csv;
+        }
+
+        stream<int32 a, int32 b, int32 c, int32 d> aBarrier = Barrier(source1; source2) {
+                output aBarrier:
+                        a = source1.a,
+                        b = source1.b,
+                        c = source2.c,
+                        d = source2.d;
+        }
+
+        () as SinkOp = FileSink(aBarrier) {
+                param file: "BarrierSink.csv";
+        }
+}

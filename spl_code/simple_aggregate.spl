@@ -1,0 +1,23 @@
+namespace sample;
+
+composite SimpleAggregate{
+
+graph
+        stream<int32 a, int32 b> source1 = FileSource()
+        {
+                param file: "SourceData.csv";
+                format: csv;
+        }
+
+        stream<int32 max, int32 min, int32 avg> anAggregate = Aggregate(source1) {
+                window source1:sliding, count(5);
+                output anAggregate:
+                        max=Max(a),
+                        min=Min(a),
+                        avg=Average(a);
+        }
+
+        () as SinkOp = FileSink(anAggregate) {
+                param file: "AggregateSink.csv";
+        }
+}

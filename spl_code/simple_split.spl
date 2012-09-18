@@ -1,0 +1,29 @@
+namespace sample;
+
+composite SimpleSplit{
+
+graph
+        stream<int32 a, int32 b> source1 = FileSource()
+        {
+                param file: "SourceData.csv";
+                format: csv;
+        }
+
+        stream<int32 a> aSplit1 = Functor(source1) {
+                output aSplit1:
+                        a=a;
+        }
+        
+        stream<int32 b> aSplit2 = Functor(source1) {
+                output aSplit2:
+                        b=b;
+        }
+
+        () as SinkOp = FileSink(aSplit1) {
+                param file: "Split1.csv";
+        }
+        
+        () as SinkOp2 = FileSink(aSplit2) {
+                param file: "Split2.csv";
+        }
+}

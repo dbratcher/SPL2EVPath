@@ -8,7 +8,10 @@
 int
 main(int argc, char **argv)
 {
-    char *filename = "trivial.spl";
+    //char *filename = "spl_code/simple_barrier.spl";
+    //char *filename = "spl_code/simple_barrier.spl";
+    char *filename = "spl_code/simple_barrier.spl";
+    //char *filename = "spl_code/trivial.spl";
     struct stat buf;
     char *buffer;
     int fd, total_read;
