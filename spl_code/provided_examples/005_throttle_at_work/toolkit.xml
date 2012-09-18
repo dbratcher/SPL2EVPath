@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="005_throttle_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>throttle_at_work</description>
+    <uriTable>
+      <uri index="1" value="sample/throttle_at_work.spl"/>
+    </uriTable>
+    <namespace name="sample">
+      <compositeOp column="11" line="8" name="throttle_at_work" potentialMain="true" uriIndex="1">
+        <type column="7" line="9" name="ProductInfo" type="tuple&lt;timestamp ts, rstring productName, uint32 productId, rstring description, float64 price, boolean freeShipping>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

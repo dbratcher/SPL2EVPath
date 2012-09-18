@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<applicationSet xmlns="http://www.ibm.com/xmlns/prod/streams/application" xmlns:ns2="http://www.ibm.com/xmlns/prod/streams/application/augmented" xmlns:ns3="http://www.ibm.com/xmlns/prod/streams/sharedvar" xmlns:ns4="http://www.ibm.com/xmlns/prod/streams/runtime/sam" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" productVersion="2.0.0.0" name="my.sample::Main.appset" xsi:noNamespaceSchemaLocation="http://www.ibm.com/xmlns/prod/streams/application">
+    <description>my.sample::Main application set</description>
+    <application version="1.0.0" outputDirectory="/homes/hny5/sen/workspace2/028_deduplicate_at_work/output/my.sample.Main/Distributed" name="my.sample::Main" logLevel="error" dataDirectory="../../../data" checkpointDirectory="../../../data/ckpt" applicationScope="Default" applicationDirectory="../../../.">
+        <libraries/>
+        <hostpools>
+            <hostpool name="$default" membershipMode="shared" index="0"/>
+        </hostpools>
+        <tupleTypes>
+            <tupleType index="0">
+                <attribute type="rstring" name="title"/>
+                <attribute type="rstring" name="isbn"/>
+                <attribute type="rstring" name="author"/>
+                <attribute type="rstring" name="publisher"/>
+                <attribute type="float32" name="price"/>
+            </tupleType>
+        </tupleTypes>
+        <pes>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="0" class="BeJyzdMrPz_1bMS8s3jAcAFuADDh">
+                <envVars/>
+                <executable dynamicLoad="true" digest="0CDO6TFdh/OPyrIwn5aTqDgxJ8Q=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJyzdMrPz_1bMS8s3jAcAFuADDh.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="BookInfo1" index="0" definitionIndex="0" class="BookInfo1">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="15" name="lit$0"/>
+                            <runtimeConstant value="&quot;Title&quot;" name="lit$1"/>
+                            <runtimeConstant value="&quot;ISBN&quot;" name="lit$2"/>
+                            <runtimeConstant value="&quot;Author&quot;" name="lit$3"/>
+                            <runtimeConstant value="&quot;Publisher&quot;" name="lit$4"/>
+                            <runtimeConstant value="100" name="lit$5"/>
+                            <runtimeConstant value="0" name="lit$6"/>
+                        </runtimeConstants>
+                        <inputPorts/>
+                        <outputPorts>
+                            <outputPort streamName="BookInfo1" tupleTypeIndex="0" name="BookInfo1" isMutable="true" index="0">
+<interPeConnection operInstanceIndex="1" iportIndex="0"/>
+                            </outputPort>
+                        </outputPorts>
+                    </operInstance>
+                </operInstances>
+                <inputPorts/>
+                <outputPorts>
+                    <outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="1" iportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection oportIndex="0" operInstanceIndex="0"/>
+                    </outputPort>
+                </outputPorts>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="1" class="BeJyzdMrPz_1bMS8s3igcAFuIDDi">
+                <envVars/>
+                <executable dynamicLoad="true" digest="ZXC8pcO76Lvzh4aSRDOowP1UAfY=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJyzdMrPz_1bMS8s3igcAFuIDDi.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="BookInfo2" index="1" definitionIndex="1" class="BookInfo2">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="0" name="lit$0"/>
+                            <runtimeConstant value="0" name="lit$1"/>
+                            <runtimeConstant value="2" name="lit$2"/>
+                            <runtimeConstant value="0" name="lit$3"/>
+                            <runtimeConstant value="0" name="lit$4"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="BookInfo1" isMutable="true" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="0"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts>
+                            <outputPort streamName="BookInfo2" tupleTypeIndex="0" name="BookInfo2" isMutable="true" index="0">
+<interPeConnection operInstanceIndex="2" iportIndex="0"/>
+<interPeConnection operInstanceIndex="3" iportIndex="0"/>
+                            </outputPort>
+                        </outputPorts>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="0" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="1" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts>
+                    <outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="2" iportIndex="0"/>
+                            <staticConnection peIndex="3" iportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection oportIndex="0" operInstanceIndex="1"/>
+                    </outputPort>
+                </outputPorts>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="2" class="BeJwzNA5OLkpNzQsvyixJLTKMBwAvaAXS">
+                <envVars/>
+                <executable dynamicLoad="true" digest="msBtvsae8je0zcYlHvsIyI9IZDg=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTKMBwAvaAXS.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="ScreenWriter1" index="2" definitionIndex="1" class="ScreenWriter1">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="0" name="lit$0"/>
+                            <runtimeConstant value="&quot;\na)Duplicate tuples sent by the Custom operator:&quot;" name="lit$1"/>
+                            <runtimeConstant value="&quot;a)&quot;" name="lit$2"/>
+                            <runtimeConstant value="0" name="lit$3"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="BookInfo2" isMutable="true" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="1"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts/>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="1" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="2" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts/>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="3" class="BeJyzdMrPz_1bMS8s3jgcAFuQDDj">
+                <envVars/>
+                <executable dynamicLoad="true" digest="dcFwp7N3vbX8N+XaxkQU3qbSHRQ=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJyzdMrPz_1bMS8s3jgcAFuQDDj.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="BookInfo3" index="3" definitionIndex="2" class="BookInfo3">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="120" name="lit$0"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="BookInfo2" isMutable="false" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="1"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts>
+                            <outputPort streamName="BookInfo3" tupleTypeIndex="0" name="BookInfo3" isMutable="false" index="0">
+<interPeConnection operInstanceIndex="4" iportIndex="0"/>
+                            </outputPort>
+                        </outputPorts>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="1" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="3" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts>
+                    <outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="4" iportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection oportIndex="0" operInstanceIndex="3"/>
+                    </outputPort>
+                </outputPorts>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="4" class="BeJwzNA5OLkpNzQsvyixJLTKKBwAvagXT">
+                <envVars/>
+                <executable dynamicLoad="true" digest="FvzxQMlci8x/E19AipYiz3Lh9jA=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTKKBwAvagXT.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="ScreenWriter2" index="4" definitionIndex="1" class="ScreenWriter2">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="0" name="lit$0"/>
+                            <runtimeConstant value="&quot;\nb)Non-Duplicate tuples sent by the Deduplicate operator:&quot;" name="lit$1"/>
+                            <runtimeConstant value="&quot;b)&quot;" name="lit$2"/>
+                            <runtimeConstant value="0" name="lit$3"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="BookInfo3" isMutable="true" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="3"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts/>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="3" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="4" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts/>
+            </pe>
+        </pes>
+        <operDefinitions>
+            <operDefinition kind="spl.utility::Beacon" index="0"/>
+            <operDefinition kind="spl.utility::Custom" index="1"/>
+            <operDefinition kind="spl.utility::DeDuplicate" index="2"/>
+        </operDefinitions>
+        <composites>
+            <sourceUris>
+                <uri path="file:///homes/hny5/sen/workspace2/028_deduplicate_at_work/my.sample/Main.spl" index="0"/>
+            </sourceUris>
+            <compositeOpers>
+                <compositeOper toolkitIndex="0" numberOfOutputPorts="0" numberOfInputPorts="0" kind="my.sample::Main" index="0" startLine="3" sourceIndex="0" endLine="79">
+                    <description>my.sample::Main Composite</description>
+                </compositeOper>
+            </compositeOpers>
+            <compositeOperInstances>
+                <compositeOperInstance name="my.sample::Main" index="5" compositeOperIndex="0" startLine="3" sourceIndex="0" endLine="79">
+                    <primitiveOperInstance toolkitIndex="1" name="BookInfo1" kind="spl.utility::Beacon" index="0" startLine="8" sourceIndex="0" endLine="21">
+                        <outputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="input" portIndex="0" operName="BookInfo2" operIndex="1"/>
+</connections>
+                            </port>
+                        </outputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="BookInfo2" kind="spl.utility::Custom" index="1" startLine="23" sourceIndex="0" endLine="37">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="BookInfo1" operIndex="0"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                        <outputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="input" portIndex="0" operName="BookInfo3" operIndex="3"/>
+    <connection portKind="input" portIndex="0" operName="ScreenWriter1" operIndex="2"/>
+</connections>
+                            </port>
+                        </outputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="ScreenWriter1" kind="spl.utility::Custom" index="2" startLine="40" sourceIndex="0" endLine="52">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="BookInfo2" operIndex="1"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="BookInfo3" kind="spl.utility::DeDuplicate" index="3" startLine="55" sourceIndex="0" endLine="61">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="BookInfo2" operIndex="1"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                        <outputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="input" portIndex="0" operName="ScreenWriter2" operIndex="4"/>
+</connections>
+                            </port>
+                        </outputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="ScreenWriter2" kind="spl.utility::Custom" index="4" startLine="64" sourceIndex="0" endLine="76">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="BookInfo3" operIndex="3"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                    </primitiveOperInstance>
+                </compositeOperInstance>
+            </compositeOperInstances>
+        </composites>
+        <toolkits>
+            <toolkit version="1.0.0" uri="file:///homes/hny5/sen/workspace2/028_deduplicate_at_work" name="028_deduplicate_at_work" index="0"/>
+            <toolkit version="1.0.0" uri="file:///homes/hny5/sen/InfoSphereStreams20_64/toolkits/spl" name="spl" index="1"/>
+        </toolkits>
+    </application>
+</applicationSet>

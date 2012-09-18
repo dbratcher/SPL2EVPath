@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="009_custom_operator_using_get_submission_time_value" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>Simple example that shows the use of get_submission_time_value.</description>
+    <uriTable>
+      <uri index="1" value="Main.spl"/>
+    </uriTable>
+    <namespace name="">
+      <compositeOp column="11" line="8" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="10" name="myTuple1" type="tuple&lt;int32 i, int32 j>" uriIndex="1"/>
+        <type column="3" line="11" name="myTuple2" type="tuple&lt;rstring str1, rstring str2, rstring str3, rstring str4, rstring str5, rstring str6, rstring str7>" uriIndex="1"/>
+        <type column="3" line="12" name="myTuple3" type="tuple&lt;myTuple1, myTuple2>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

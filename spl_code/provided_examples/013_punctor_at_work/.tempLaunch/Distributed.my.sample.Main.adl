@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<applicationSet xmlns="http://www.ibm.com/xmlns/prod/streams/application" xmlns:ns2="http://www.ibm.com/xmlns/prod/streams/sharedvar" xmlns:ns3="http://www.ibm.com/xmlns/prod/streams/runtime/sam" xmlns:ns4="http://www.ibm.com/xmlns/prod/streams/application/augmented" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" productVersion="2.0.0.0" name="my.sample::Main.appset" xsi:noNamespaceSchemaLocation="http://www.ibm.com/xmlns/prod/streams/application">
+    <description>my.sample::Main application set</description>
+    <application version="1.0.0" outputDirectory="/homes/hny5/sen/workspace2/019_punctor_at_work/output/my.sample::Main/Distributed" name="my.sample::Main" logLevel="error" dataDirectory="../../../data" checkpointDirectory="../../../data/ckpt" applicationScope="Default" applicationDirectory="../../../.">
+        <libraries/>
+        <hostpools>
+            <hostpool name="$default" membershipMode="shared" index="0"/>
+        </hostpools>
+        <tupleTypes>
+            <tupleType index="0">
+                <attribute type="rstring" name="name"/>
+                <attribute type="int32" name="id"/>
+                <attribute type="int32" name="rank"/>
+                <attribute type="rstring" name="major"/>
+            </tupleType>
+        </tupleTypes>
+        <pes>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="0" class="BeJwzNA4uKU1JzSsJSk3OL0qJBwAwhwYK">
+                <envVars/>
+                <executable dynamicLoad="true" digest="OjDMhQBOJ8y77l/55FNmgnEw0/Y=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwzNA4uKU1JzSsJSk3OL0qJBwAwhwYK.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="StudentRecord" index="0" definitionIndex="0" class="StudentRecord">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="100" name="lit$0"/>
+                            <runtimeConstant value="&quot;Name&quot;" name="lit$1"/>
+                            <runtimeConstant value="1000" name="lit$2"/>
+                            <runtimeConstant value="0" name="lit$3"/>
+                            <runtimeConstant value="5" name="lit$4"/>
+                            <runtimeConstant value="5" name="lit$5"/>
+                            <runtimeConstant value="5" name="lit$6"/>
+                            <runtimeConstant value="&quot;Major&quot;" name="lit$7"/>
+                            <runtimeConstant value="0" name="lit$8"/>
+                        </runtimeConstants>
+                        <inputPorts/>
+                        <outputPorts>
+                            <outputPort streamName="StudentRecord" tupleTypeIndex="0" name="StudentRecord" isMutable="true" index="0">
+<interPeConnection operInstanceIndex="1" iportIndex="0"/>
+                            </outputPort>
+                        </outputPorts>
+                    </operInstance>
+                </operInstances>
+                <inputPorts/>
+                <outputPorts>
+                    <outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="1" iportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection oportIndex="0" operInstanceIndex="0"/>
+                    </outputPort>
+                </outputPorts>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="1" class="BeJwzNggozUsuyS9yzs8rKcrPyUlNCS4pTUnNKwlKTc4vSokHANfAA0K">
+                <envVars/>
+                <executable dynamicLoad="true" digest="F9Qhsn+8+vA9TeIS+v4SHBpApOI=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwzNggozUsuyS9yzs8rKcrPyUlNCS4pTUnNKwlKTc4vSokHANfAA0K.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="PunctorControlledStudentRecord" index="1" definitionIndex="1" class="PunctorControlledStudentRecord">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="1100" name="lit$0"/>
+                            <runtimeConstant value="1076" name="lit$1"/>
+                            <runtimeConstant value="1051" name="lit$2"/>
+                            <runtimeConstant value="1026" name="lit$3"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="StudentRecord" isMutable="false" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="0"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts>
+                            <outputPort streamName="PunctorControlledStudentRecord" tupleTypeIndex="0" name="PunctorControlledStudentRecord" isMutable="true" index="0">
+<interPeConnection operInstanceIndex="2" iportIndex="0"/>
+                            </outputPort>
+                        </outputPorts>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="0" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="1" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts>
+                    <outputPort tupleTypeIndex="0" transport="TCP" singleThreadedOnOutput="true" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="2" iportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection oportIndex="0" operInstanceIndex="1"/>
+                    </outputPort>
+                </outputPorts>
+            </pe>
+            <pe restartable="false" relocatable="false" optimized="false" logLevel="error" language="C++" index="2" class="BeJwzNA5OLkpNzQsvyixJLTKMBwAvaAXS">
+                <envVars/>
+                <executable dynamicLoad="true" digest="msBtvsae8je0zcYlHvsIyI9IZDg=">
+                    <wrapper>none</wrapper>
+                    <executableUri>bin/BeJwzNA5OLkpNzQsvyixJLTKMBwAvaAXS.dpe</executableUri>
+                    <arguments></arguments>
+                    <dependencies/>
+                </executable>
+                <operInstances>
+                    <operInstance singleThreadedOnOutputs="true" singleThreadedOnInputs="true" name="ScreenWriter1" index="2" definitionIndex="2" class="ScreenWriter1">
+                        <resources>
+                            <poolLocation poolIndex="0"/>
+                        </resources>
+                        <runtimeConstants>
+                            <runtimeConstant value="false" name="lit$0"/>
+                            <runtimeConstant value="&quot;\n&quot;" name="lit$1"/>
+                            <runtimeConstant value="&quot;Punctuation arrived before-&gt;&quot;" name="lit$2"/>
+                            <runtimeConstant value="0" name="lit$3"/>
+                            <runtimeConstant value="true" name="lit$4"/>
+                            <runtimeConstant value="false" name="lit$5"/>
+                            <runtimeConstant value="0" name="lit$6"/>
+                        </runtimeConstants>
+                        <inputPorts>
+                            <inputPort tupleTypeIndex="0" name="PunctorControlledStudentRecord" isMutable="true" index="0">
+<interPeConnection oportIndex="0" operInstanceIndex="1"/>
+                            </inputPort>
+                        </inputPorts>
+                        <outputPorts/>
+                    </operInstance>
+                </operInstances>
+                <inputPorts>
+                    <inputPort tupleTypeIndex="0" transport="TCP" index="0" encoding="LE">
+                        <staticConnections>
+                            <staticConnection peIndex="1" oportIndex="0"/>
+                        </staticConnections>
+                        <operInstanceConnection operInstanceIndex="2" iportIndex="0"/>
+                    </inputPort>
+                </inputPorts>
+                <outputPorts/>
+            </pe>
+        </pes>
+        <operDefinitions>
+            <operDefinition kind="spl.utility::Beacon" index="0"/>
+            <operDefinition kind="spl.relational::Punctor" index="1"/>
+            <operDefinition kind="spl.utility::Custom" index="2"/>
+        </operDefinitions>
+        <composites>
+            <sourceUris>
+                <uri path="file:///homes/hny5/sen/workspace2/019_punctor_at_work/my.sample/Main.spl" index="0"/>
+            </sourceUris>
+            <compositeOpers>
+                <compositeOper toolkitIndex="0" numberOfOutputPorts="0" numberOfInputPorts="0" kind="my.sample::Main" index="0" startLine="3" sourceIndex="0" endLine="40">
+                    <description>my.sample::Main Composite</description>
+                </compositeOper>
+            </compositeOpers>
+            <compositeOperInstances>
+                <compositeOperInstance name="my.sample::Main" index="3" compositeOperIndex="0" startLine="3" sourceIndex="0" endLine="40">
+                    <primitiveOperInstance toolkitIndex="1" name="StudentRecord" kind="spl.utility::Beacon" index="0" startLine="8" sourceIndex="0" endLine="17">
+                        <outputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="input" portIndex="0" operName="PunctorControlledStudentRecord" operIndex="1"/>
+</connections>
+                            </port>
+                        </outputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="PunctorControlledStudentRecord" kind="spl.relational::Punctor" index="1" startLine="19" sourceIndex="0" endLine="23">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="StudentRecord" operIndex="0"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                        <outputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="input" portIndex="0" operName="ScreenWriter1" operIndex="2"/>
+</connections>
+                            </port>
+                        </outputPorts>
+                    </primitiveOperInstance>
+                    <primitiveOperInstance toolkitIndex="1" name="ScreenWriter1" kind="spl.utility::Custom" index="2" startLine="25" sourceIndex="0" endLine="39">
+                        <inputPorts>
+                            <port index="0">
+<connections>
+    <connection portKind="output" portIndex="0" operName="PunctorControlledStudentRecord" operIndex="1"/>
+</connections>
+                            </port>
+                        </inputPorts>
+                    </primitiveOperInstance>
+                </compositeOperInstance>
+            </compositeOperInstances>
+        </composites>
+        <toolkits>
+            <toolkit version="1.0.0" uri="file:///homes/hny5/sen/workspace2/019_punctor_at_work" name="019_punctor_at_work" index="0"/>
+            <toolkit version="1.0.0" uri="file:///homes/hny5/sen/InfoSphereStreams20_64/toolkits/spl" name="spl" index="1"/>
+        </toolkits>
+    </application>
+</applicationSet>

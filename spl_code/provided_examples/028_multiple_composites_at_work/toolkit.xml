@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="028_multiple_composites_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>A simple application that uses multiple composites in an applicaiton</description>
+    <uriTable>
+      <uri index="3" value="my.sample3/StockOrderCommission.spl"/>
+      <uri index="1" value="my.sample1/Main.spl"/>
+      <uri index="2" value="my.sample2/StockMatch.spl"/>
+    </uriTable>
+    <namespace name="my.sample2">
+      <compositeOp column="18" line="3" name="StockMatch" potentialMain="false" public="true" uriIndex="2">
+        <parameter metaType="Expression" name="matchTradeType" optional="false" type="&lt;rstring>"/>
+        <parameter metaType="Expression" name="minimumMatchQuantity" optional="false" type="&lt;uint32>"/>
+        <parameter metaType="Expression" name="minimumMatchPrice" optional="false" type="&lt;float32>"/>
+        <inputPort name="Input" portIndex="0"/>
+        <outputPort name="Output" portIndex="0"/>
+        <type column="3" line="10" name="stockOrder" type="tuple&lt;rstring symbol, float32 price, uint32 quantity, rstring tradeType, boolean matchFound, float32 commission>" uriIndex="2"/>
+      </compositeOp>
+    </namespace>
+    <namespace name="my.sample1">
+      <compositeOp column="11" line="13" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="15" name="stockOrder" type="tuple&lt;rstring symbol, float32 price, uint32 quantity, rstring tradeType, boolean matchFound, float32 commission>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+    <namespace name="my.sample3">
+      <compositeOp column="18" line="3" name="StockOrderCommission" potentialMain="false" public="true" uriIndex="3">
+        <inputPort name="Input" portIndex="0"/>
+        <outputPort name="Output" portIndex="0"/>
+        <type column="3" line="5" name="stockOrder" type="tuple&lt;rstring symbol, float32 price, uint32 quantity, rstring tradeType, boolean matchFound, float32 commission>" uriIndex="3"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

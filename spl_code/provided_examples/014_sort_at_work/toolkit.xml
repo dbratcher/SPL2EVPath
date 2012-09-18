@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="014_sort_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>A simple application that shows off the Sort features.</description>
+    <uriTable>
+      <uri index="1" value="my/sample/Main.spl"/>
+    </uriTable>
+    <namespace name="my.sample">
+      <compositeOp column="11" line="14" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="16" name="employee" type="tuple&lt;rstring name, uint32 id, rstring title, float32 salary>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

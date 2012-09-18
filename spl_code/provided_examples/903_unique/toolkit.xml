@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="903_unique" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>Filters consecutively appearing same tuples and emits only one of them.</description>
+    <uriTable>
+      <uri index="1" value="Main.spl"/>
+      <uri index="2" value="my.util/Uniq.spl"/>
+    </uriTable>
+    <namespace name="my.util">
+      <compositeOp column="18" line="3" name="Uniq" potentialMain="false" public="true" uriIndex="2">
+        <parameter metaType="Type" name="key" optional="false"/>
+        <inputPort name="In" portIndex="0"/>
+        <outputPort name="Out" portIndex="0"/>
+      </compositeOp>
+    </namespace>
+    <namespace name="">
+      <compositeOp column="11" line="7" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="9" name="KeyType" type="tuple&lt;int32 j>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+  </toolkit>
+
+</toolkitModel>

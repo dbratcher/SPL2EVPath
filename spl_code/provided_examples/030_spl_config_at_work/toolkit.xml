@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="2.0.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="030_spl_config_at_work" requiredProductVersion="2.0.0" version="1.0.0">
+    <description>Putting all the configuration tags to work.</description>
+    <uriTable>
+      <uri index="1" value="my.sample3/Main.spl"/>
+    </uriTable>
+    <namespace name="my.sample3">
+      <compositeOp column="11" line="29" name="Main" potentialMain="true" uriIndex="1">
+        <type column="3" line="31" name="flightRecord" type="tuple&lt;rstring flightNumber, rstring airline, rstring sourceAirport, rstring destinationAirport, rstring departureTime, rstring arrivalTime, boolean mealService>" uriIndex="1"/>
+      </compositeOp>
+    </namespace>
+    <dependency>
+      <common:name>025_dynamic_filter_at_work</common:name>
+      <common:version>1.0.0</common:version>
+    </dependency>
+  </toolkit>
+
+</toolkitModel>
