@@ -9,23 +9,6 @@
 int status;
 static EVdfg test_dfg;
 
-static char* RawData_filter = "{\n\
-int hop_count;\n\
-hop_count = attr_ivalue(event_attrs, \"hop_count_atom\");\n\
-hop_count++;\n\
-printf(\"in  RawData filter with a = %d\\n\", input.a);\n\
-input.a+=1;\n\
-printf(\"in  RawData filter with b = %d\\n\", input.b);\n\
-input.b+=1;\n\
-printf(\"in  RawData filter with c = %d\\n\", input.c);\n\
-input.c+=1;\n\
-printf(\"in  RawData filter with d = %d\\n\", input.d);\n\
-input.d+=1;\n\
-printf(\"in  RawData filter with e = %d\\n\", input.e);\n\
-input.e+=1;\n\
-set_int_attr(event_attrs, \"hop_count_atom\", hop_count);\n\
-}\0\0";
-
 typedef struct _RawData_rec {
 	int a;
 	int b;
@@ -35,28 +18,17 @@ typedef struct _RawData_rec {
 } RawData_rec, *RawData_rec_ptr;
 
 static FMField RawData_field_list [] = {
-	{"a", "integer", sizeof(int), FMOffset(RawData_rec_ptr, a)},
-	{"b", "integer", sizeof(int), FMOffset(RawData_rec_ptr, b)},
-	{"c", "integer", sizeof(int), FMOffset(RawData_rec_ptr, c)},
-	{"d", "integer", sizeof(int), FMOffset(RawData_rec_ptr, d)},
-	{"e", "integer", sizeof(int), FMOffset(RawData_rec_ptr, e)},
+	{"a", "integer", 4, FMOffset(RawData_rec_ptr, a)},
+	{"b", "integer", 4, FMOffset(RawData_rec_ptr, b)},
+	{"c", "integer", 4, FMOffset(RawData_rec_ptr, c)},
+	{"d", "integer", 4, FMOffset(RawData_rec_ptr, d)},
+	{"e", "integer", 4, FMOffset(RawData_rec_ptr, e)},
 	{NULL, NULL, 0, 0}
 };
 
 static FMStructDescRec RawData_format_list [] = {
 	{"RawData", RawData_field_list, sizeof(RawData_rec), NULL},
 	{NULL, NULL}
-};
-
-static int RawData_handler(CManager cm, void *vevent, void *client_data, attr_list attrs) {
-	RawData_rec_ptr event = vevent;
-	printf("RawData got a struct with the following:\n");
-	printf("a:%d\n",event->a);
-	printf("b:%d\n",event->b);
-	printf("c:%d\n",event->c);
-	printf("d:%d\n",event->d);
-	printf("e:%d\n",event->e);
-	EVdfg_shutdown(test_dfg, 0);
 };
 
 void generate_RawData_record(RawData_rec_ptr event)
@@ -68,16 +40,12 @@ void generate_RawData_record(RawData_rec_ptr event)
 	event->e = 0;
 }
 
-static char* Sum_filter = "{\n\
-int hop_count;\n\
-hop_count = attr_ivalue(event_attrs, \"hop_count_atom\");\n\
-hop_count++;\n\
-printf(\"in  Sum filter with hops = %d\\n\", input.hops);\n\
-input.hops+=1;\n\
-printf(\"in  Sum filter with sum = %d\\n\", input.sum);\n\
-input.sum+=1;\n\
-set_int_attr(event_attrs, \"hop_count_atom\", hop_count);\n\
-}\0\0";
+static char* RawData_to_Sum_transform = "{\n\
+    output.hops = 0;\n\
+    output.sum = input.a + input.b + input.c + input.d + input.e;\n\
+    return 1;\n\
+}";
+
 
 typedef struct _Sum_rec {
 	int hops;
@@ -85,8 +53,8 @@ typedef struct _Sum_rec {
 } Sum_rec, *Sum_rec_ptr;
 
 static FMField Sum_field_list [] = {
-	{"hops", "integer", sizeof(int), FMOffset(Sum_rec_ptr, hops)},
-	{"sum", "integer", sizeof(int), FMOffset(Sum_rec_ptr, sum)},
+	{"hops", "integer", 4, FMOffset(Sum_rec_ptr, hops)},
+	{"sum", "integer", 4, FMOffset(Sum_rec_ptr, sum)},
 	{NULL, NULL, 0, 0}
 };
 
@@ -95,30 +63,18 @@ static FMStructDescRec Sum_format_list [] = {
 	{NULL, NULL}
 };
 
-static int Sum_handler(CManager cm, void *vevent, void *client_data, attr_list attrs) {
-	Sum_rec_ptr event = vevent;
-	printf("Sum got a struct with the following:\n");
-	printf("hops:%d\n",event->hops);
-	printf("sum:%d\n",event->sum);
-	EVdfg_shutdown(test_dfg, 0);
-};
-
 void generate_Sum_record(Sum_rec_ptr event)
 {
 	event->hops = 0;
 	event->sum = 0;
 }
 
-static char* Hop_filter = "{\n\
-int hop_count;\n\
-hop_count = attr_ivalue(event_attrs, \"hop_count_atom\");\n\
-hop_count++;\n\
-printf(\"in  Hop filter with hops = %d\\n\", input.hops);\n\
-input.hops+=1;\n\
-printf(\"in  Hop filter with sum = %d\\n\", input.sum);\n\
-input.sum+=1;\n\
-set_int_attr(event_attrs, \"hop_count_atom\", hop_count);\n\
-}\0\0";
+static char* Sum_to_Hop_transform = "{\n\
+    output.hops = input.hops + 1;\n\
+    output.sum = input.sum;\n\
+    return 1;\n\
+}";
+
 
 typedef struct _Hop_rec {
 	int hops;
@@ -126,8 +82,8 @@ typedef struct _Hop_rec {
 } Hop_rec, *Hop_rec_ptr;
 
 static FMField Hop_field_list [] = {
-	{"hops", "integer", sizeof(int), FMOffset(Hop_rec_ptr, hops)},
-	{"sum", "integer", sizeof(int), FMOffset(Hop_rec_ptr, sum)},
+	{"hops", "integer", 4, FMOffset(Hop_rec_ptr, hops)},
+	{"sum", "integer", 4, FMOffset(Hop_rec_ptr, sum)},
 	{NULL, NULL, 0, 0}
 };
 
@@ -136,113 +92,165 @@ static FMStructDescRec Hop_format_list [] = {
 	{NULL, NULL}
 };
 
-static int Hop_handler(CManager cm, void *vevent, void *client_data, attr_list attrs) {
-	Hop_rec_ptr event = vevent;
-	printf("Hop got a struct with the following:\n");
-	printf("hops:%d\n",event->hops);
-	printf("sum:%d\n",event->sum);
-	EVdfg_shutdown(test_dfg, 0);
-};
-
 void generate_Hop_record(Hop_rec_ptr event)
 {
 	event->hops = 0;
 	event->sum = 0;
 }
 
+typedef struct _SinkOp_rec {
+} SinkOp_rec, *SinkOp_rec_ptr;
+
+static FMField SinkOp_field_list [] = {
+	{NULL, NULL, 0, 0}
+};
+
+static FMStructDescRec SinkOp_format_list [] = {
+	{"SinkOp", SinkOp_field_list, sizeof(SinkOp_rec), NULL},
+	{NULL, NULL}
+};
+
+static int SinkOp_handler(CManager cm, void *vevent, void *client_data, attr_list attrs) {
+	Hop_rec_ptr event = vevent;
+	printf("SinkOp got a struct with the following :\n");
+	printf("hops:%d\n",event->hops);
+	printf("sum:%d\n",event->sum);
+	printf("printing to file SumSink.csv:\n");
+	FILE* fp=fopen("SumSink.csv","a");
+	fprintf(fp, "%d,%d\n",event->hops,event->sum);
+	fclose(fp);
+}
+void generate_SinkOp_record(SinkOp_rec_ptr event)
+{
+}
+
 
 
 extern int be_test_master(int argc, char **argv) {
-	printf("in master\n");
+   printf("in master\n");
 	fflush(stdout);
-	char **nodes;
-	CManager cm;
-	attr_list contact_list;
-	char *str_contact;
-	EVdfg_stone src, last, tmp, sink;
-	EVsource source_handle;
-	int node_count = 5;
-	int i;
-	nodes = malloc(sizeof(nodes[0]) * (node_count+1));
-	for (i=0; i < node_count; i++) {
-		nodes[i] = malloc(5);
-		sprintf(nodes[i], "N%d", i);
-	}
-	cm = CManager_create();
-	CMlisten(cm);
-	contact_list = CMget_contact_list(cm);
-	str_contact = attr_list_to_string(contact_list);
-	source_handle = EVcreate_submit_handle(cm, -1, Sum_format_list);
-	EVdfg_register_source("master_source", source_handle);
-	EVdfg_register_sink_handler(cm, "Sum_handler", Sum_format_list, (EVSimpleHandlerFunc) Sum_handler);
-	test_dfg = EVdfg_create(cm);
-	EVdfg_register_node_list(test_dfg, &nodes[0]);
-	src = EVdfg_create_source_stone(test_dfg, "master_source");
-	EVdfg_assign_node(src, nodes[0]);
-	char *filter;
-	filter = create_filter_action_spec(NULL, Sum_filter);
-	last = src;
-	for (i=1; i < node_count -1; i++) {
-		tmp = EVdfg_create_stone(test_dfg, filter);
-		EVdfg_link_port(last, 0, tmp);
-		EVdfg_assign_node(tmp, nodes[i]);
-		last = tmp;
-	}
-	sink = EVdfg_create_sink_stone(test_dfg, "Sum_handler");
-	EVdfg_link_port(last, 0, sink);
-	EVdfg_assign_node(sink, nodes[node_count-1]);
-	EVdfg_realize(test_dfg);
-	EVdfg_join_dfg(test_dfg, nodes[0], str_contact);
-	test_fork_children(&nodes[0], str_contact);
-	if (EVdfg_ready_wait(test_dfg) != 1) {
-		/* dfg initialization failed! */
-		exit(1);
-	}
-	if (EVdfg_active_sink_count(test_dfg) == 0) {
-		EVdfg_ready_for_shutdown(test_dfg);
-	}
-	if (EVdfg_source_active(source_handle)) {
-		Sum_rec rec;
-		atom_t hop_count_atom;
-		attr_list attrs = create_attr_list();
-		hop_count_atom = attr_atom_from_string("hop_count_atom");
-		add_int_attr(attrs, hop_count_atom, 1);
-		generate_Sum_record(&rec);
-		/* submit would be quietly ignored if source is not active */
-		EVsubmit(source_handle, &rec, attrs);
-	}
-	status = EVdfg_wait_for_shutdown(test_dfg);
-	wait_for_children(nodes);
-	CManager_close(cm);
-	return status;
+   /*in graph management structures*/
+   CManager cm;
+   attr_list contact_list;
+   char *str_contact;
+   char *transform;
+   EVdfg_stone src, dst;
+    char **nodes;
+    int node_count = 4;
+    int i=0;
+    nodes = malloc(sizeof(nodes[0]) * (node_count+1));
+    /* RawData Stream */
+    nodes[i] = strdup("RawData");
+    i++;
+    EVsource RawData_source_handle;
+    /* Sum Stream */
+    nodes[i] = strdup("Sum");
+    i++;
+    /* Hop Stream */
+    nodes[i] = strdup("Hop");
+    i++;
+    /* SinkOp Stream */
+    nodes[i] = strdup("SinkOp");
+    i++;
+    printf("initializing\n");
+    fflush(stdout);
+    /* management initialization */
+    cm = CManager_create();
+    CMlisten(cm);
+    contact_list = CMget_contact_list(cm);
+    str_contact = attr_list_to_string(contact_list);
+    printf("-setting up graph\n");
+    fflush(stdout);
+    /* setup graph */
+    test_dfg = EVdfg_create(cm);
+    EVdfg_register_node_list(test_dfg, &nodes[0]);
+    RawData_source_handle = EVcreate_submit_handle(cm, -1, RawData_format_list);
+    EVdfg_register_source("RawData", RawData_source_handle);
+    src = EVdfg_create_source_stone(test_dfg, "RawData");
+    EVdfg_assign_node(src, nodes[0]);
+    transform = create_transform_action_spec(RawData_format_list, Sum_format_list, RawData_to_Sum_transform);
+    dst = EVdfg_create_stone(test_dfg, transform);
+    EVdfg_link_port(src, 0, dst);
+    EVdfg_assign_node(dst, nodes[1]);
+    src=dst;
+    transform = create_transform_action_spec(Sum_format_list, Hop_format_list, Sum_to_Hop_transform);
+    dst = EVdfg_create_stone(test_dfg, transform);
+    EVdfg_link_port(src, 0, dst);
+    EVdfg_assign_node(dst, nodes[2]);
+    src=dst;
+    EVdfg_register_sink_handler(cm, "SinkOp_handler", Hop_format_list, (EVSimpleHandlerFunc) SinkOp_handler);
+    dst = EVdfg_create_sink_stone(test_dfg, "SinkOp_handler");
+    EVdfg_link_port(src, 0, dst);
+    EVdfg_assign_node(dst, nodes[3]);   
+    EVdfg_realize(test_dfg);
+    EVdfg_join_dfg(test_dfg, nodes[0], str_contact);
+    test_fork_children(&nodes[0], str_contact);
+    if (EVdfg_ready_wait(test_dfg) != 1) {
+        /* dfg initialization failed! */
+        exit(1);
+    }
+   if (EVdfg_source_active(RawData_source_handle)) {
+       RawData_rec rec;
+       attr_list attrs = create_attr_list();
+       FILE* file = fopen("SourceData.csv","r");
+       if(file) {
+           while(!feof(file)) { 
+               fscanf(file, "%d,%d,%d,%d,%d",&rec.a,&rec.b,&rec.c,&rec.d,&rec.e);
+               EVsubmit(RawData_source_handle, &rec, attrs);
+           }
+           fclose(file);
+        } else {  
+           generate_RawData_record(&rec);
+           EVsubmit(RawData_source_handle, &rec, attrs);
+       }
+   }
+   if (EVdfg_active_sink_count(test_dfg) == 0) {
+       EVdfg_ready_for_shutdown(test_dfg);
+   }
+   status = EVdfg_wait_for_shutdown(test_dfg);
+   wait_for_children(nodes);
+   CManager_close(cm);
+   return status;
 }
 
 extern int
 be_test_child(int argc, char **argv)
 {
-	printf("in child\n");
+   printf("in child\n");
 	fflush(stdout);
-	CManager cm;
-	EVsource src;
-	cm = CManager_create();
-	if (argc != 3) {
-		printf("Child usage:  evtest  <nodename> <mastercontact>\n");
-		exit(1);
-	}
-	test_dfg = EVdfg_create(cm);
-	src = EVcreate_submit_handle(cm, -1, Sum_format_list);
-	EVdfg_register_source("master_source", src);
-	EVdfg_register_sink_handler(cm, "Sum_handler", Sum_format_list, (EVSimpleHandlerFunc) Sum_handler);
-	EVdfg_join_dfg(test_dfg, argv[1], argv[2]);
-	EVdfg_ready_wait(test_dfg);
-	if (EVdfg_active_sink_count(test_dfg) == 0) {
-		EVdfg_ready_for_shutdown(test_dfg);
-	}
-	if (EVdfg_source_active(src)) {
-		Sum_rec rec;
-		generate_Sum_record(&rec);
-		/* submit would be quietly ignored if source is not active */
-		EVsubmit(src, &rec, NULL);
-	}
-	return EVdfg_wait_for_shutdown(test_dfg);
+   CManager cm;
+   EVsource src;
+   cm = CManager_create();
+   if (argc != 3) {
+       printf("Child usage:  evtest  <nodename> <mastercontact>\n");
+       exit(1);
+   }
+   test_dfg = EVdfg_create(cm);
+   src = EVcreate_submit_handle(cm, -1, RawData_format_list);
+   EVsource RawData_source_handle;
+    RawData_source_handle = EVcreate_submit_handle(cm, -1, RawData_format_list);
+    EVdfg_register_source("RawData", RawData_source_handle);
+   EVdfg_register_source("RawData", src);
+   EVdfg_register_sink_handler(cm, "SinkOp_handler", Hop_format_list, (EVSimpleHandlerFunc) SinkOp_handler);
+   EVdfg_join_dfg(test_dfg, argv[1], argv[2]);
+   EVdfg_ready_wait(test_dfg);
+   if (EVdfg_active_sink_count(test_dfg) == 0) {
+       EVdfg_ready_for_shutdown(test_dfg);
+   }
+   if (EVdfg_source_active(RawData_source_handle)) {
+       RawData_rec rec;
+       attr_list attrs = create_attr_list();
+       FILE* file = fopen("SourceData.csv","r");
+       if(file) {
+           while(!feof(file)) { 
+               fscanf(file, "%d,%d,%d,%d,%d",&rec.a,&rec.b,&rec.c,&rec.d,&rec.e);
+               EVsubmit(RawData_source_handle, &rec, attrs);
+           }
+           fclose(file);
+        } else {  
+           generate_RawData_record(&rec);
+           EVsubmit(RawData_source_handle, &rec, attrs);
+       }
+   }
+   return EVdfg_wait_for_shutdown(test_dfg);
 }
