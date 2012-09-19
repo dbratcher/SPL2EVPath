@@ -5,7 +5,7 @@ composite SimpleSplit{
 graph
         stream<int32 a, int32 b> source1 = FileSource()
         {
-                param file: "SourceData.csv";
+                param file: "SplitSource.csv";
                 format: csv;
         }
 

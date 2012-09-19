@@ -5,7 +5,7 @@ composite Trivial{
 graph
         stream<int32 a, int32 b, int32 c, int32 d, int32 e> RawData = FileSource()
         {
-                param file: "SourceData.csv";
+                param file: "TrivialSource.csv";
                 format: csv;
         }
 
@@ -22,6 +22,6 @@ graph
         }
 
         () as SinkOp = FileSink(Hop){
-                param file: "SumSink.csv";
+                param file: "TrivialSink.csv";
         }
 }

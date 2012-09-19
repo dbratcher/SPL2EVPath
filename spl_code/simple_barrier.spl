@@ -5,13 +5,13 @@ composite SimpleBarrier{
 graph
         stream<int32 a, int32 b> source1 = FileSource()
         {
-                param file: "SourceData.csv";
+                param file: "BarrierSource1.csv";
                 format: csv;
         }
         
         stream<int32 c, int32 d> source2 = FileSource()
         {
-                param file: "SourceData2.csv";
+                param file: "BarrierSource2.csv";
                 format: csv;
         }
 

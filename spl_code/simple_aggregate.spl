@@ -5,7 +5,7 @@ composite SimpleAggregate{
 graph
         stream<int32 a, int32 b> source1 = FileSource()
         {
-                param file: "SourceData.csv";
+                param file: "AggregateSource.csv";
                 format: csv;
         }
 
