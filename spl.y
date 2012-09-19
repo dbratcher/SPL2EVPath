@@ -238,12 +238,12 @@ static const char *spl_code_string;
 %type <reference> compositeHead;
 %type <reference> opOutput;
 %type <reference> opInvokeHead;
+%type <reference> opInvokeWindow;
 %type <reference> opInvokeActual;
 %type <reference> opActual;
 %type <reference> opInvokeBody;
 %type <reference> opInvoke;
 %type <reference> invoke_logic_opt;
-%type <reference> invoke_window_opt;
 %type <reference> invoke_config_opt;
 %type <reference> opInvokeOutput;
 %type <reference> assign_expr;
@@ -252,10 +252,12 @@ static const char *spl_code_string;
 %type <list> portInputs;
 %type <list> opInvokeActual_list;
 %type <list> opInvokeOutput_list;
+%type <list> opInvokeWindow_list;
 %type <list> expr_list_comma;
 %type <list> opInput_list;
 %type <list> attributeDecl_list;
 %type <list> invoke_actual_opt;
+%type <list> invoke_window_opt;
 %type <list> tupleBody;
 %type <list> tupleType;
 %type <list> compositeType;
@@ -557,7 +559,14 @@ expr_list_comma:
             $$->next = NULL;
         }
 	| expr_list_comma COMMA expr {
-            printf("expr_list_comma?\n");
+	    sm_list tmp = $1;
+	    while (tmp->next != NULL) {
+		tmp = tmp->next;
+	    }
+            tmp->next = malloc(sizeof(struct list_struct));
+	    tmp->next->node = $3;
+	    tmp->next->next = NULL;
+	    $$ = $1; 
         }
 	;
 
@@ -686,15 +695,16 @@ opInvokeBody:
                 temp_list->next = NULL;
             }
             if($3!=NULL){
-                    printf("three\n");
-                    fflush(stdout);
+                sm_ref temp3 = spl_new_field();
+                temp3->node.field.type_spec = $3;
+                temp3->node.field.name = "window";
                 if(temp_list){
                     temp_list->next = malloc(sizeof(struct list_struct));
-                    temp_list->next->node = $3;
+                    temp_list->next->node = temp3;
                     temp_list->next->next = NULL;
                 } else {
                     temp_list = malloc(sizeof(struct list_struct));
-                    temp_list->node = $3;
+                    temp_list->node = temp3;
                     temp_list->next = NULL;
                 }
             }
@@ -757,7 +767,7 @@ invoke_window_opt:
             $$=NULL;
         }
 	| WINDOW opInvokeWindow_list {
-            printf("invoke_window_opt?\n");
+            $$=$2;
         }
 	;
 
@@ -797,7 +807,9 @@ opInvokeLogic_list:
 
 opInvokeWindow_list:
 	opInvokeWindow {
-            printf("opInvokeWindow_list?\n");
+            $$ = malloc(sizeof(struct list_struct));
+            $$->node = $1;
+            $$->next = NULL;
         }
 	| opInvokeWindow_list opInvokeWindow {
             printf("opInvokeWindow_list?\n");
@@ -878,7 +890,9 @@ varDef_list:
 
 opInvokeWindow:
 	identifier_ref COLON expr_list_comma SEMI {
-            printf("opInvokeWindow?\n");
+            $$ = spl_new_field();
+            $$->node.field.name=$1.string;
+            $$->node.field.type_spec=$3;
         }
 	;
 
@@ -1418,10 +1432,14 @@ assignOp:
 
 postfixExpr:
 	identifier_ref LPAREN expr_list_comma RPAREN {
-            printf("postfixExpr?\n");
+            $$=spl_new_field();
+            $$->node.field.name = $1.string;
+            $$->node.field.type_spec = $3;
         }
 	| type LPAREN expr RPAREN {
-            printf("postfixExpr?\n");
+            $$=spl_new_element_ref();
+            $$->node.element_ref.expression = $3;
+            $$->node.element_ref.array_ref = $1;
         }
 	| expr LBRACKET subscript RBRACKET {
             printf("postfixExpr?\n");
@@ -2012,10 +2030,183 @@ void print_barrier(FILE* fp, const char *name, sm_list inputs, sm_list lines){
     fprintf(fp,"}\";\n\n\n");
 }
 
+int has_max(sm_ref node){
+    if(strcmp(node->node.field.name,"Max")==0){
+        return 1;
+    }
+    return 0;
+}
+
+int has_min(sm_ref node){
+    if(strcmp(node->node.field.name,"Min")==0){
+        return 1;
+    }
+    return 0;
+}
+
+int has_avg(sm_ref node){
+    if(strcmp(node->node.field.name,"Average")==0){
+        return 1;
+    }
+    return 0;
+}
+
+void print_aggregate(FILE* fp, const char *name, const char *window_type, int count, sm_list inputs, sm_list lines){
+    //lists
+    fprintf(fp, "static FMStructDescList %s_inputs[] = {", name);
+    sm_list orig_inputs=inputs;
+    while(inputs && inputs->node){
+        const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+        fprintf(fp,"%s_format_list, ",input);
+        inputs=inputs->next;
+    }
+    fprintf(fp, "%s_format_list, NULL};\n\n", name);
+    
+    //header
+    fprintf(fp,"static char* ");
+    inputs = orig_inputs;
+    while(inputs && inputs->node){
+        const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+        fprintf(fp,"%s_",input);
+        inputs=inputs->next;
+    }
+    fprintf(fp,"to_%s = \"{\\n\\\n",name);
+    
+    //variables
+    fprintf(fp,"    int found=0;\\n\\\n");
+    inputs = orig_inputs;
+    int input_cnt=0;
+    while(inputs && inputs->node){
+        const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+        int i=0;
+        for(i=0; i<count; i++){
+            fprintf(fp,"    %s *rec_%s_%d;\\n\\\n",input, input, i);
+        }
+        input_cnt++;
+        inputs=inputs->next;
+    }
+    fprintf(fp,"    %s ret;\\n\\\n", name);
+    
+    //count available
+    inputs = orig_inputs;
+    while(inputs && inputs->node){
+        const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+        int i=0;
+        for(i=0; i<count; i++){
+            fprintf(fp,"    if (EVpresent(%s_ID, %d)) {\\n\\\n",input, i);
+            fprintf(fp,"        rec_%s_%d = EVdata_%s(%d); ++found;\\n\\\n",input, i, input, i);
+            fprintf(fp,"    }\\n\\\n");
+        }
+        inputs=inputs->next;
+    }
+    
+    //process
+    fprintf(fp,"    if (found == %d) {\\n\\\n",count);
+    while(lines && lines->node){
+        //check if line contains max
+        if(has_max(lines->node->node.assignment_expression.right)){
+            sm_ref max = lines->node->node.assignment_expression.right;
+            const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
+            const char *right=max->node.field.type_spec->node->node.identifier.id;
+            inputs = orig_inputs;
+            while(inputs && inputs->node){
+                const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+                int i=0;
+                fprintf(fp,"        ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
+                for(i=1; i<count; i++){
+                    fprintf(fp,"        if(ret.%s<rec_%s_%d.%s) ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
+                }
+                inputs=inputs->next;
+            }
+        } else if (has_min(lines->node->node.assignment_expression.right)) {
+            sm_ref max = lines->node->node.assignment_expression.right;
+            const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
+            const char *right=max->node.field.type_spec->node->node.identifier.id;
+            inputs = orig_inputs;
+            while(inputs && inputs->node){
+                const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+                int i=0;
+                fprintf(fp,"        ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
+                for(i=1; i<count; i++){
+                    fprintf(fp,"        if(ret.%s>rec_%s_%d.%s) ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
+                }
+                inputs=inputs->next;
+            }
+        } else if (has_avg(lines->node->node.assignment_expression.right)) {
+            sm_ref max = lines->node->node.assignment_expression.right;
+            const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
+            const char *right=max->node.field.type_spec->node->node.identifier.id;
+            inputs = orig_inputs;
+            while(inputs && inputs->node){
+                const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+                int i=0;
+                fprintf(fp,"        ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
+                for(i=1; i<count; i++){
+                    fprintf(fp,"        ret.%s=(ret.%s*%d+rec_%s_%d.%s)/%d;\\n\\\n",left, left, i, input, i, right, i+1);
+                }
+                inputs=inputs->next;
+            }
+        } else {
+            if(lines->node->node.assignment_expression.left){
+                fprintf(fp,"        %s", process_expr(lines->node->node.assignment_expression.left,"ret."));
+            }
+            if(lines->node->node.assignment_expression.right){
+                fprintf(fp," = %s;\\n\\\n", process_expr(lines->node->node.assignment_expression.right,"rec_"));
+            }
+        }
+        lines=lines->next;
+    }
+    inputs = orig_inputs;
+    while(inputs && inputs->node){
+        const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+        int i=0;
+        for(i=0; i<count; i++){
+            fprintf(fp,"        EVdiscard_%s(0);\\n\\\n",input);
+        }
+        inputs=inputs->next;
+    }
+    fprintf(fp,"        EVsubmit(0, ret);\\n\\\n");
+    fprintf(fp,"    }\\n\\\n");
+    fprintf(fp,"    return 1;\\n\\\n");
+    fprintf(fp,"}\";\n\n\n");
+}
+
+const char *get_struct_type(int cg_type){
+	switch(cg_type){
+		default:
+		case INT8:
+		case INT16:
+		case INT32:
+		case INT64:
+		case INT128:
+			return "int";
+		case UINT8:
+		case UINT16:
+		case UINT32:
+		case UINT64:
+		case UINT128:
+			return "unsigned int";
+		case FLOAT32:
+		case FLOAT64:
+			return "float";
+		case DECIMAL32:
+		case DECIMAL64:
+		case DECIMAL128:
+			return "double";
+		case STRING8:
+		case STRING16:
+			return "char";
+		case COMPLEX32:
+		case COMPLEX64:
+			return "complex";
+	}
+}
+
 void print_struct(FILE* fp, const char *name, sm_list ids){
     fprintf(fp,"typedef struct _%s_rec {\n", name);
     while(ids !=NULL){
-        fprintf(fp,"\tint %s;\n",ids->node->node.identifier.id);
+        const char *type = get_struct_type(ids->node->node.identifier.cg_type);
+        fprintf(fp,"\t%s %s;\n",type, ids->node->node.identifier.id);
         ids=ids->next;
     }
     fprintf(fp,"} %s_rec, *%s_rec_ptr;\n\n",name,name);
@@ -2286,7 +2477,8 @@ void print_sink_handler(FILE* fp, const char *name, const char *input_name, cons
     fprintf(fp,"\tprintf(\"%s got a struct with the following :\\n\");\n",name);
     fflush(stdout);
     while(ids !=NULL){
-        fprintf(fp,"\tprintf(\"%s:%%d\\n\",event->%s);\n",ids->node->node.identifier.id,ids->node->node.identifier.id);
+        const char* type=get_print_type(ids->node->node.identifier.cg_type);
+        fprintf(fp,"\tprintf(\"%s:%%%s\\n\",event->%s);\n",ids->node->node.identifier.id, type, ids->node->node.identifier.id);
         ids=ids->next;
     }
     fprintf(fp,"\tprintf(\"printing to file %s:\\n\");\n",file_name);
@@ -2375,15 +2567,22 @@ void process_graph( sm_list two) {
         sm_list blocks=body->node.field.type_spec;
         printf("Blocks:\n");
         char * block_name=NULL;
+        const char *window_type=NULL;
         sm_list lines=NULL;
         sm_list inside_lines=NULL;
+        int count=0;
         while(blocks && blocks->node){
             block_name = blocks->node->node.field.name;
             printf("block name:%s\n", block_name);
             lines = blocks->node->node.field.type_spec;
             sm_list temp=lines;
-            while(temp && temp->node){
-                if(strcmp(block_name,"invoke_output")==0){
+            while(temp && temp->node){      
+                if(strcmp(block_name,"window")==0){
+                    window_type = temp->node->node.field.type_spec->node->node.identifier.id;
+                    printf("window type: %s\n",window_type);
+                    count = atoi(temp->node->node.field.type_spec->next->node->node.field.type_spec->node->node.constant.const_val);
+                    printf("count: %d\n",count);
+                } else if(strcmp(block_name,"invoke_output")==0){
                     inside_lines = lines->node->node.field.type_spec;
                     sm_list temp2=inside_lines;
                     while(temp2 && temp2->node){
@@ -2419,12 +2618,16 @@ void process_graph( sm_list two) {
         //print FMstruct
         print_FMstruct(fp, stream_name);
 
-        if((strcmp(block_name,"invoke_output")==0) && (strcmp(stream_type,"Functor")==0)){
+        if(strcmp(stream_type,"Functor")==0){
             print_transform(fp, stream_name, input1, inside_lines);
         }
         
-        if((strcmp(block_name,"invoke_output")==0) && (strcmp(stream_type,"Barrier")==0)){
+        if(strcmp(stream_type,"Barrier")==0){
             print_barrier(fp, stream_name, inputs, inside_lines);
+        }
+        
+        if(strcmp(stream_type,"Aggregate")==0){
+            print_aggregate(fp, stream_name, window_type, count, inputs, inside_lines);
         }
         
         if(strcmp(stream_type,"FileSink")==0){
@@ -2450,8 +2653,7 @@ void process_graph( sm_list two) {
     fprintf(fp, "   CManager cm;\n");
     fprintf(fp, "   attr_list contact_list;\n");
     fprintf(fp, "   char *str_contact;\n");
-    fprintf(fp, "   char *transform;\n");
-    fprintf(fp, "   char *barrier;\n");
+    fprintf(fp, "   char *action;\n");
     fprintf(fp, "   EVdfg_stone src, dst;\n");
     
     // print stream names
@@ -2503,13 +2705,13 @@ void process_graph( sm_list two) {
         } else if (strcmp(get_stream_type(temp->node),"Functor")==0) {
             char *input_name = get_stream_input_name(temp->node);
             Symbol *input_sym= find_stream_symbol(input_name);
-            fprintf(fp, "    transform = create_transform_action_spec(%s_format_list, %s_format_list, %s_to_%s_transform);\n", input_name, temp->name, input_name, temp->name);
-            fprintf(fp, "    %s_stone = EVdfg_create_stone(test_dfg, transform);\n", temp->name);
+            fprintf(fp, "    action = create_transform_action_spec(%s_format_list, %s_format_list, %s_to_%s_transform);\n", input_name, temp->name, input_name, temp->name);
+            fprintf(fp, "    %s_stone = EVdfg_create_stone(test_dfg, action);\n", temp->name);
             fprintf(fp, "    EVdfg_link_port(%s_stone, %d, %s_stone);\n", input_name, input_sym->port++, temp->name);
         } else if (strcmp(get_stream_type(temp->node),"Barrier")==0) {
             sm_list inputs = get_stream_inputs(temp->node);
             
-            fprintf(fp, "    barrier = create_multityped_action_spec(%s_inputs, ", temp->name);
+            fprintf(fp, "    action = create_multityped_action_spec(%s_inputs, ", temp->name);
             sm_list orig_inputs=inputs;
             while(inputs && inputs->node){
                 const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
@@ -2517,7 +2719,25 @@ void process_graph( sm_list two) {
                 inputs=inputs->next;
             }
             fprintf(fp, "to_%s);\n", temp->name);
-            fprintf(fp, "    %s_stone = EVdfg_create_stone(test_dfg, barrier);\n", temp->name);
+            fprintf(fp, "    %s_stone = EVdfg_create_stone(test_dfg, action);\n", temp->name);
+            inputs=orig_inputs;
+            while(inputs && inputs->node){
+                const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+                fprintf(fp,"    EVdfg_link_port(%s_stone, 0, %s_stone);\n",input, temp->name);
+                inputs=inputs->next;
+            }
+        } else if (strcmp(get_stream_type(temp->node),"Aggregate")==0){
+            sm_list inputs = get_stream_inputs(temp->node);
+            
+            fprintf(fp, "    action = create_multityped_action_spec(%s_inputs, ", temp->name);
+            sm_list orig_inputs=inputs;
+            while(inputs && inputs->node){
+                const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+                fprintf(fp,"%s_",input);
+                inputs=inputs->next;
+            }
+            fprintf(fp, "to_%s);\n", temp->name);
+            fprintf(fp, "    %s_stone = EVdfg_create_stone(test_dfg, action);\n", temp->name);
             inputs=orig_inputs;
             while(inputs && inputs->node){
                 const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;

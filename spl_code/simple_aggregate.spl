@@ -3,14 +3,14 @@ namespace sample;
 composite SimpleAggregate{
 
 graph
-        stream<int32 a, int32 b> source1 = FileSource()
+        stream<float32 a, float32 b> source1 = FileSource()
         {
                 param file: "AggregateSource.csv";
                 format: csv;
         }
 
-        stream<int32 max, int32 min, int32 avg> anAggregate = Aggregate(source1) {
-                window source1:sliding, count(5);
+        stream<float32 max, float32 min, float32 avg> anAggregate = Aggregate(source1) {
+                window source1:sliding, count(4);
                 output anAggregate:
                         max=Max(a),
                         min=Min(a),
