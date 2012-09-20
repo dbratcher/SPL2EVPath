@@ -2159,8 +2159,12 @@ void print_aggregate(FILE* fp, const char *name, const char *window_type, int co
     inputs = orig_inputs;
     while(inputs && inputs->node){
         const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
-        int i=0;
-        for(i=0; i<count; i++){
+        if(strcmp(window_type,"tumbling")==0){
+            int i=0;
+            for(i=0; i<count; i++){
+                fprintf(fp,"        EVdiscard_%s(0);\\n\\\n",input);
+            }
+        } else {
             fprintf(fp,"        EVdiscard_%s(0);\\n\\\n",input);
         }
         inputs=inputs->next;
