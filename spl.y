@@ -2051,6 +2051,13 @@ int has_avg(sm_ref node){
     return 0;
 }
 
+int has_sum(sm_ref node){
+    if(strcmp(node->node.field.name,"Sum")==0){
+        return 1;
+    }
+    return 0;
+}
+
 void print_aggregate(FILE* fp, const char *name, const char *window_type, int count, sm_list inputs, sm_list lines){
     //lists
     fprintf(fp, "static FMStructDescList %s_inputs[] = {", name);
@@ -2143,6 +2150,20 @@ void print_aggregate(FILE* fp, const char *name, const char *window_type, int co
                 fprintf(fp,"        ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
                 for(i=1; i<count; i++){
                     fprintf(fp,"        ret.%s=(ret.%s*%d+rec_%s_%d.%s)/%d;\\n\\\n",left, left, i, input, i, right, i+1);
+                }
+                inputs=inputs->next;
+            }
+        } else if (has_sum(lines->node->node.assignment_expression.right)) {
+            sm_ref sum = lines->node->node.assignment_expression.right;
+            const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
+            const char *right=sum->node.field.type_spec->node->node.identifier.id;
+            inputs = orig_inputs;
+            while(inputs && inputs->node){
+                const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
+                int i=0;
+                fprintf(fp,"        ret.%s=rec_%s_%d.%s;\\n\\\n",left,input, i, right, left, input, i, right);
+                for(i=1; i<count; i++){
+                    fprintf(fp,"        ret.%s=ret.%s+rec_%s_%d.%s;\\n\\\n",left, left, input, i, right);
                 }
                 inputs=inputs->next;
             }
@@ -2318,7 +2339,6 @@ void print_generate(FILE* fp, const char *name, sm_list ids) {
     }
     fprintf(fp, "}\n\n");
 }
-
 
 char *process_expr(sm_ref node, const char *str){
     if(node->node_type==spl_operator){

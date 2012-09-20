@@ -9,12 +9,13 @@ graph
                 format: csv;
         }
 
-        stream<float32 max, float32 min, float32 avg> anAggregate = Aggregate(source1) {
+        stream<float32 max, float32 min, float32 avg, float32 sum> anAggregate = Aggregate(source1) {
                 window source1:sliding, count(4);
                 output anAggregate:
                         max=Max(a),
                         min=Min(a),
-                        avg=Average(a);
+                        avg=Average(a),
+                        sum=Sum(a);
         }
 
         () as SinkOp = FileSink(anAggregate) {
