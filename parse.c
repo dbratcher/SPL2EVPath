@@ -8,8 +8,8 @@
 int
 main(int argc, char **argv)
 {
-    char *filename = "spl_code/simple_aggregate.spl";
-    //char *filename = "spl_code/simple_barrier.spl";
+    //char *filename = "spl_code/simple_aggregate.spl";
+    char *filename = "spl_code/simple_barrier.spl";
     //char *filename = "spl_code/simple_split.spl";
     //char *filename = "spl_code/trivial.spl";
     struct stat buf;

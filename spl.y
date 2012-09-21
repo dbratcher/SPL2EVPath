@@ -1918,7 +1918,6 @@ struct parse_struct {
     err_out_func_t error_func;
 };
 
-
 void debug_print(FILE* fp, const char* string, int tabs){
     int i =0;
     for(i=0; i<tabs; i++){
@@ -2030,34 +2029,6 @@ void print_barrier(FILE* fp, const char *name, sm_list inputs, sm_list lines){
     fprintf(fp,"}\";\n\n\n");
 }
 
-int has_max(sm_ref node){
-    if(strcmp(node->node.field.name,"Max")==0){
-        return 1;
-    }
-    return 0;
-}
-
-int has_min(sm_ref node){
-    if(strcmp(node->node.field.name,"Min")==0){
-        return 1;
-    }
-    return 0;
-}
-
-int has_avg(sm_ref node){
-    if(strcmp(node->node.field.name,"Average")==0){
-        return 1;
-    }
-    return 0;
-}
-
-int has_sum(sm_ref node){
-    if(strcmp(node->node.field.name,"Sum")==0){
-        return 1;
-    }
-    return 0;
-}
-
 void print_aggregate(FILE* fp, const char *name, const char *window_type, int count, sm_list inputs, sm_list lines){
     //lists
     fprintf(fp, "static FMStructDescList %s_inputs[] = {", name);
@@ -2111,7 +2082,8 @@ void print_aggregate(FILE* fp, const char *name, const char *window_type, int co
     fprintf(fp,"    if (found == %d) {\\n\\\n",count);
     while(lines && lines->node){
         //check if line contains max
-        if(has_max(lines->node->node.assignment_expression.right)){
+        sm_ref expr =lines->node->node.assignment_expression.right;
+        if(strcmp(expr->node.field.name,"Max")==0){
             sm_ref max = lines->node->node.assignment_expression.right;
             const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
             const char *right=max->node.field.type_spec->node->node.identifier.id;
@@ -2125,10 +2097,10 @@ void print_aggregate(FILE* fp, const char *name, const char *window_type, int co
                 }
                 inputs=inputs->next;
             }
-        } else if (has_min(lines->node->node.assignment_expression.right)) {
-            sm_ref max = lines->node->node.assignment_expression.right;
+        } else if (strcmp(expr->node.field.name,"Min")==0) {
+            sm_ref min = lines->node->node.assignment_expression.right;
             const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
-            const char *right=max->node.field.type_spec->node->node.identifier.id;
+            const char *right=min->node.field.type_spec->node->node.identifier.id;
             inputs = orig_inputs;
             while(inputs && inputs->node){
                 const char *input = inputs->node->node.field.type_spec->node->node.identifier.id;
@@ -2139,7 +2111,7 @@ void print_aggregate(FILE* fp, const char *name, const char *window_type, int co
                 }
                 inputs=inputs->next;
             }
-        } else if (has_avg(lines->node->node.assignment_expression.right)) {
+        } else if (strcmp(expr->node.field.name,"Average")==0) {
             sm_ref max = lines->node->node.assignment_expression.right;
             const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
             const char *right=max->node.field.type_spec->node->node.identifier.id;
@@ -2153,7 +2125,7 @@ void print_aggregate(FILE* fp, const char *name, const char *window_type, int co
                 }
                 inputs=inputs->next;
             }
-        } else if (has_sum(lines->node->node.assignment_expression.right)) {
+        } else if (strcmp(expr->node.field.name,"Sum")==0) {
             sm_ref sum = lines->node->node.assignment_expression.right;
             const char *left=lines->node->node.assignment_expression.left->node.identifier.id;
             const char *right=sum->node.field.type_spec->node->node.identifier.id;
